@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--****************************************************-->
+<!-- Copyright (c) 2012 Report Engine -->
+<!-- All rights reserved. -->
+<!--****************************************************-->
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ReportEngine">
+
+<resultMap id="TestSuiteResultMap" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<result property="id" column="id"/>
+<result property="testSuiteName" column="test_suite_name"/>
+<result property="testStatus" column="test_status"/>
+<result property="testComments" column="test_comments"/>
+<result property="testBuild" column="test_build"/>
+<result property="localStartTime" column="local_start_time"/>
+<result property="localEndTime" column="local_end_time"/>
+<result property="remoteStartTime" column="remote_start_time"/>
+<result property="remoteEndTime" column="remote_end_time"/>
+<result property="testHost" column="test_host"/>
+<result property="testReference" column="test_reference"/>
+<result property="testReferenceId" column="test_reference_id"/>
+</resultMap>
+
+<resultMap id="TestSuiteResultMapFull" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<result property="id" column="id"/>
+<result property="testSuiteName" column="test_suite_name"/>
+<result property="testStatus" column="test_status"/>
+<result property="testComments" column="test_comments"/>
+<result property="testBuild" column="test_build"/>
+<result property="localStartTime" column="local_start_time"/>
+<result property="localEndTime" column="local_end_time"/>
+<result property="remoteStartTime" column="remote_start_time"/>
+<result property="remoteEndTime" column="remote_end_time"/>
+<result property="testHost" column="test_host"/>
+<result property="testReference" column="test_reference"/>
+<result property="testReferenceId" column="test_reference_id"/>
+<result property="totalCases" column="total_cases"/>
+<result property="passedCases" column="passed_cases"/>
+<result property="failedCases" column="failed_cases"/>
+<result property="skippedCases" column="skipped_cases"/>
+<result property="totalChanges" column="total_changes"/>
+<result property="passedChanges" column="passed_changes"/>
+<result property="failedChanges" column="failed_changes"/>
+<result property="skippedChanges" column="skipped_changes"/>
+<result property="testDuration" column="test_duration"/>
+</resultMap>
+
+
+<resultMap id="TestSuiteAggregationResultMap" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<result property="id" column="id"/>
+<result property="testSuiteId" column="test_suite_id"/>
+<result property="totalCases" column="total_cases"/>
+<result property="passedCases" column="passed_cases"/>
+<result property="failedCases" column="failed_cases"/>
+<result property="skippedCases" column="skipped_cases"/>
+<result property="totalChanges" column="total_changes"/>
+<result property="passedChanges" column="passed_changes"/>
+<result property="failedChanges" column="failed_changes"/>
+<result property="skippedChanges" column="skipped_changes"/>
+<result property="testReferenceId" column="test_reference_id"/>
+<result property="testDuration" column="test_duration"/>
+</resultMap>
+
+<resultMap id="TestSuitePreAggregationResultMap" class="com.redhat.reportengine.server.dbmap.TestSuiteAggregation">
+<result property="testResult" column="test_result"/>
+<result property="testCount" column="test_count"/>
+</resultMap>
+
+
+<parameterMap id="TestSuiteAggregationParameterMap" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<parameter property="testSuiteId"/>
+<parameter property="totalCases"/>
+<parameter property="passedCases"/>
+<parameter property="failedCases"/>
+<parameter property="skippedCases"/>
+<parameter property="totalChanges"/>
+<parameter property="passedChanges"/>
+<parameter property="failedChanges"/>
+<parameter property="skippedChanges"/>
+<parameter property="testReferenceId"/>
+<parameter property="testDuration"/>
+</parameterMap>
+
+<parameterMap id="TestSuiteParameterMapTopN" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<parameter property="orderBy"/>
+<parameter property="topN"/>
+</parameterMap>
+
+<parameterMap id="TestSuiteParameterMap" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<parameter property="id"/>
+<parameter property="testSuiteName"/>
+<parameter property="testBuild"/>
+<parameter property="testStatus"/>
+<parameter property="testComments"/>
+<parameter property="localStartTime"/>
+<parameter property="remoteStartTime"/>
+<parameter property="testReferenceId"/>
+<parameter property="testHost"/>
+</parameterMap>
+
+<parameterMap id="updateTestSuiteParameterMap" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<parameter property="testStatus"/>
+<parameter property="testBuild"/>
+<parameter property="testComments"/>
+<parameter property="localEndTime"/>
+<parameter property="remoteEndTime"/>
+<parameter property="id"/>
+</parameterMap>
+
+<parameterMap id="updateTestSuiteNameParameterMap" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<parameter property="testSuiteName"/>
+<parameter property="testComments"/>
+<parameter property="id"/>
+</parameterMap>
+
+<parameterMap id="updateTestSuiteStatusParameterMap" class="com.redhat.reportengine.server.dbmap.TestSuite">
+<parameter property="testStatus"/>
+<parameter property="id"/>
+</parameterMap>
+
+<!-- Test Group-->
+<resultMap id="TestGroupResultMap" class="com.redhat.reportengine.server.dbmap.TestGroup">
+<result property="id" column="id"/>
+<result property="testSuiteId" column="test_suite_id"/>
+<result property="testGroup" column="test_group"/>
+<result property="testComments" column="test_comments"/>
+<result property="localTime" column="local_time"/>
+<result property="remoteTime" column="remote_time"/>
+</resultMap>
+
+<resultMap id="TestGroupSuiteResultMap" class="com.redhat.reportengine.server.dbmap.TestGroup">
+<result property="id" column="id"/>
+<result property="testSuiteId" column="test_suite_id"/>
+<result property="testGroup" column="test_group"/>
+<result property="testSuiteName" column="test_suite_name"/>
+<result property="testBuild" column="test_build"/>
+</resultMap>
+
+<resultMap id="TestGroupResultMapByTestCaseCount" class="com.redhat.reportengine.server.dbmap.TestGroup">
+<result property="testSuiteId" column="test_suite_id"/>
+<result property="id" column="id"/>
+<result property="testGroup" column="test_group"/>
+<result property="totalCases" column="total_cases"/>
+<result property="passedCases" column="passed_cases"/>
+<result property="failedCases" column="failed_cases"/>
+<result property="skippedCases" column="skipped_cases"/>
+</resultMap>
+
+<parameterMap id="TestGroupParameterMap" class="com.redhat.reportengine.server.dbmap.TestGroup">
+<parameter property="testSuiteId"/>
+<parameter property="testGroup"/>
+<parameter property="testComments"/>
+<parameter property="localTime"/>
+<parameter property="remoteTime"/>
+</parameterMap>
+
+
+<!-- Test Case-->
+<resultMap id="TestCaseResultMap" class="com.redhat.reportengine.server.dbmap.TestCase">
+<result property="id" column="id"/>
+<result property="testSuiteId" column="test_suite_id"/>
+<result property="testGroupId" column="test_group_id"/>
+<result property="testName" column="test_name"/>
+<result property="testArguments" column="test_arguments"/>
+<result property="testResult" column="test_result"/>
+<result property="testComments" column="test_comments"/>
+<result property="testFiles" column="test_files"/>
+<result property="testGuiFiles" column="test_gui_files"/>
+<result property="localStartTime" column="local_start_time"/>
+<result property="remoteStartTime" column="remote_start_time"/>
+<result property="localEndTime" column="local_end_time"/>
+<result property="remoteEndTime" column="remote_end_time"/>
+</resultMap>
+
+<resultMap id="TestCaseDetailResultMap" class="com.redhat.reportengine.server.dbmap.TestCase">
+<result property="id" column="id"/>
+<result property="testName" column="test_name"/>
+<result property="testArguments" column="test_arguments"/>
+<result property="testResult" column="test_result"/>
+<result property="testComments" column="test_comments"/>
+<result property="testFiles" column="test_files"/>
+<result property="testGuiFiles" column="test_gui_files"/>
+<result property="localStartTime" column="local_start_time"/>
+<result property="remoteStartTime" column="remote_start_time"/>
+<result property="localEndTime" column="local_end_time"/>
+<result property="remoteEndTime" column="remote_end_time"/>
+<result property="testDuration" column="test_duration"/>
+<result property="testGroup" column="test_group"/>
+<result property="testSuiteName" column="test_suite_name"/>
+<result property="testBuild" column="test_build"/>
+</resultMap>
+
+<resultMap id="TestCaseReportResultMap" class="com.redhat.reportengine.server.dbmap.TestCase">
+<result property="id" column="id"/>
+<result property="testSuiteId" column="test_suite_id"/>
+<result property="testGroupId" column="test_group_id"/>
+<result property="testName" column="test_name"/>
+<result property="testArguments" column="test_arguments"/>
+<result property="testResult" column="test_result"/>
+<result property="localStartTime" column="local_start_time"/>
+<result property="localEndTime" column="local_end_time"/>
+<result property="testDuration" column="test_duration"/>
+<result property="testGuiFiles" column="test_gui_files"/>
+</resultMap>
+
+<parameterMap id="TestCaseParameterMap" class="com.redhat.reportengine.server.dbmap.TestCase">
+<parameter property="testSuiteId"/>
+<parameter property="testGroupId"/>
+<parameter property="testName"/>
+<parameter property="testArguments"/>
+<parameter property="testResult"/>
+<parameter property="testComments"/>
+<parameter property="testFiles"/>
+<parameter property="testGuiFiles"/>
+<parameter property="remoteStartTime"/>
+<parameter property="localStartTime"/>
+<parameter property="remoteEndTime"/>
+<parameter property="localEndTime"/>
+</parameterMap>
+
+<parameterMap id="TestCaseParameterMapUpdate" class="com.redhat.reportengine.server.dbmap.TestCase">
+<parameter property="testResult"/>
+<parameter property="testComments"/>
+<parameter property="testFiles"/>
+<parameter property="testGuiFiles"/>
+<parameter property="remoteEndTime"/>
+<parameter property="localEndTime"/>
+<parameter property="id"/>
+</parameterMap>
+
+<parameterMap id="TestCaseParameterMapUpdateResult" class="com.redhat.reportengine.server.dbmap.TestCase">
+<parameter property="testResultNew"/>
+<parameter property="testSuiteId"/>
+<parameter property="testResult"/>
+</parameterMap>
+
+<parameterMap id="TestCaseParameterMapID" class="com.redhat.reportengine.server.dbmap.TestCase">
+<parameter property="testSuiteId"/>
+<parameter property="testGroupId"/>
+<parameter property="testName"/>
+<parameter property="localStartTime"/>
+<parameter property="remoteStartTime"/>
+</parameterMap>
+
+<!-- Test Logs -->
+<parameterMap id="TestLogsParameterMap" class="com.redhat.reportengine.server.dbmap.TestLogs">
+<parameter property="testSuiteId"/>
+<parameter property="testGroupId"/>
+<parameter property="testCaseId"/>
+<parameter property="sequenceNumber"/>
+<parameter property="logLevel"/>
+<parameter property="logTime"/>
+<parameter property="localTime"/>
+<parameter property="className"/>
+<parameter property="methodName"/>
+<parameter property="message"/>
+<parameter property="throwable"/>
+</parameterMap>
+
+<resultMap id="TestLogsResultMap" class="com.redhat.reportengine.server.dbmap.TestLogs">
+<result property="id" column="id"/>
+<result property="testSuiteId" column="test_suite_id"/>
+<result property="testGroupId" column="test_group_id"/>
+<result property="testCaseId" column="test_case_id"/>
+<result property="sequenceNumber" column="sequence_number"/>
+<result property="logLevel" column="log_level"/>
+<result property="logTime" column="log_time"/>
+<result property="localTime" column="local_time"/>
+<result property="className" column="class_name"/>
+<result property="methodName" column="method_name"/>
+<result property="message" column="message"/>
+<result property="throwable" column="throwable"/>
+</resultMap>
+
+
+<select id="getTestSuiteById" resultMap="TestSuiteResultMapFull">
+select * from viewgettestsuitesdetailed where id=#id#
+</select>
+
+<select id="getTestSuiteByNameRef" parameterClass="com.redhat.reportengine.server.dbmap.TestSuite" resultMap="TestSuiteResultMap">
+select * from viewgettestsuites where test_suite_name='$testSuiteName$' AND test_reference='$testReference$' order by id desc LIMIT 1
+</select>
+
+<select id="getTestSuites" resultMap="TestSuiteResultMapFull">
+select * from viewgettestsuitesdetailed order by local_start_time desc
+</select>
+
+<select id="getTopNTestSuites" parameterClass="com.redhat.reportengine.server.dbmap.TestSuite" resultMap="TestSuiteResultMapFull">
+select * from viewgettestsuitesdetailed order by $orderBy$ desc LIMIT $topN$
+</select>
+
+<select id="getTopNTestSuitesExcludeRunning" parameterClass="com.redhat.reportengine.server.dbmap.TestSuite" resultMap="TestSuiteResultMapFull">
+select * from viewgettestsuitesdetailed WHERE test_status NOT LIKE 'Running' order by $orderBy$ desc LIMIT $topN$
+</select>
+
+<select id="getTrendReportExcludeRunning" parameterClass="com.redhat.reportengine.server.dbmap.TestSuite" resultMap="TestSuiteResultMapFull">
+select * from viewgettestsuitesdetailed WHERE test_status NOT LIKE 'Running' AND local_start_time &gt;= '$fromTime$' AND local_start_time &lt;= '$toTime$' AND test_reference_id=$testReferenceId$ ORDER BY $orderBy$ ASC
+</select>
+
+<select id="getTopNTestReferenceAggregationExcludeRunning" parameterClass="com.redhat.reportengine.server.dbmap.TestSuite" resultMap="TestSuiteResultMapFull">
+select * from viewgettestsuitesdetailed WHERE test_status NOT LIKE 'Running' AND test_reference_id=$testReferenceId$ order by $orderBy$ desc LIMIT $topN$
+</select>
+
+<select id="getTopTestSuitesByTestReferenceIds" parameterClass="java.lang.String" resultMap="TestSuiteResultMapFull">
+SELECT * FROM (SELECT DISTINCT ON (test_reference_id) test_reference_id, id, test_suite_name, test_status, test_comments, test_build, local_start_time, local_end_time, remote_start_time, remote_end_time, test_host, test_reference, total_cases, passed_cases, failed_cases, skipped_cases, total_changes, passed_changes, failed_changes, skipped_changes, test_duration FROM viewgettestsuitesdetailed WHERE test_reference_id IN ($referenceIds$) AND test_status NOT LIKE 'Running' ORDER BY test_reference_id, local_start_time DESC) tmp_table ORDER BY local_start_time DESC
+</select>
+
+<select id="getTestSuitesNonAggregate" resultMap="TestSuiteResultMap">
+select * from viewgettestsuites where test_status NOT LIKE 'Running' AND aggregation_status=false order by local_start_time asc
+</select>
+
+<select id="getTestSuitesRunning" resultMap="TestSuiteResultMap">
+select * from viewgettestsuites where test_status LIKE 'Running' order by local_start_time asc
+</select>
+
+<select id="getTestSuitePreAggregationByTestSuiteId" parameterClass="java.lang.Integer" resultMap="TestSuitePreAggregationResultMap">
+select test_result, count(test_result) as test_count from re_test_case  where test_suite_id=$id$ group by test_result
+</select>
+
+<select id="getTestSuiteAggregationByReferenceId" parameterClass="java.lang.Integer" resultMap="TestSuiteAggregationResultMap">
+SELECT * FROM re_test_suite_aggregation where test_reference_id=$test_reference_id$ order by id desc LIMIT 1
+</select>
+
+<insert id="insertTestSuite" parameterMap="TestSuiteParameterMap">
+insert into re_test_suite (id, test_suite_name, test_build, test_status, test_comments, local_start_time, remote_start_time, test_reference_id, test_host) values (?,?,?,?,?,?,?,?,?)
+</insert>
+
+<update id="enableTestSuiteAggregationStatus" parameterClass="java.lang.Integer">
+UPDATE re_test_suite SET aggregation_status=true WHERE id=$id$
+</update>
+
+<update id="updateTestSuite" parameterMap="updateTestSuiteParameterMap">
+UPDATE re_test_suite SET test_status=?, test_build=?, test_comments=?, local_end_time=?, remote_end_time=? WHERE id=?
+</update>
+
+<update id="updateTestSuiteName" parameterMap="updateTestSuiteNameParameterMap">
+UPDATE re_test_suite SET test_suite_name=?, test_comments=? WHERE id=?
+</update>
+
+<update id="updateTestSuiteStatusById" parameterMap="updateTestSuiteStatusParameterMap">
+UPDATE re_test_suite SET test_status=? WHERE id=?
+</update>
+
+<insert id="insertTestSuiteAggregation" parameterMap="TestSuiteAggregationParameterMap">
+insert into re_test_suite_aggregation (test_suite_id, total_cases, passed_cases, failed_cases, skipped_cases, total_changes, passed_changes, failed_changes, skipped_changes, test_reference_id, test_duration) values (?,?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<select id="getTestSuiteNextId" resultClass="java.lang.Integer">
+select * from nextval('re_test_suite_id_seq') as id
+</select>
+
+<!-- Test Group -->
+
+<insert id="insertTestGroup" parameterMap="TestGroupParameterMap">
+insert into re_test_group (test_suite_id, test_group, test_comments, local_time, remote_time) values (?,?,?,?,?)
+</insert>
+
+<select id="getTestGroupWithTestSuiteIdTestGroup" parameterClass="com.redhat.reportengine.server.dbmap.TestGroup" resultMap="TestGroupResultMap">
+SELECT * FROM re_test_group WHERE test_suite_id=$testSuiteId$ AND test_group LIKE '$testGroup$' order by local_time desc
+</select>
+
+<select id="getTestGroupSuiteById" parameterClass="java.lang.Integer" resultMap="TestGroupSuiteResultMap">
+SELECT tg.id, tg.test_suite_id, tg.test_group, ts.test_suite_name, ts.test_build FROM re_test_group tg, re_test_suite ts where tg.id=$id$ and tg.test_suite_id=ts.id
+</select>
+
+<select id="getTestGroupsByIdDetailedCount" parameterClass="java.lang.Integer" resultMap="TestGroupResultMapByTestCaseCount">
+select tg.test_suite_id, rt.test_group_id as id, tg.test_group, sum(rt.test_cases) as total_cases, sum(case when rt.test_result='Passed' then rt.test_cases else 0 end) as
+passed_cases, sum(case when rt.test_result='Failed' then rt.test_cases else 0 end) as failed_cases, sum(case when rt.test_result='Skipped' then rt.test_cases else 0 end) as skipped_cases from (select test_group_id, test_result, count(test_result) as test_cases from re_test_case where test_suite_id=$id$ group by test_group_id, test_result) rt, re_test_group tg where tg.id=rt.test_group_id group by rt.test_group_id, tg.test_group, tg.test_suite_id order by rt.test_group_id asc
+</select>
+
+<!-- Test Case -->
+
+<insert id="insertTestCase" parameterMap="TestCaseParameterMap">
+insert into re_test_case (test_suite_id, test_group_id, test_name, test_arguments, test_result, test_comments, test_files, test_gui_files, remote_start_time, local_start_time, remote_end_time, local_end_time) values (?,?,?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<update id="updateTestCase" parameterMap="TestCaseParameterMapUpdate">
+UPDATE re_test_case SET test_result=?, test_comments=?, test_files=?, test_gui_files=?, remote_end_time=?, local_end_time=? WHERE id=?
+</update>
+
+<update id="updateTestCaseResult" parameterMap="TestCaseParameterMapUpdateResult">
+UPDATE re_test_case SET test_result=? WHERE test_suite_id=? AND test_result=? 
+</update>
+
+<select id="getTestCaseID" parameterMap="TestCaseParameterMapID" resultMap="TestCaseResultMap">
+SELECT * FROM re_test_case WHERE test_suite_id=? AND test_group_id=? AND test_name LIKE ? AND local_start_time=? AND remote_start_time=?
+</select>
+
+<select id="getTestCaseDetailById" parameterClass="java.lang.Integer" resultMap="TestCaseDetailResultMap">
+SELECT tc.id, tc.test_name, tc.test_arguments, tc.test_result, tc.test_comments, tc.test_files, tc.test_gui_files, tc.local_start_time, tc.local_end_time, tc.remote_start_time, tc.remote_end_time, COALESCE(((EXTRACT(EPOCH FROM tc.local_end_time)*1000) - EXTRACT(EPOCH FROM tc.local_start_time)*1000),0) as test_duration, tg.test_group, ts.test_suite_name, ts.test_build from re_test_case tc, re_test_group tg, re_test_suite ts where tc.id=$id$ AND tc.test_group_id=tg.id AND tc.test_suite_id=ts.id
+</select>
+
+<select id="getTestCases" parameterClass="com.redhat.reportengine.server.dbmap.TestCase" resultMap="TestCaseResultMap">
+SELECT * FROM re_test_case WHERE test_suite_id=$testSuiteId$ AND test_group_id=$testGroupId$ order by local_start_time desc
+</select>
+
+<select id="getLatestTestCaseBySuiteID" parameterClass="java.lang.Integer" resultMap="TestCaseResultMap">
+SELECT * FROM re_test_case WHERE test_suite_id=$testSuiteId$ order by id desc LIMIT 1
+</select>
+
+<!-- TEST case with screen shot -->
+<select id="getTestCasesScreenShot" parameterClass="java.lang.Integer" resultMap="TestCaseResultMap">
+SELECT * FROM re_test_case WHERE test_gui_files IS NOT NULL AND test_suite_id=$id$ order by local_start_time desc
+</select>
+
+<select id="getTestCasesReport" parameterClass="com.redhat.reportengine.server.dbmap.TestCase" resultMap="TestCaseReportResultMap">
+SELECT * FROM re_view_gettestcasedetailreport WHERE test_suite_id=$testSuiteId$ AND test_group_id=$testGroupId$ order by local_start_time asc
+</select>
+
+<select id="getTestCasesReportBySuiteIdAll" parameterClass="com.redhat.reportengine.server.dbmap.TestCase" resultMap="TestCaseReportResultMap">
+SELECT * FROM re_view_gettestcasedetailreport WHERE test_suite_id=$testSuiteId$ order by local_start_time asc
+</select>
+
+<select id="getTestCasesReportBySuiteIdAndStatus" parameterClass="com.redhat.reportengine.server.dbmap.TestCase" resultMap="TestCaseReportResultMap">
+SELECT * FROM re_view_gettestcasedetailreport WHERE test_suite_id=$testSuiteId$ AND test_result='$testResult$' order by local_start_time asc
+</select>
+
+<select id="getTestCasesReportByGroupId" parameterClass="com.redhat.reportengine.server.dbmap.TestCase" resultMap="TestCaseReportResultMap">
+SELECT * FROM re_view_gettestcasedetailreport WHERE test_group_id=$testGroupId$ order by local_start_time asc
+</select>
+
+<select id="getTestCasesReportByGroupIdAndStatus" parameterClass="com.redhat.reportengine.server.dbmap.TestCase" resultMap="TestCaseReportResultMap">
+SELECT * FROM re_view_gettestcasedetailreport WHERE test_group_id=$testGroupId$  AND test_result='$testResult$' order by local_start_time asc
+</select>
+
+
+<!-- Test Logs -->
+
+<insert id="insertTestLogs" parameterMap="TestLogsParameterMap">
+insert into re_test_logs (test_suite_id, test_group_id, test_case_id, sequence_number, log_level, log_time, local_time, class_name, method_name, message, throwable) values (?,?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<select id="getTestLogsByTestSuiteId" parameterClass="java.lang.Integer" resultMap="TestLogsResultMap">
+SELECT * FROM re_test_logs WHERE test_suite_id=$id$ ORDER BY log_time ASC
+</select>
+
+<select id="getTestLogsByTestGroupId" parameterClass="java.lang.Integer" resultMap="TestLogsResultMap">
+SELECT * FROM re_test_logs WHERE test_group_id=$id$ ORDER BY log_time ASC
+</select>
+
+<select id="getTestLogsByTestCaseId" parameterClass="java.lang.Integer" resultMap="TestLogsResultMap">
+SELECT * FROM re_test_logs WHERE test_case_id=$id$ ORDER BY log_time ASC
+</select>
+
+<select id="getTestLogsById" parameterClass="java.lang.Integer" resultMap="TestLogsResultMap">
+SELECT * FROM re_test_logs WHERE id=$id$
+</select>
+
+<!-- Test Logs Ajax -->
+
+<select id="getTestLogsByTestSuiteIdAjax" parameterClass="com.redhat.reportengine.server.dbmap.TestLogs" resultMap="TestLogsResultMap">
+SELECT * FROM re_test_logs WHERE test_suite_id=$testSuiteId$ AND id>$id$ ORDER BY log_time ASC
+</select>
+
+<select id="getTestLogsByTestGroupIdAjax" parameterClass="com.redhat.reportengine.server.dbmap.TestLogs" resultMap="TestLogsResultMap">
+SELECT * FROM re_test_logs WHERE test_group_id=$testGroupId$ AND id>$id$ ORDER BY log_time ASC
+</select>
+
+<select id="getTestLogsByTestCaseIdAjax" parameterClass="com.redhat.reportengine.server.dbmap.TestLogs" resultMap="TestLogsResultMap">
+SELECT * FROM re_test_logs WHERE test_case_id=$testCaseId$ AND id>$id$ ORDER BY log_time ASC
+</select>
+
+
+<!-- Purge/Delete Logs -->
+
+<delete id="deleteTestLogsByTestSuiteId" parameterClass="java.lang.Integer">
+DELETE FROM re_test_logs WHERE test_suite_id=$id$
+</delete>
+
+<delete id="deleteTestCaseByTestSuiteId" parameterClass="java.lang.Integer">
+DELETE FROM re_test_case WHERE test_suite_id=$id$
+</delete>
+
+<delete id="deleteTestGroupByTestSuiteId" parameterClass="java.lang.Integer">
+DELETE FROM re_test_group WHERE test_suite_id=$id$
+</delete>
+
+<delete id="deleteTestSuiteAggregationByTestSuiteId" parameterClass="java.lang.Integer">
+DELETE FROM re_test_suite_aggregation WHERE test_suite_id=$id$
+</delete>
+
+<delete id="deleteTestSuiteById" parameterClass="java.lang.Integer">
+DELETE FROM re_test_suite WHERE id=$id$
+</delete>
+
+<!-- Test References - START -->
+
+<parameterMap id="TestReferenceParameterMap" class="com.redhat.reportengine.server.dbmap.TestReference">
+<parameter property="id"/>
+<parameter property="testReference"/>
+<parameter property="creationTime"/>
+</parameterMap>
+
+<parameterMap id="TestReferenceNameParameterMap" class="com.redhat.reportengine.server.dbmap.TestReference">
+<parameter property="testReference"/>
+</parameterMap>
+
+<resultMap id="TestReferenceResultMap" class="com.redhat.reportengine.server.dbmap.TestReference">
+<result property="id" column="id"/>
+<result property="testReference" column="test_reference"/>
+<result property="creationTime" column="creation_time"/>
+</resultMap>
+
+<select id="getTestReferenceNextId" resultClass="java.lang.Integer">
+select * from nextval('re_test_reference_id_seq') as id
+</select>
+
+<insert id="insertTestReference" parameterMap="TestReferenceParameterMap">
+INSERT INTO re_test_reference (id, test_reference, creation_time) values (?,?,?)
+</insert>
+
+<select id="getTestReferenceAll" resultMap="TestReferenceResultMap">
+SELECT * FROM re_test_reference ORDER BY test_reference ASC
+</select>
+
+<select id="getTestReferenceLike" parameterClass="java.lang.String" resultMap="TestReferenceResultMap">
+SELECT * FROM re_test_reference ORDER BY test_reference LIKE '%$searchFilter$%' ASC
+</select>
+
+<select id="getTestReferenceByName" parameterMap="TestReferenceNameParameterMap" resultMap="TestReferenceResultMap">
+SELECT * FROM re_test_reference WHERE test_reference=?
+</select>
+
+
+<!-- Test References - END -->
+
+<!-- File Storage - END -->
+
+
+<parameterMap id="FileStorageParameterMap" class="com.redhat.reportengine.server.dbmap.FileStorage">
+<parameter property="testCaseId"/>
+<parameter property="fileName"/>
+<parameter property="fileByte"/>
+<parameter property="creationTime"/>
+<parameter property="screenShot"/>
+</parameterMap>
+
+<resultMap id="FileStorageResultMapLimited" class="com.redhat.reportengine.server.dbmap.FileStorage">
+<result property="id" column="id"/>
+<result property="testCaseId" column="test_case_id"/>
+<result property="creationTime" column="creation_time"/>
+<result property="fileName" column="file_name"/>
+<result property="screenShot" column="screen_shot"/>
+</resultMap>
+
+<resultMap id="FileStorageResultMapFull" class="com.redhat.reportengine.server.dbmap.FileStorage">
+<result property="id" column="id"/>
+<result property="testCaseId" column="test_case_id"/>
+<result property="creationTime" column="creation_time"/>
+<result property="fileName" column="file_name"/>
+<result property="screenShot" column="screen_shot"/>
+<result property="fileByte" column="file_byte"/>
+</resultMap>
+
+
+<resultMap id="ScreenShotResultMap" class="com.redhat.reportengine.server.dbmap.TestCase">
+<result property="id" column="id"/>
+<result property="testGuiFiles" column="test_gui_files"/>
+</resultMap>
+
+<insert id="insertFileStorage" parameterMap="FileStorageParameterMap">
+INSERT INTO re_file_storage (test_case_id, file_name, file_byte, creation_time, screen_shot) values (?,?,?,?,?)
+</insert>
+
+<select id="getFileStorageByTestCaseId" parameterClass="java.lang.Integer" resultMap="FileStorageResultMapLimited">
+SELECT id, test_case_id, creation_time, file_name, screen_shot FROM re_file_storage WHERE test_case_id=$test_case_id$
+</select>
+
+<select id="getFileStorageByTestCaseIdScreenShot" parameterClass="java.lang.Integer" resultMap="FileStorageResultMapLimited">
+SELECT id, test_case_id, creation_time, file_name, screen_shot FROM re_file_storage WHERE test_case_id=$test_case_id$ AND screen_shot=true
+</select>
+
+<select id="getFileStorageById" parameterClass="java.lang.Integer" resultMap="FileStorageResultMapFull">
+SELECT * FROM re_file_storage WHERE id=$id$
+</select>
+
+<select id="getScreenShotFiles" resultMap="ScreenShotResultMap">
+select id, test_gui_files from re_test_case where test_gui_files is not null order by id desc
+</select>
+
+<!-- File Storage - END -->
+
+
+<!-- Report Group - START -->
+
+<parameterMap id="ReportGroupParameterMap" class="com.redhat.reportengine.server.dbmap.ReportGroup">
+<parameter property="groupName"/>
+<parameter property="emailTo"/>
+<parameter property="emailCc"/>
+<parameter property="creationTime"/>
+<parameter property="id"/>
+</parameterMap>
+
+<resultMap id="ReportGroupResultMap" class="com.redhat.reportengine.server.dbmap.ReportGroup">
+<result property="id" column="id"/>
+<result property="groupName" column="group_name"/>
+<result property="emailTo" column="email_to"/>
+<result property="emailCc" column="email_cc"/>
+<result property="creationTime" column="creation_time"/>
+</resultMap>
+
+<select id="getReportGroupNextId" resultClass="java.lang.Integer">
+select * from nextval('re_report_group_id_seq') as id
+</select>
+
+<insert id="insertReportGroup" parameterMap="ReportGroupParameterMap">
+INSERT INTO re_report_group (group_name, email_to, email_cc, creation_time, id) values (?,?,?,?,?)
+</insert>
+
+<update id="updateReportGroup" parameterMap="ReportGroupParameterMap">
+UPDATE re_report_group SET group_name=?, email_to=?, email_cc=?, creation_time=? WHERE id=? 
+</update>
+
+<delete id="deleteReportGroup" parameterClass="java.lang.Integer">
+DELETE FROM re_report_group WHERE id=$Id$
+</delete>
+
+<select id="getReportGroupAll" resultMap="ReportGroupResultMap">
+SELECT * FROM re_report_group ORDER BY group_name ASC
+</select>
+
+<select id="getReportGroupById" parameterClass="java.lang.Integer" resultMap="ReportGroupResultMap">
+SELECT * FROM re_report_group WHERE id=$id$
+</select>
+
+
+<!-- Report Group - END -->
+
+<!-- Report Group - START -->
+
+<parameterMap id="ReportGroupReferenceParameterMap" class="com.redhat.reportengine.server.dbmap.ReportGroupReference">
+<parameter property="reportGroupId"/>
+<parameter property="testReferenceId"/>
+</parameterMap>
+
+<resultMap id="ReportGroupReferenceResultMap" class="com.redhat.reportengine.server.dbmap.ReportGroupReference">
+<result property="reportGroupId" column="report_group_id"/>
+<result property="testReferenceId" column="test_reference_id"/>
+</resultMap>
+
+
+<insert id="insertReportGroupReference" parameterMap="ReportGroupReferenceParameterMap">
+INSERT INTO re_report_group_reference (report_group_id, test_reference_id) values (?,?)
+</insert>
+
+<select id="getReportGroupReferenceAll" resultMap="ReportGroupReferenceResultMap">
+SELECT * FROM re_report_group_reference ORDER BY report_group_id ASC
+</select>
+
+<select id="getReportGroupReferenceByReportGroupId" parameterClass="java.lang.Integer" resultMap="ReportGroupReferenceResultMap">
+SELECT * FROM re_report_group_reference WHERE report_group_id=$reportGroupId$
+</select>
+
+<delete id="deleteReportGroupReferenceByReportGroupId" parameterClass="java.lang.Integer">
+DELETE FROM re_report_group_reference WHERE report_group_id=$reportGroupId$
+</delete>
+
+<!-- Report Group - END -->
+
+<!-- Job Scheduler - START -->
+
+<parameterMap id="JobSchedulerParameterMap" class="com.redhat.reportengine.server.dbmap.JobScheduler">
+<parameter property="jobEnabled"/>
+<parameter property="systemJob"/>
+<parameter property="cronExpression"/>
+<parameter property="jobName"/>
+<parameter property="targetClassId"/>
+<parameter property="dataReferenceId"/>
+<parameter property="simpleJob"/>
+<parameter property="repeatInterval"/>
+<parameter property="repeatCount"/>
+<parameter property="validFromTime"/>
+<parameter property="validToTime"/>
+<parameter property="jobFrequency"/>
+<parameter property="jobWeekday"/>
+<parameter property="jobDayMonth"/>
+<parameter property="jobExecutionTime"/>
+<parameter property="jobDescription"/>
+<parameter property="creationTime"/>
+<parameter property="lastEditTime"/>
+</parameterMap>
+
+<resultMap id="JobSchedulerResultMap" class="com.redhat.reportengine.server.dbmap.JobScheduler">
+<result property="id" column="id"/>
+<result property="jobEnabled" column="job_enabled"/>
+<result property="systemJob" column="system_job"/>
+<result property="cronExpression" column="cron_expression"/>
+<result property="jobName" column="job_name"/>
+<result property="targetClassId" column="target_class_id"/>
+<result property="dataReferenceId" column="data_reference_id"/>
+<result property="simpleJob" column="simple_job"/>
+<result property="repeatInterval" column="repeat_interval"/>
+<result property="repeatCount" column="repeat_count"/>
+<result property="validFromTime" column="valid_from_time"/>
+<result property="validToTime" column="valid_to_time"/>
+<result property="jobFrequency" column="job_frequency"/>
+<result property="jobWeekday" column="job_weekday"/>
+<result property="jobDayMonth" column="job_day_month"/>
+<result property="jobExecutionTime" column="job_execution_time"/>
+<result property="jobDescription" column="job_description"/>
+<result property="creationTime" column="creation_time"/>
+<result property="lastEditTime" column="last_edit_time"/>
+<result property="targetClass" column="target_class"/>
+<result property="targetClassDescription" column="target_class_description"/>
+</resultMap>
+
+<select id="getJobSchedulerNextId" resultClass="java.lang.Integer">
+select id from nextval('re_job_scheduler_id_seq') as id
+</select>
+
+<insert id="insertJobScheduler" parameterMap="JobSchedulerParameterMap">
+INSERT INTO re_job_scheduler (job_enabled, system_job, cron_expression, job_name, target_class_id, data_reference_id, simple_job, repeat_interval, repeat_count, valid_from_time, valid_to_time, job_frequency, job_weekday, job_day_month, job_execution_time, job_description, creation_time, last_edit_time) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<delete id="deleteAscehduledJob" parameterClass="java.lang.Integer">
+DELETE FROM re_job_scheduler WHERE id=$id$
+</delete>
+
+<update id="enableAscehduledJob" parameterClass="java.lang.Integer">
+UPDATE re_job_scheduler SET job_enabled=true WHERE id=$jobId$ 
+</update>
+
+<update id="disableAscehduledJob" parameterClass="java.lang.Integer">
+UPDATE re_job_scheduler SET job_enabled=false WHERE id=$jobId$ 
+</update>
+
+<select id="getJobSchedulerAll" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall
+</select>
+
+<select id="getUserJobSchedulerAll" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE system_job=false
+</select>
+
+<select id="getJobSchedulerById" parameterClass="java.lang.Integer" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE id=$id$
+</select>
+
+<select id="getJobSchedulerByJobName" parameterClass="java.lang.String" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE job_name='$jobName$'
+</select>
+
+
+<!-- Report Group - END -->
+
+<!-- Report Engine Settings - START -->
+<parameterMap id="EngineSettingsParameterMap" class="com.redhat.reportengine.server.dbmap.EngineSettings">
+<parameter property="value"/>
+<parameter property="key"/>
+</parameterMap>
+
+<resultMap id="EngineSettingsResultMap" class="com.redhat.reportengine.server.dbmap.EngineSettings">
+<result property="key" column="key"/>
+<result property="value" column="key_value"/>
+</resultMap>
+
+<select id="getEngineSettingsAll" resultMap="EngineSettingsResultMap">
+SELECT * FROM re_settings
+</select>
+
+<select id="getEngineSettingsByKey" parameterClass="java.lang.String" resultMap="EngineSettingsResultMap">
+SELECT * FROM re_settings WHERE key='$key$'
+</select>
+
+<insert id="insertEngineSettings" parameterMap="EngineSettingsParameterMap">
+INSERT INTO re_settings (key_value, key) values (?,?)
+</insert>
+
+<update id="updateEngineSettings" parameterMap="EngineSettingsParameterMap">
+UPDATE re_settings SET key_value=? WHERE key=? 
+</update>
+
+<delete id="deleteEngineSettings" parameterClass="java.lang.String">
+DELETE FROM re_settings WHERE key='$key$'
+</delete>
+
+<!-- Report Engine Settings - END -->
+
+</sqlMap>

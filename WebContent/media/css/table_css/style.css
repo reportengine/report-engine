@@ -1,0 +1,142 @@
+/* ------------------
+ styling for the tables 
+   ------------------   */
+
+
+body
+{
+	line-height: 1.0em;
+}
+
+
+#rounded-corner
+{
+	font-family: "Verdana", Sans-Serif;
+	font-size: 12px;
+	margin: 9px;
+	width: 10px;
+	text-align: left;
+	border-collapse: collapse;
+}
+#rounded-corner thead th.T1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.T4
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+#rounded-corner thead th.LRT1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.LRT9
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+
+#rounded-corner thead th.LRDT1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.LRDT6
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+
+#rounded-corner thead th.LRDDT1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.LRDDT5
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+
+#rounded-corner thead th.JST1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.JST6
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+#rounded-corner thead th.TST1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.TST5
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+
+#rounded-corner thead th.ODT1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.ODT3
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+#rounded-corner thead th.SJT1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.SJT8
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+#rounded-corner thead th.LIT1
+{
+	background: #b9c9fe url('table-images/left.png') left -1px no-repeat;
+}
+#rounded-corner thead th.LIT3
+{
+	background: #b9c9fe url('table-images/right.png') right -1px no-repeat;
+}
+
+
+#rounded-corner th
+{
+	padding: 8px;
+	font-weight: normal;
+	font-size: 13px;
+	color: #039;
+	background: #b9c9fe;
+}
+#rounded-corner td
+{
+	padding: 4px;
+	background: #e8edff;
+	border-top: 1px solid #fff;
+	color: #669;
+}
+
+
+
+#rounded-corner tfoot td.rounded-foot-left
+{
+	background: #e8edff url('table-images/botleft.png') left bottom no-repeat;
+}
+#rounded-corner tfoot td.rounded-foot-right
+{
+	background: #e8edff url('table-images/botright.png') right bottom no-repeat;
+}
+#rounded-corner tbody tr:hover td
+{
+	background: #d0dafd;
+}
+
+
+
+
+
+
