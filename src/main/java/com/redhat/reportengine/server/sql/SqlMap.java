@@ -4,7 +4,10 @@
 package com.redhat.reportengine.server.sql;
 
 import java.io.Reader;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 import org.apache.log4j.Logger;
 
@@ -51,6 +54,19 @@ public class SqlMap {
 	
 	public static void stopSqlMapClient(){
 		try {
+			// This manually deregisters JDBC driver, which prevents Tomcat 7 from complaining about memory leaks wrto this class
+	        Enumeration<Driver> drivers = DriverManager.getDrivers();
+	        while (drivers.hasMoreElements()) {
+	            Driver driver = drivers.nextElement();
+	            try {
+	                DriverManager.deregisterDriver(driver);
+	                _logger.info(String.format("deregistering jdbc driver: %s", driver));
+	            } catch (SQLException e) {
+	            	_logger.info(String.format("Error deregistering driver %s", driver), e);
+	            }
+
+	        }
+			
 			if(!sqlMap.getCurrentConnection().isClosed()){
 				sqlMap.endTransaction();
 				sqlMap.getCurrentConnection().close();
