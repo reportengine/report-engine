@@ -1,0 +1,4 @@
+To create war file --> command: mvn clean compile war:war
+
+
+To create eclipse project --> command: mvn eclipse:eclipse -Dwtpversion=2.0
