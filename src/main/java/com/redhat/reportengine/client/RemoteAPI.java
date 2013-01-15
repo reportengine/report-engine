@@ -295,7 +295,7 @@ public class RemoteAPI {
 			testGroup.setTestGroup(groupName);	
 			testGroup.setRemoteTime(new Date());
 			//testGroup = (TestGroup) RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_INSERT_TEST_GROUP, testGroup);
-			testGroup = (TestGroup) restClient.post(TestResultsRestUrlMap.INSERT_TESTGROUP, testGroup, TestSuite.class);
+			testGroup = (TestGroup) restClient.post(TestResultsRestUrlMap.INSERT_TESTGROUP, testGroup, TestGroup.class);
 			test.setTestGroupId(testGroup.getId());
 			test.setTestGroupName(groupName);
 		}		
