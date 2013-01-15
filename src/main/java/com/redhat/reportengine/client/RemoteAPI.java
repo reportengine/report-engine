@@ -39,6 +39,8 @@ import com.redhat.reportengine.server.restapi.testresult.TestResultsRestUrlMap;
 public class RemoteAPI {
 
 	private static Logger sunLogger = Logger.getLogger("sun.rmi");  
+	private static Logger apacheLogger = Logger.getLogger("org.apache");  
+	
 	/*   
 	 static {  
 	        sunLogger.setLevel(Level.WARNING);  
@@ -218,7 +220,8 @@ public class RemoteAPI {
 			LogHandler.initLogger(); // Initialize Log watcher
 			System.out.println("Report Engine Client: Enabled Watch Logger, Logger Type: "+test.getLoggerType());
 		}	
-		sunLogger.setLevel(Level.WARNING);  
+		sunLogger.setLevel(Level.WARNING);
+		apacheLogger.setLevel(Level.WARNING);
 		System.out.println("Report Engine Client: sun.rmi log level set to WARNING");
 	}
 
@@ -396,7 +399,7 @@ public class RemoteAPI {
 		}		
 
 		//RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_INSERT_TEST_LOGS, testLogs);
-		restClient.post(TestResultsRestUrlMap.UPDATE_TESTCASE, testLogs, TestLogs.class);
+		restClient.post(TestResultsRestUrlMap.INSERT_TESTLOG, testLogs, TestLogs.class);
 	}
 
 	public String getLoggerType(){
