@@ -3,6 +3,7 @@
  */
 package com.redhat.reportengine.server.restapi.testresult;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import javax.ws.rs.Consumes;
@@ -59,8 +60,7 @@ public class TestResultsREST {
 	@GET
 	@Path(TestResultsRestUrlMap.GET_TESTSUITE_NEXT_AVAILABLE_ID)
 	public String getTestSuiteNextAvailableId() throws TestResultException{
-		//return new TestResult().getTestSuiteNextAvailableId();
-		return new Integer(321).toString();
+		return new Integer(new TestResult().getTestSuiteNextAvailableId()).toString();
 	}
 	
 	@GET
@@ -91,7 +91,7 @@ public class TestResultsREST {
 	
 	@PUT
 	@Path(TestResultsRestUrlMap.UPDATE_TESTCASE)
-	public void updateTestCase(TestCase testCase) throws TestResultException{
+	public void updateTestCase(TestCase testCase) throws TestResultException, IOException{
 		new TestResult().updateTestCase(testCase);
 	}
 	

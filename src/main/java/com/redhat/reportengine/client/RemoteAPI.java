@@ -21,8 +21,11 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.codec.binary.Base64;
+
+
 import com.redhat.reportengine.common.ClientRMI;
-import com.redhat.reportengine.common.RemoteCall;
+//import com.redhat.reportengine.common.RemoteCall;
 import com.redhat.reportengine.server.dbmap.TestCase;
 import com.redhat.reportengine.server.dbmap.TestGroup;
 import com.redhat.reportengine.server.dbmap.TestLogs;
@@ -339,7 +342,9 @@ public class RemoteAPI {
 			FileInputStream in = new FileInputStream(screenShot);
 			in.read(screenShotByte );
 			in.close();
-			testCase.setScreenShotFileByte(screenShotByte);
+			//testCase.setScreenShotFileByte(screenShotByte);
+			// Convert a byte array to base64 string
+			testCase.setScreenShotFileBase64(new String(Base64.encodeBase64(screenShotByte)));
 			System.out.println("Report Engine Client: Screen Shot File Name (Sent): "+ testCase.getScreenShotFileName());
 			if(!screenShot.delete()){
 				System.out.println("Report Engine Client: Failed to delete the file: "+ testCase.getScreenShotFileName());

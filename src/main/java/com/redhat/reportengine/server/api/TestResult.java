@@ -3,8 +3,11 @@
  */
 package com.redhat.reportengine.server.api;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import com.redhat.reportengine.server.dbmap.FileStorage;
 import com.redhat.reportengine.server.dbmap.TestCase;
@@ -148,7 +151,7 @@ public class TestResult {
 		}				
 	}
 
-	public void updateTestCase(TestCase testCase) throws TestResultException{
+	public void updateTestCase(TestCase testCase) throws TestResultException, IOException{
 		try {
 			testCase.setLocalEndTime(new Date());
 			if(testCase.getScreenShotFileName() != null){
@@ -160,7 +163,12 @@ public class TestResult {
 				fileStorage.setFileName(testCase.getScreenShotFileName());
 				fileStorage.setTestCaseId(testCase.getId());
 				fileStorage.setScreenShot(true);
-				fileStorage.setFileByte(testCase.getScreenShotFileByte());
+				if(testCase.getScreenShotFileByte() != null){
+					fileStorage.setFileByte(testCase.getScreenShotFileByte());
+				}else{ // Convert base64 string to a byte array
+					fileStorage.setFileByte(Base64.decodeBase64(testCase.getScreenShotFileBase64().getBytes()));
+				}
+				
 				SqlMap.getSqlMapClient().insert(SqlQuery.INSERT_FILE_STORAGE, fileStorage);
 				
 				/*//Old code to store files on disk...

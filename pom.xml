@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
 	http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>report-engine</groupId>
-	<artifactId>report-engine</artifactId>
+	<groupId>com.report.engine</groupId>
+	<artifactId>report-engine-server</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Report Engine WebApp</name>
@@ -39,7 +39,7 @@
               							<directory>${basedir}/lib/</directory> 
               							<targetPath>WEB-INF/lib</targetPath> 
             						</resource> 
-          					</webResources> 
+          					</webResources>
         				</configuration> 
 				</plugin>
 			</plugins>
@@ -89,15 +89,15 @@
 		</dependency>
 
 		<dependency>
-    			<groupId>org.testng</groupId>
-    			<artifactId>testng</artifactId>
-    			<version>6.8</version>
+  			<groupId>org.jboss.resteasy</groupId>
+  			<artifactId>resteasy-yaml-provider</artifactId>
+  			<version>2.3.5.Final</version>
 		</dependency>
 
 		<dependency>
   			<groupId>org.jboss.resteasy</groupId>
-  			<artifactId>resteasy-yaml-provider</artifactId>
-  			<version>2.3.5.Final</version>
+  			<artifactId>resteasy-jaxb-provider</artifactId>
+  			<version>2.2.3.GA</version>
 		</dependency>
 
 		<dependency>
@@ -124,6 +124,18 @@
     			<groupId>postgresql</groupId>
     			<artifactId>postgresql</artifactId>
     			<version>9.1-901-1.jdbc4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.7</version>
+		</dependency>
+
+		<dependency>
+    			<groupId>org.testng</groupId>
+    			<artifactId>testng</artifactId>
+    			<version>6.8</version>
 		</dependency>
             
 	</dependencies>

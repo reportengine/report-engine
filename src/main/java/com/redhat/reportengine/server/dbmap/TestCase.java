@@ -43,6 +43,7 @@ public class TestCase implements Serializable {
 	private long testDuration;
 	
 	private byte[] screenShotFileByte;
+	private String screenShotFileBase64;
 	private String screenShotFileName;
 	
 	private String testSuiteName;
@@ -284,6 +285,18 @@ public class TestCase implements Serializable {
 	}
 	public void setTestResultNew(String testResultNew) {
 		this.testResultNew = testResultNew;
+	}
+	/**
+	 * @return the screenShotFileBase64
+	 */
+	public String getScreenShotFileBase64() {
+		return screenShotFileBase64;
+	}
+	/**
+	 * @param screenShotFileBase64 the screenShotFileBase64 to set
+	 */
+	public void setScreenShotFileBase64(String screenShotFileBase64) {
+		this.screenShotFileBase64 = screenShotFileBase64;
 	}
 
 }
