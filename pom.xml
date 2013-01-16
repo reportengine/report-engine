@@ -106,6 +106,12 @@
     			<version>1.4.3</version>
 		</dependency>
 
+		<dependency>
+  			<groupId>com.sun.mail</groupId>
+  			<artifactId>smtp</artifactId>
+  			<version>1.4.4</version>
+		</dependency>
+
 		<dependency> 
       			<groupId>gnu.cajo</groupId> 
       			<artifactId>rmi</artifactId> 
