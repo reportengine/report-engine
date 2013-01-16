@@ -12,7 +12,9 @@ import java.io.StringWriter;
  */
 public class ClientCommon {
 	
+	private String testSuiteName;
 	private String serverIp;
+	private String serverRestUrl;
 	private String serverRMIPort;	
 	private Object serverObject;	
 	private Integer testSuiteId;
@@ -22,9 +24,10 @@ public class ClientCommon {
 	private String testReference;
 	private String testGroupName = "";
 	
-	private String clientTempLocation;
+	//private String clientTempLocation;
 	private boolean takeScreenShot;
 	private String screenShotFileName;
+	private String screenShotFileBase64String;
 	private String buildVersionReference;	
 	private boolean loggerEnabled;
 	private String loggerType;
@@ -126,22 +129,22 @@ public class ClientCommon {
 	public void setTestCaseId(Integer testCaseId) {
 		this.testCaseId = testCaseId;
 	}
-	
-	/**
+	/*
+	*//**
 	 * @return the clientTempLocation
-	 */
+	 *//*
 	public String getClientTempLocation() {
 		return this.clientTempLocation;
 	}
-	/**
+	*//**
 	 * @param clientTempLocation the clientTempLocation to set
-	 */
+	 *//*
 	public void setClientTempLocation(String clientTempLocation) {
 		if(clientTempLocation != null && !clientTempLocation.endsWith("/")){
 			clientTempLocation += "/";
 		}
 		this.clientTempLocation = clientTempLocation;
-	}
+	}*/
 	/**
 	 * @return the takeScreenShot
 	 */
@@ -226,5 +229,44 @@ public class ClientCommon {
 		}
 	   
 	  }
+	/**
+	 * @return the serverRestUrl
+	 */
+	public String getServerRestUrl() {
+		return serverRestUrl;
+	}
+	/**
+	 * @param serverRestUrl the serverRestUrl to set
+	 */
+	public void setServerRestUrl(String serverRestUrl) {
+		if(serverRestUrl.endsWith("/")){
+			serverRestUrl = serverRestUrl.substring(0, serverRestUrl.length()-1);
+		}
+		this.serverRestUrl = serverRestUrl;
+	}
+	/**
+	 * @return the testSuiteName
+	 */
+	public String getTestSuiteName() {
+		return testSuiteName;
+	}
+	/**
+	 * @param testSuiteName the testSuiteName to set
+	 */
+	public void setTestSuiteName(String testSuiteName) {
+		this.testSuiteName = testSuiteName;
+	}
+	/**
+	 * @return the screenShotFileBase64String
+	 */
+	public String getScreenShotFileBase64String() {
+		return screenShotFileBase64String;
+	}
+	/**
+	 * @param screenShotFileBase64String the screenShotFileBase64String to set
+	 */
+	public void setScreenShotFileBase64String(String screenShotFileBase64String) {
+		this.screenShotFileBase64String = screenShotFileBase64String;
+	}
 	
 }

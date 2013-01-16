@@ -85,8 +85,9 @@ public class TestResultsREST {
 	
 	@POST
 	@Path(TestResultsRestUrlMap.INSERT_TESTCASE)
-	public String insertTestCase(TestCase testCase) throws TestResultException{		
-		return new Integer(new TestResult().insertTestCase(testCase)).toString();
+	public TestCase insertTestCase(TestCase testCase) throws TestResultException{	
+		testCase.setId(new TestResult().insertTestCase(testCase));
+		return testCase;
 	}
 	
 	@PUT

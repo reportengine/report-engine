@@ -35,7 +35,7 @@ public class LogHandler {
 			logger.setLevel(Level.WARNING);
 		}else if(remoteApi.getLogLevel().equalsIgnoreCase("SEVERE")){
 			logger.setLevel(Level.SEVERE);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("CINFIG")){
+		}else if(remoteApi.getLogLevel().equalsIgnoreCase("CONFIG")){
 			logger.setLevel(Level.CONFIG);
 		}else{
 			//Ignore
@@ -68,7 +68,7 @@ public class LogHandler {
 		if(remoteApi.getLoggerType().equalsIgnoreCase("JUL")){
 			julLoggerSetup();
 		}else{
-			System.out.println("Report Engine Client: Un supported Logger Type: "+remoteApi.getLoggerType());
+			System.out.println("Report Engine Client: Un-supported Logger Type: "+remoteApi.getLoggerType());
 		}
 	}
 }

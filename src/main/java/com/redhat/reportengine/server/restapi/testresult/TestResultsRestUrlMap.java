@@ -12,6 +12,7 @@ public class TestResultsRestUrlMap {
 	public static final String DATE_FORMAT	= "dd-MMM-yyyy, HH:mm:ss.S, z";
 	
 	public static final String ROOT 							= "/testresults";
+	
 	public static final String GET_SERVER_TIME 					= "/servertime";
 	public static final String INSERT_TESTSUITE 				= "/testsuite";
 	public static final String UPDATE_TESTSUITE_NAME 			= "/testsuitename";
