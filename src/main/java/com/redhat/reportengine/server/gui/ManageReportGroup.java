@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.redhat.reportengine.server.dbmap.ReportGroup;
 import com.redhat.reportengine.server.dbmap.ReportGroupReference;
+import com.redhat.reportengine.server.jobs.EmailReportGroupJob;
 import com.redhat.reportengine.server.sql.SqlMap;
 import com.redhat.reportengine.server.sql.SqlQuery;
 
@@ -70,5 +71,9 @@ public class ManageReportGroup {
 	
 	public ArrayList<ReportGroup> getAllReportGroup() throws SQLException{
 		return (ArrayList<ReportGroup>) SqlMap.getSqlMapClient().queryForList(SqlQuery.GET_REPORT_GROUP_ALL);
+	}
+	
+	public void runReportNow(int groupId) throws Exception{
+		new EmailReportGroupJob().executeEmailGroupReport(groupId);
 	}
 }

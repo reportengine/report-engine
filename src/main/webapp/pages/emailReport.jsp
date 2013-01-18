@@ -12,6 +12,9 @@ if(buttonName != null){
 	if(buttonName.equalsIgnoreCase("Delete")){
 		new ManageReportGroup().deleteReportGroupById(Integer.parseInt(request.getParameter(Keys.REPORT_EMAIL_GROUP_ID)));
 		response.sendRedirect("emailReport.jsp");
+	}else if(buttonName.equalsIgnoreCase("Run Now")){
+		new ManageReportGroup().runReportNow(Integer.parseInt(request.getParameter(Keys.REPORT_EMAIL_GROUP_ID)));
+		response.sendRedirect("emailReport.jsp");
 	}else if(buttonName.equalsIgnoreCase("Edit")){
 		int groupId = Integer.valueOf(request.getParameter(Keys.REPORT_EMAIL_GROUP_ID));
 		ReportGroup reportGroup = new ManageReportGroup().getReportGroupById(groupId);
@@ -207,6 +210,8 @@ if(buttonName != null){
 			//$("input[Value=Delete]").removeAttr("disabled");
 			$( "input[Value=Delete]" ).button( "option", "disabled", false );
 			$( "input[Value=Edit]" ).button( "option", "disabled", false );
+			$( "input[Value='Run Now']" ).button( "option", "disabled", false );
+			
 		});
 
 		//Unselect All radio buttons
@@ -224,6 +229,7 @@ if(buttonName != null){
 		$( "input[Value=Delete]" ).button( "option", "disabled", true );
 		$( "input[Value=Enable]" ).button( "option", "disabled", true );
 		$( "input[Value=Disable]" ).button( "option", "disabled", true );
+		$( "input[Value='Run Now']" ).button( "option", "disabled", true );
 		
 	};
 </script>
@@ -292,7 +298,7 @@ if(buttonName != null){
 
 <BR>
 <div class="jbutton">
-	<input type="submit" name="SUBMIT" value="Add" style="width:80px;"> <input type="submit" name="SUBMIT" value="Edit" style="width:80px;"> <input type="submit" name="SUBMIT" value="Delete" style="width:80px;">
+	<input type="submit" name="SUBMIT" value="Add" style="width:80px;"> <input type="submit" name="SUBMIT" value="Edit" style="width:80px;"> <input type="submit" name="SUBMIT" value="Delete" style="width:80px;"> <input type="submit" name="SUBMIT" value="Run Now" style="width:80px;">
 </div>
 </form>
 
