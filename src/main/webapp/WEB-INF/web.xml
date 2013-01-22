@@ -8,26 +8,6 @@
 
 	<display-name>Report Engine 1.0</display-name>
 
-	<!-- Report REST API -->
-	<!--
-<servlet>
-<servlet-name>restapi-testresult</servlet-name>
-<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
-<init-param>
-<param-name>org.restlet.application</param-name>
-<param-value>com.redhat.reportengine.server.restapi.testresult.TestResultAPI</param-value>
-</init-param>
-<init-param>
-<param-name>org.restlet.clients</param-name>
-<param-value>HTTPS</param-value>
-</init-param>
-</servlet>
-
-<servlet-mapping>
-<servlet-name>restapi-testresult</servlet-name>
-<url-pattern>/restapi/testresult/*</url-pattern>
-</servlet-mapping>
--->
 	<!-- **************************************** -->
 
 	<!-- RestEasy -->
@@ -90,5 +70,15 @@
 	<session-config>
 		<session-timeout>1440</session-timeout>
 	</session-config>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Secure Stuff</web-resource-name>
+			<url-pattern>/pages/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
 
 </web-app>
