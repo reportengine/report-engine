@@ -87,7 +87,7 @@
 	
 	
 	<!--Date Picker-->
-	<script>
+	<script type='text/javascript'>
 	$(function() {
 		$( "#datepickerFrom" ).datepicker({
 			changeMonth: true,
