@@ -17,8 +17,13 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
 public class ReportEngineClientJunitListener extends RunListener{
 	private static RemoteAPI reportEngineClientAPI = new RemoteAPI();
 	
-	public ReportEngineClientJunitListener() throws Exception{
-		reportEngineClientAPI.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
+	public ReportEngineClientJunitListener() {
+		try {
+			reportEngineClientAPI.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
+		} catch (Exception e) {
+			System.out.println("Report Engine Client: failed to start!!");
+			e.printStackTrace();
+		}
 	}
 	
 	/**

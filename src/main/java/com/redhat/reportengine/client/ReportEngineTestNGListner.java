@@ -22,8 +22,13 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
 public class ReportEngineTestNGListner implements IResultListener, ISuiteListener {
 	private static RemoteAPI reportEngine = new RemoteAPI();
 
-	public ReportEngineTestNGListner() throws Exception{
-		reportEngine.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
+	public ReportEngineTestNGListner(){
+		try {
+			reportEngine.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
+		} catch (Exception e) {
+			System.out.println("Report Engine Client: failed to start!!");
+			e.printStackTrace();
+		}
 	}
 	
 	public String getParametersString(Object[] parameters) {
