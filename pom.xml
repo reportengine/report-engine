@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
 	http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -9,11 +8,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Report Engine WebApp</name>
 	<url>http://maven.apache.org</url>
- 
+
 	<properties>
-    		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
-  	</properties>
+	</properties>
 
 	<build>
 		<finalName>re</finalName>
@@ -31,16 +30,16 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-    					<artifactId>maven-war-plugin</artifactId>
-    					<version>2.3</version>
-					<configuration> 
-          					<webResources> 
-            						<resource> 
-              							<directory>${basedir}/lib/</directory> 
-              							<targetPath>WEB-INF/lib</targetPath> 
-            						</resource> 
-          					</webResources>
-        				</configuration> 
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.3</version>
+					<configuration>
+						<webResources>
+							<resource>
+								<directory>${basedir}/lib/</directory>
+								<targetPath>WEB-INF/lib</targetPath>
+							</resource>
+						</webResources>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -75,61 +74,61 @@
 			<artifactId>servlet-api</artifactId>
 			<version>3.0-alpha-1</version>
 		</dependency>
-		
+
 		<dependency>
-  			<groupId>org.opensymphony.quartz</groupId>
-  			<artifactId>quartz</artifactId>
-  			<version>1.6.5</version>
+			<groupId>org.opensymphony.quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.6.5</version>
 		</dependency>
 
 		<dependency>
-		    <groupId>commons-collections</groupId>
-		    <artifactId>commons-collections</artifactId>
-		    <version>3.2.1</version>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
 		</dependency>
 
 		<dependency>
-  			<groupId>org.jboss.resteasy</groupId>
-  			<artifactId>resteasy-yaml-provider</artifactId>
-  			<version>2.3.5.Final</version>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-yaml-provider</artifactId>
+			<version>2.3.5.Final</version>
 		</dependency>
 
 		<dependency>
-  			<groupId>org.jboss.resteasy</groupId>
-  			<artifactId>resteasy-jaxb-provider</artifactId>
-  			<version>2.2.3.GA</version>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>2.2.3.GA</version>
 		</dependency>
 
 		<dependency>
-    			<groupId>javax.mail</groupId>
-    			<artifactId>mailapi</artifactId>
-    			<version>1.4.3</version>
+			<groupId>javax.mail</groupId>
+			<artifactId>mailapi</artifactId>
+			<version>1.4.3</version>
 		</dependency>
 
 		<dependency>
-  			<groupId>com.sun.mail</groupId>
-  			<artifactId>smtp</artifactId>
-  			<version>1.4.4</version>
-		</dependency>
-
-		<dependency> 
-      			<groupId>gnu.cajo</groupId> 
-      			<artifactId>rmi</artifactId> 
-      			<version>1.0.0</version> 
-      			<scope>system</scope> 
-      			<systemPath>${basedir}/lib/cajo.jar</systemPath> 
-    		</dependency> 
-
-		<dependency>
-  			<groupId>org.apache.ibatis</groupId>
-  			<artifactId>ibatis-sqlmap</artifactId>
-  			<version>2.3.0</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>smtp</artifactId>
+			<version>1.4.4</version>
 		</dependency>
 
 		<dependency>
-    			<groupId>postgresql</groupId>
-    			<artifactId>postgresql</artifactId>
-    			<version>9.1-901-1.jdbc4</version>
+			<groupId>gnu.cajo</groupId>
+			<artifactId>rmi</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/cajo.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901-1.jdbc4</version>
 		</dependency>
 
 		<dependency>
@@ -139,11 +138,18 @@
 		</dependency>
 
 		<dependency>
-    			<groupId>org.testng</groupId>
-    			<artifactId>testng</artifactId>
-    			<version>6.8</version>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8</version>
 		</dependency>
-            
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>2.3.5.Final</version>
+		</dependency>
+
+
 	</dependencies>
- 
+
 </project>
