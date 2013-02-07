@@ -21,11 +21,11 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Mar 16, 2012
  */
-public class ReportEngineTestNGListner implements IResultListener, ISuiteListener {
-	protected static Logger _logger = Logger.getLogger(ReportEngineTestNGListner.class.getName());
+public class ReportEngineClientTestNGListener implements IResultListener, ISuiteListener {
+	protected static Logger _logger = Logger.getLogger(ReportEngineClientTestNGListener.class.getName());
 	private static RemoteAPI reportEngine = new RemoteAPI();
 
-	public ReportEngineTestNGListner(){
+	public ReportEngineClientTestNGListener(){
 		try {
 			reportEngine.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
 		} catch (Exception ex) {

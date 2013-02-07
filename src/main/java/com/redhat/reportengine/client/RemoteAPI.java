@@ -10,9 +10,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.security.CodeSource;
 import java.text.SimpleDateFormat;
@@ -24,10 +22,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
-
-
-//import com.redhat.reportengine.common.ClientRMI;
-//import com.redhat.reportengine.common.RemoteCall;
 import com.redhat.reportengine.server.dbmap.TestCase;
 import com.redhat.reportengine.server.dbmap.TestGroup;
 import com.redhat.reportengine.server.dbmap.TestLogs;
@@ -49,7 +43,6 @@ public class RemoteAPI {
 	private static final String remoteServer 		= "REPORT.ENGINE.SERVER";
 	private static final String rmiPort 			= "REPORT.ENGINE.RMI.PORT";
 	private static final String testReference 		= "REPORT.ENGINE.TEST.REFERENCE";
-	//private static final String clientTempLocation 	= "REPORT.ENGINE.CLIENT.TEMP";
 	private static final String screenShot		 	= "REPORT.ENGINE.TAKE.SCREEN.SHOT";
 	private static final String buildVersion	 	= "REPORT.ENGINE.TEST.BUILD.VERSION.REFF";
 	private static final String watchLogger	 		= "REPORT.ENGINE.WATCH.LOGGER";
@@ -73,7 +66,6 @@ public class RemoteAPI {
 		return test.getBuildVersionReference();
 	}
 	public Date getServerTime() throws Exception{
-		//return (Date) RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_GET_SERVER_TIME);
 		return new SimpleDateFormat(TestResultsRestUrlMap.DATE_FORMAT).parse((String)restClient.get(TestResultsRestUrlMap.GET_SERVER_TIME, String.class));
 	}
 
@@ -85,11 +77,11 @@ public class RemoteAPI {
 			_logger.log(Level.INFO, "System.getenv: "+System.getenv(rePropertyFile));
 			_logger.log(Level.INFO, "System.getProperty: "+System.getProperty(rePropertyFile));
 			
-			if(System.getenv(rePropertyFile) != null){//get property file from system ENV variable
+			if(System.getenv(rePropertyFile) != null){				//get property file from system ENV variable
 				primaryPropertyFile = System.getenv(rePropertyFile).trim(); 
-			}else if(System.getProperty(rePropertyFile) != null){ //Get Property file by System Property variable
+			}else if(System.getProperty(rePropertyFile) != null){ 	//Get Property file by System Property variable
 				primaryPropertyFile = System.getProperty(rePropertyFile).trim(); 
-			}else{ //Get Property file by jar location
+			}else{ 													//Get Property file by jar location
 				CodeSource codeSource = RemoteAPI.class.getProtectionDomain().getCodeSource();
 				File jarFile = new File(codeSource.getLocation().toURI().getPath());
 				File jarDir = jarFile.getParentFile();
@@ -120,7 +112,6 @@ public class RemoteAPI {
 			test.setServerIp(propertyFile.getProperty(remoteServer).trim());
 			test.setServerRMIPort(propertyFile.getProperty(rmiPort).trim());
 			test.setTestReference(propertyFile.getProperty(testReference).trim());
-			//test.setClientTempLocation(propertyFile.getProperty(clientTempLocation).trim());
 			test.setTakeScreenShot(Boolean.parseBoolean(propertyFile.getProperty(screenShot).trim()));
 			test.setLoggerEnabled(Boolean.parseBoolean(propertyFile.getProperty(watchLogger).trim()));
 			test.setLoggerType(propertyFile.getProperty(loggerType).trim());
@@ -156,7 +147,7 @@ public class RemoteAPI {
 	public void runLogHandler(){
 		if(test.isLoggerEnabled()){
 			LogHandler.setRemoteApi(this);
-			LogHandler.initLogger(); // Initialize Log watcher
+			LogHandler.initLogger(); 		// Initialize Log watcher
 			_logger.log(Level.INFO, "Enabled Watch Logger, Logger Type: "+test.getLoggerType());
 		}	
 		Logger.getLogger("sun.rmi").setLevel(Level.WARNING);
@@ -172,8 +163,6 @@ public class RemoteAPI {
 			restClient.setServerUrl(test.getServerRestUrl());
 			restClient.setRootUrl(TestResultsRestUrlMap.ROOT);
 			_logger.log(Level.INFO, "Report Engine Server REST URL: "+test.getServerRestUrl());
-			//test.setServerObject(RemoteCall.getRemoteObject("//"+test.getServerIp()+":"+test.getServerRMIPort()+"/", ClientRMI.CLIENT_RMI_PACK));
-			//System.out.println("Report Engine Client: Server Time: "+RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_GET_SERVER_TIME));
 			this.insertTestSuite(testSuiteName, comments);
 			_logger.log(Level.INFO, "Report Engine Client Loaded successfully...");			
 		}else{
@@ -186,7 +175,6 @@ public class RemoteAPI {
 	}
 
 	public void insertTestSuite(String TestSuitName, String comments) throws Exception{
-		//test.setTestSuiteId((Integer)RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_GET_TEST_SUITE_ID));
 		test.setTestSuiteId(Integer.valueOf((String)restClient.get(TestResultsRestUrlMap.GET_TESTSUITE_NEXT_AVAILABLE_ID, String.class)));
 		TestSuite testSuite = new TestSuite();
 		testSuite.setId(test.getTestSuiteId());
@@ -200,7 +188,6 @@ public class RemoteAPI {
 		}		
 		testSuite.setTestReference(test.getTestReference());
 		testSuite.setTestHost(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");	
-		//RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_INSERT_TEST_SUITE, testSuite);
 		restClient.post(TestResultsRestUrlMap.INSERT_TESTSUITE, testSuite, TestSuite.class);
 	}
 	
@@ -217,7 +204,6 @@ public class RemoteAPI {
 			testSuite.setTestSuiteName(testSuiteName);
 		}	
 		testSuite.setTestComments(comments);
-		//RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_UPDATE_TEST_SUITE_NAME, testSuite);
 		restClient.put(TestResultsRestUrlMap.UPDATE_TESTSUITE_NAME, testSuite, TestSuite.class);
 	}
 	
@@ -232,7 +218,6 @@ public class RemoteAPI {
 		testSuite.setTestBuild(build);
 		testSuite.setTestComments(comments);
 		testSuite.setRemoteEndTime(new Date());
-		//RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_UPDATE_TEST_SUITE, testSuite);
 		restClient.put(TestResultsRestUrlMap.UPDATE_TESTSUITE, testSuite, TestSuite.class);
 	}
 
@@ -242,7 +227,6 @@ public class RemoteAPI {
 			testGroup.setTestSuiteId(test.getTestSuiteId());
 			testGroup.setTestGroup(groupName);	
 			testGroup.setRemoteTime(new Date());
-			//testGroup = (TestGroup) RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_INSERT_TEST_GROUP, testGroup);
 			testGroup = (TestGroup) restClient.post(TestResultsRestUrlMap.INSERT_TESTGROUP, testGroup, TestGroup.class);
 			test.setTestGroupId(testGroup.getId());
 			test.setTestGroupName(groupName);
@@ -259,8 +243,7 @@ public class RemoteAPI {
 		testCase.setTestName(testCaseName);
 		testCase.setTestArguments(arguments);
 		testCase.setTestResult(result);
-		testCase.setRemoteStartTime(new Date());		
-		//test.setTestCaseId((Integer) RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_INSERT_TEST_CASE, testCase));
+		testCase.setRemoteStartTime(new Date());
 		test.setTestCaseId(((TestCase) restClient.post(TestResultsRestUrlMap.INSERT_TESTCASE, testCase, TestCase.class)).getId());
 		test.setScreenShotFileName(null);
 		if(!result.equalsIgnoreCase(TestCase.RUNNING)){
@@ -281,24 +264,10 @@ public class RemoteAPI {
 		}	
 		
 		if(test.getScreenShotFileName() != null){
-			/*File screenShot = new File(test.getScreenShotFileName());
-			testCase.setScreenShotFileName(screenShot.getName());
-			byte[] screenShotByte = new byte[(int) screenShot.length()];
-			FileInputStream in = new FileInputStream(screenShot);
-			in.read(screenShotByte );
-			in.close();
-			//testCase.setScreenShotFileByte(screenShotByte);
-			// Convert a byte array to base64 string
-			testCase.setScreenShotFileBase64(new String(Base64.encodeBase64(screenShotByte)));
-			System.out.println("Report Engine Client: Screen Shot File Name (Sent): "+ testCase.getScreenShotFileName());
-			if(!screenShot.delete()){
-				System.out.println("Report Engine Client: Failed to delete the file: "+ testCase.getScreenShotFileName());
-			}*/
 			testCase.setScreenShotFileName(test.getScreenShotFileName());
 			testCase.setScreenShotFileBase64(test.getScreenShotFileBase64String());
 		}
-		testCase.setRemoteEndTime(new Date());		
-		//RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_UPDATE_TEST_CASE, testCase);
+		testCase.setRemoteEndTime(new Date());
 		restClient.put(TestResultsRestUrlMap.UPDATE_TESTCASE, testCase, TestCase.class);
 		if(!status.equalsIgnoreCase(TestCase.RUNNING)){
 			test.setTestCaseId(null);
@@ -312,11 +281,6 @@ public class RemoteAPI {
 		}
 		try{
 			_logger.log(Level.FINE, "Taking screen shot...");
-			/*if(new File(test.getClientTempLocation()).mkdirs()){
-				System.out.println("Report Engine Client: Directory Created... : "+test.getClientTempLocation());
-			}else{
-				System.out.println("Report Engine Client: Directory might be available: "+test.getClientTempLocation());
-			}*/
 			String fileName = "ScreenShot_"+new SimpleDateFormat("dd_MMM_yyyy_hh_mm_ssaa").format(new Date())+".png";
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			Rectangle screenRectangle = new Rectangle(screenSize);
@@ -330,10 +294,7 @@ public class RemoteAPI {
 	        byteArrayStream.close();	        
 	        //bytes to string
 	        test.setScreenShotFileBase64String(new String(Base64.encodeBase64(imageAsRawBytes)));	
-			_logger.log(Level.FINE, "ScreenShot File name: "+fileName);
-			//ImageIO.write(image, "png", new File(test.getClientTempLocation()+fileName));			
-			_logger.log(Level.FINE, "Screen shot done!!");
-			//test.setScreenShotFileName(test.getClientTempLocation()+fileName);
+			_logger.log(Level.FINE, "ScreenShot File name: {0}, Screen shot done", fileName);
 			test.setScreenShotFileName(fileName);
 		}catch(Exception ex){
 			_logger.log(Level.WARNING, "Unable to take screen shot,", ex);
