@@ -39,7 +39,7 @@ import com.redhat.reportengine.server.restapi.testresult.TestResultsRestUrlMap;
  * Mar 16, 2012
  */
 public class RemoteAPI {
-
+	protected static Logger _logger = Logger.getLogger(RemoteAPI.class.getName());
 	ClientCommon test = new ClientCommon();
 	protected static boolean initialized = false;
 	private boolean clientConfigurationSuccess = false;
@@ -82,9 +82,9 @@ public class RemoteAPI {
 			Properties propertyFile = new Properties();
 			String primaryPropertyFile = null;
 
-			System.out.println("Report Engine Client: Properties File: System.getenv: "+System.getenv(rePropertyFile));
-			System.out.println("Report Engine Client: Properties File: System.getProperty: "+System.getProperty(rePropertyFile));
-
+			_logger.log(Level.INFO, "System.getenv: "+System.getenv(rePropertyFile));
+			_logger.log(Level.INFO, "System.getProperty: "+System.getProperty(rePropertyFile));
+			
 			if(System.getenv(rePropertyFile) != null){//get property file from system ENV variable
 				primaryPropertyFile = System.getenv(rePropertyFile).trim(); 
 			}else if(System.getProperty(rePropertyFile) != null){ //Get Property file by System Property variable
@@ -100,18 +100,18 @@ public class RemoteAPI {
 				}
 			}
 
-			System.out.println("Report Engine Client: Properties File: "+primaryPropertyFile);
+			_logger.log(Level.INFO, "Properties File: "+primaryPropertyFile);
 			if(primaryPropertyFile != null){
 				propertyFile.load(new FileReader(primaryPropertyFile));
 			}else{
 				this.setClientConfigurationSuccess(false);
-				System.out.println("Report Engine Client: Could not find report engine properties File any where, Please update property file by atleast one of the way, Disabled Report Engine logs!!");			
+				_logger.log(Level.WARNING, "Could not find report engine properties File any where, Please update property file by atleast one of the way, Disabled Report Engine logs!!");			
 			}
 
 
 			if((propertyFile.getProperty(originalFile) != null) && propertyFile.getProperty(originalFile).trim().length() > 0){
 				String newPropertyFile = propertyFile.getProperty(originalFile).trim();
-				System.out.println("Report Engine Client: Properties File(New): "+originalFile);
+				_logger.log(Level.INFO, "Properties File(New): "+originalFile);
 				propertyFile.clear();
 				propertyFile.load(new FileReader(newPropertyFile));
 			}
@@ -157,12 +157,12 @@ public class RemoteAPI {
 		if(test.isLoggerEnabled()){
 			LogHandler.setRemoteApi(this);
 			LogHandler.initLogger(); // Initialize Log watcher
-			System.out.println("Report Engine Client: Enabled Watch Logger, Logger Type: "+test.getLoggerType());
+			_logger.log(Level.INFO, "Enabled Watch Logger, Logger Type: "+test.getLoggerType());
 		}	
 		Logger.getLogger("sun.rmi").setLevel(Level.WARNING);
 		Logger.getLogger("org.apache.http").setLevel(Level.WARNING);
 		Logger.getLogger("com.sun.xml.bind").setLevel(Level.WARNING);
-		System.out.println("Report Engine Client: sun.rmi,org.apache.http,com.sun.xml.bind log level set to WARNING");
+		_logger.log(Level.INFO, "sun.rmi,org.apache.http,com.sun.xml.bind log level set to WARNING");
 	}
 
 
@@ -171,13 +171,13 @@ public class RemoteAPI {
 		if(this.isClientConfigurationSuccess()){
 			restClient.setServerUrl(test.getServerRestUrl());
 			restClient.setRootUrl(TestResultsRestUrlMap.ROOT);
-			System.out.println("Report Engine Client: Report Engine Server REST URL: "+test.getServerRestUrl());
+			_logger.log(Level.INFO, "Report Engine Server REST URL: "+test.getServerRestUrl());
 			//test.setServerObject(RemoteCall.getRemoteObject("//"+test.getServerIp()+":"+test.getServerRMIPort()+"/", ClientRMI.CLIENT_RMI_PACK));
 			//System.out.println("Report Engine Client: Server Time: "+RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_GET_SERVER_TIME));
 			this.insertTestSuite(testSuiteName, comments);
-			System.out.println("Report Engine Client: Report Engine Client Loaded successfully");
+			_logger.log(Level.INFO, "Report Engine Client Loaded successfully...");			
 		}else{
-			System.out.println("Report Engine Client: Report Engine Client Failed to Load!!");
+			_logger.log(Level.WARNING, "Report Engine Client Failed to Load..");
 		}		
 	}
 
@@ -311,7 +311,7 @@ public class RemoteAPI {
 			return;
 		}
 		try{
-			System.out.println("Report Engine Client: Taking screen shot...");
+			_logger.log(Level.FINE, "Taking screen shot...");
 			/*if(new File(test.getClientTempLocation()).mkdirs()){
 				System.out.println("Report Engine Client: Directory Created... : "+test.getClientTempLocation());
 			}else{
@@ -329,15 +329,14 @@ public class RemoteAPI {
 	        byte[] imageAsRawBytes = byteArrayStream.toByteArray();
 	        byteArrayStream.close();	        
 	        //bytes to string
-	        test.setScreenShotFileBase64String(new String(Base64.encodeBase64(imageAsRawBytes)));			
-			System.out.println("Report Engine Client: ScreenShot File name: "+fileName);
+	        test.setScreenShotFileBase64String(new String(Base64.encodeBase64(imageAsRawBytes)));	
+			_logger.log(Level.FINE, "ScreenShot File name: "+fileName);
 			//ImageIO.write(image, "png", new File(test.getClientTempLocation()+fileName));			
-			System.out.println("Report Engine Client: Screen shot done!!");
+			_logger.log(Level.FINE, "Screen shot done!!");
 			//test.setScreenShotFileName(test.getClientTempLocation()+fileName);
 			test.setScreenShotFileName(fileName);
 		}catch(Exception ex){
-			System.out.println("Report Engine Client: Unable to take screen shot,");
-			ex.printStackTrace();
+			_logger.log(Level.WARNING, "Unable to take screen shot,", ex);
 		}
 
 	}

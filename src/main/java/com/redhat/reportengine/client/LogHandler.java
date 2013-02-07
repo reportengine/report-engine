@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  * Mar 28, 2012
  */
 public class LogHandler {
-	
+	protected static Logger _logger = Logger.getLogger(LogHandler.class.getName());
 	protected static RemoteAPI remoteApi;
 	protected static boolean isLoadedHandler = false;
 	protected static JulReportEngineLogHandler reportEngineHandler = null;
@@ -41,17 +41,17 @@ public class LogHandler {
 			//Ignore
 		}
 		
-		System.out.println("Report Engine Client: Log Level: "+logger.getLevel());
+		_logger.log(Level.INFO, "Log Level: "+logger.getLevel());
 		
 		if(isLoadedHandler){
 			logger.removeHandler(reportEngineHandler);
 			reportEngineHandler = new JulReportEngineLogHandler(getRemoteApi());
 			logger.addHandler(reportEngineHandler);	
-			System.out.println("Report Engine Client: JUL Handler reloaded...");
+			_logger.log(Level.INFO, "JUL Handler reloaded...");
 		}else{
 			reportEngineHandler = new JulReportEngineLogHandler(getRemoteApi());
 			logger.addHandler(reportEngineHandler);	
-			System.out.println("Report Engine Client: JUL Handler added...");
+			_logger.log(Level.INFO, "JUL Handler added...");
 			isLoadedHandler = true;
 		}
 	}
@@ -68,7 +68,7 @@ public class LogHandler {
 		if(remoteApi.getLoggerType().equalsIgnoreCase("JUL")){
 			julLoggerSetup();
 		}else{
-			System.out.println("Report Engine Client: Un-supported Logger Type: "+remoteApi.getLoggerType());
+			_logger.log(Level.WARNING, "Un-supported Logger Type: "+remoteApi.getLoggerType());
 		}
 	}
 }

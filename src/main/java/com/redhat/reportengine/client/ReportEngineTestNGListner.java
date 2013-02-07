@@ -5,6 +5,8 @@ package com.redhat.reportengine.client;
 
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
@@ -20,14 +22,14 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
  * Mar 16, 2012
  */
 public class ReportEngineTestNGListner implements IResultListener, ISuiteListener {
+	protected static Logger _logger = Logger.getLogger(ReportEngineTestNGListner.class.getName());
 	private static RemoteAPI reportEngine = new RemoteAPI();
 
 	public ReportEngineTestNGListner(){
 		try {
 			reportEngine.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
-		} catch (Exception e) {
-			System.out.println("Report Engine Client: failed to start!!");
-			e.printStackTrace();
+		} catch (Exception ex) {
+			_logger.log(Level.SEVERE, "Failed to start!!", ex);
 		}
 	}
 	
@@ -172,7 +174,7 @@ public class ReportEngineTestNGListner implements IResultListener, ISuiteListene
 	public void onFinish(ISuite suite) {
 		if(reportEngine.isClientConfigurationSuccess()){
 			try {
-				reportEngine.updateTestSuite(TestSuite.COMPLETED, getBuildVersion());
+				reportEngine.updateTestSuite(TestSuite.COMPLETED, reportEngine.getBuildVersionReference());
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}	
@@ -193,13 +195,4 @@ public class ReportEngineTestNGListner implements IResultListener, ISuiteListene
 			}	
 		}
 	}
-
-	/**
-	 * @return the buildVersion
-	 */
-	public static String getBuildVersion() {
-		return System.getProperty(reportEngine.getBuildVersionReference());
-	}
-
-	
 }

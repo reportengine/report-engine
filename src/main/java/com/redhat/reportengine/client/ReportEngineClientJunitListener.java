@@ -1,6 +1,8 @@
 package com.redhat.reportengine.client;
 
 import java.net.InetAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -15,17 +17,17 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
  * Jan 20, 2013
  */
 public class ReportEngineClientJunitListener extends RunListener{
+	protected static Logger _logger = Logger.getLogger(ReportEngineClientJunitListener.class.getName());
 	private static RemoteAPI reportEngineClientAPI = new RemoteAPI();
-	
+
 	public ReportEngineClientJunitListener() {
 		try {
 			reportEngineClientAPI.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
-		} catch (Exception e) {
-			System.out.println("Report Engine Client: failed to start!!");
-			e.printStackTrace();
+		} catch (Exception ex) {
+			_logger.log(Level.SEVERE, "failed to start!!", ex);
 		}
 	}
-	
+
 	/**
 	 * Will be called before any tests have been run. 
 	 * */
@@ -49,7 +51,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 	public void testRunFinished(Result result) {
 		if(reportEngineClientAPI.isClientConfigurationSuccess()){
 			try {
-				reportEngineClientAPI.updateTestSuite(TestSuite.COMPLETED, getBuildVersion());
+				reportEngineClientAPI.updateTestSuite(TestSuite.COMPLETED, reportEngineClientAPI.getBuildVersionReference());
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}	
@@ -60,7 +62,6 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when an atomic test is about to be started. 
 	 * */
 	public void testStarted(Description description) {
-		System.out.println("Starting execution of test case : "+ description.getMethodName());
 		if(reportEngineClientAPI.isClientConfigurationSuccess()){
 			try {
 				reportEngineClientAPI.insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.RUNNING);
@@ -101,7 +102,6 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when a test will not be run, generally because a test method is annotated with Ignore. 
 	 * */
 	public void testIgnored(Description description) {
-		System.out.println("Execution of test case ignored : "+ description.getMethodName());
 		if(reportEngineClientAPI.isClientConfigurationSuccess()){
 			try {
 				if(reportEngineClientAPI.isLastTestStateRunning()){
@@ -114,12 +114,4 @@ public class ReportEngineClientJunitListener extends RunListener{
 			}
 		}
 	}
-	
-	/**
-	 * @return the buildVersion
-	 */
-	public static String getBuildVersion() {
-		return System.getProperty(reportEngineClientAPI.getBuildVersionReference());
-	}
-
 }
