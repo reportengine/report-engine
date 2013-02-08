@@ -33,10 +33,11 @@ import com.redhat.reportengine.server.restapi.testresult.TestResultsRestUrlMap;
  * Mar 16, 2012
  */
 public class RemoteAPI {
-	protected static Logger _logger = Logger.getLogger(RemoteAPI.class.getName());
+	protected static final Logger _logger = Logger.getLogger(RemoteAPI.class.getName());
 	ClientCommon test = new ClientCommon();
 	protected static boolean initialized = false;
-	private boolean clientConfigurationSuccess = false;
+	private static boolean clientConfigurationSuccess = false;
+	private static boolean clientLoadedSuccess = false;
 	
 	private static final String rePropertyFile 		= "REPORT_ENGINE_PROPERTY_FILE";	
 	private static final String originalFile 		= "ORIGINAL.FILE";
@@ -51,6 +52,8 @@ public class RemoteAPI {
 	private static final String serverRESTUrl 		= "REPORT.ENGINE.SERVER.REST.URL";
 	
 	private static final String testSuiteName 		= "TEST.SUITE.NAME";
+	
+	protected static final String loggersToWarn		= "sun.rmi,org.apache.http,com.sun.xml.bind,com.sun.jersey";
 	
 	private RESTClientRestEasy restClient = null;
 
@@ -143,17 +146,22 @@ public class RemoteAPI {
 			initialized = true;
 		}
 	}
+	
+	protected void setLoggers(String loggers, Level level){
+		for(String logger : loggers.split(",")){
+			Logger.getLogger(logger.trim()).setLevel(level);
+		}
+		_logger.log(Level.INFO, "["+loggersToWarn+"] loggers log level set to "+level.toString());
+	}
 
 	public void runLogHandler(){
 		if(test.isLoggerEnabled()){
 			LogHandler.setRemoteApi(this);
 			LogHandler.initLogger(); 		// Initialize Log watcher
 			_logger.log(Level.INFO, "Enabled Watch Logger, Logger Type: "+test.getLoggerType());
-		}	
-		Logger.getLogger("sun.rmi").setLevel(Level.WARNING);
-		Logger.getLogger("org.apache.http").setLevel(Level.WARNING);
-		Logger.getLogger("com.sun.xml.bind").setLevel(Level.WARNING);
-		_logger.log(Level.INFO, "sun.rmi,org.apache.http,com.sun.xml.bind log level set to WARNING");
+		}else{
+			this.setLoggers(loggersToWarn, Level.WARNING);
+		}
 	}
 
 
@@ -163,8 +171,10 @@ public class RemoteAPI {
 			restClient.setServerUrl(test.getServerRestUrl());
 			restClient.setRootUrl(TestResultsRestUrlMap.ROOT);
 			_logger.log(Level.INFO, "Report Engine Server REST URL: "+test.getServerRestUrl());
+			_logger.log(Level.INFO, "Report Engine Server Time: "+getServerTime());
 			this.insertTestSuite(testSuiteName, comments);
-			_logger.log(Level.INFO, "Report Engine Client Loaded successfully...");			
+			_logger.log(Level.INFO, "Report Engine Client Loaded successfully...");		
+			RemoteAPI.setClientLoadedSuccess(true);
 		}else{
 			_logger.log(Level.WARNING, "Report Engine Client Failed to Load..");
 		}		
@@ -310,8 +320,6 @@ public class RemoteAPI {
 		if(test.getTestCaseId() != null){
 			testLogs.setTestCaseId(test.getTestCaseId());	
 		}		
-
-		//RemoteCall.invokeRemoteMethod(test.getServerObject(), ClientRMI.METHOD_INSERT_TEST_LOGS, testLogs);
 		restClient.post(TestResultsRestUrlMap.INSERT_TESTLOG, testLogs, TestLogs.class);
 	}
 
@@ -327,13 +335,27 @@ public class RemoteAPI {
 	 * @return the clientConfigurationSuccess
 	 */
 	public boolean isClientConfigurationSuccess() {
-		return this.clientConfigurationSuccess;
+		return clientConfigurationSuccess;
 	}
 
 	/**
 	 * @param clientConfigurationSuccess the clientConfigurationSuccess to set
 	 */
 	public void setClientConfigurationSuccess(boolean clientConfigurationSuccess) {
-		this.clientConfigurationSuccess = clientConfigurationSuccess;
+		RemoteAPI.clientConfigurationSuccess = clientConfigurationSuccess;
+	}
+
+	/**
+	 * @return the clientLoadedSuccess
+	 */
+	public static boolean isClientLoadedSuccess() {
+		return clientLoadedSuccess;
+	}
+
+	/**
+	 * @param clientLoadedSuccess the clientLoadedSuccess to set
+	 */
+	public static void setClientLoadedSuccess(boolean clientLoadedSuccess) {
+		RemoteAPI.clientLoadedSuccess = clientLoadedSuccess;
 	}
 }

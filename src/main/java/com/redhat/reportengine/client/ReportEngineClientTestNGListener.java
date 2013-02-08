@@ -29,7 +29,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 		try {
 			reportEngine.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
 		} catch (Exception ex) {
-			_logger.log(Level.SEVERE, "Failed to start!!", ex);
+			_logger.log(Level.SEVERE, "Report Engine Client Failed to start!!", ex);
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onFinish(ITestContext context) {
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			
 		}
 		
@@ -58,7 +58,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	@Override
 	public void onStart(ITestContext context) {
 		// Test Group
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngine.insertTestGroup(context.getName());
 			} catch (Exception ex) {
@@ -80,7 +80,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngine.takeScreenShot();
 				reportEngine.updateTestCase(TestCase.FAILED, ClientCommon.toString(result.getThrowable()));
@@ -95,7 +95,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestSkipped(ITestResult result) {
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				if(reportEngine.isLastTestStateRunning()){
 					reportEngine.updateTestCase(TestCase.SKIPPED);
@@ -114,7 +114,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestStart(ITestResult test) {
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngine.insertTestCase(test.getName(), test.getName()+"("+getParametersString(test.getParameters())+")", TestCase.RUNNING);
 			} catch (Exception ex) {
@@ -128,7 +128,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngine.updateTestCase(TestCase.PASSED);
 			} catch (Exception ex) {
@@ -141,9 +141,13 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 * @see org.testng.internal.IConfigurationListener#onConfigurationFailure(org.testng.ITestResult)
 	 */
 	@Override
-	public void onConfigurationFailure(ITestResult arg0) {
-		if(reportEngine.isClientConfigurationSuccess()){
-			reportEngine.runLogHandler();
+	public void onConfigurationFailure(ITestResult testResult) {
+		if(RemoteAPI.isClientLoadedSuccess()){
+			if(testResult.getThrowable() == null){
+				_logger.log(Level.WARNING, "Configuration Failed!!");
+			}else{
+				_logger.log(Level.WARNING, "Configuration Failed!!", testResult.getThrowable());
+			}			
 		}	
 	}
 
@@ -151,9 +155,13 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 * @see org.testng.internal.IConfigurationListener#onConfigurationSkip(org.testng.ITestResult)
 	 */
 	@Override
-	public void onConfigurationSkip(ITestResult arg0) {
-		if(reportEngine.isClientConfigurationSuccess()){
-			reportEngine.runLogHandler();
+	public void onConfigurationSkip(ITestResult testResult) {
+		if(RemoteAPI.isClientLoadedSuccess()){
+			if(testResult.getThrowable() == null){
+				_logger.log(Level.WARNING, "Configuration Skipped!!");
+			}else{
+				_logger.log(Level.WARNING, "Configuration Skipped!!", testResult.getThrowable());
+			}
 		}		
 	}
 
@@ -161,9 +169,9 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 * @see org.testng.internal.IConfigurationListener#onConfigurationSuccess(org.testng.ITestResult)
 	 */
 	@Override
-	public void onConfigurationSuccess(ITestResult arg0) {
-		if(reportEngine.isClientConfigurationSuccess()){
-			reportEngine.runLogHandler();
+	public void onConfigurationSuccess(ITestResult testResult) {
+		if(RemoteAPI.isClientLoadedSuccess()){
+			_logger.log(Level.FINE, "Configuration loadded Successfully!!");
 		}		
 	}
 
@@ -172,7 +180,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onFinish(ISuite suite) {
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngine.updateTestSuite(TestSuite.COMPLETED, reportEngine.getBuildVersionReference());
 			} catch (Exception ex) {
@@ -186,10 +194,10 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onStart(ISuite suite) {
-		if(reportEngine.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
-				reportEngine.updateTestSuiteName(suite.getName());
-				
+				reportEngine.runLogHandler();
+				reportEngine.updateTestSuiteName(suite.getName());				
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}	

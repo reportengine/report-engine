@@ -24,7 +24,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 		try {
 			reportEngineClientAPI.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
 		} catch (Exception ex) {
-			_logger.log(Level.SEVERE, "failed to start!!", ex);
+			_logger.log(Level.SEVERE, "Report Engine Client Failed to start!!", ex);
 		}
 	}
 
@@ -32,7 +32,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 * Will be called before any tests have been run. 
 	 * */
 	public void testRunStarted(Description description){
-		if(reportEngineClientAPI.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			reportEngineClientAPI.runLogHandler();
 			try {
 				if(description.getDisplayName() != null){
@@ -49,7 +49,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when all tests have finished 
 	 * */
 	public void testRunFinished(Result result) {
-		if(reportEngineClientAPI.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngineClientAPI.updateTestSuite(TestSuite.COMPLETED, reportEngineClientAPI.getBuildVersionReference());
 			} catch (Exception ex) {
@@ -62,7 +62,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when an atomic test is about to be started. 
 	 * */
 	public void testStarted(Description description) {
-		if(reportEngineClientAPI.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngineClientAPI.insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.RUNNING);
 			} catch (Exception ex) {
@@ -75,7 +75,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when an atomic test has finished, whether the test succeeds or fails. 
 	 * */
 	public void testFinished(Description description) {
-		if(reportEngineClientAPI.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngineClientAPI.updateTestCase(TestCase.PASSED);
 			} catch (Exception ex) {
@@ -88,7 +88,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when an atomic test fails. 
 	 * */
 	public void testFailure(Failure failure) {
-		if(reportEngineClientAPI.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				reportEngineClientAPI.takeScreenShot();
 				reportEngineClientAPI.updateTestCase(TestCase.FAILED, ClientCommon.toString(failure.getException()));
@@ -102,7 +102,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when a test will not be run, generally because a test method is annotated with Ignore. 
 	 * */
 	public void testIgnored(Description description) {
-		if(reportEngineClientAPI.isClientConfigurationSuccess()){
+		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
 				if(reportEngineClientAPI.isLastTestStateRunning()){
 					reportEngineClientAPI.updateTestCase(TestCase.SKIPPED);

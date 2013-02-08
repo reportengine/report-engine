@@ -51,6 +51,7 @@ public class RESTClientRestEasy {
 		request.accept(MediaType.APPLICATION_XML);
 		ClientResponse<T> response = request.get(dataClass);
 		this.checkStatus(response.getStatus());
+		//System.out.println("ERROR: "+response.getResponseStatus());
 		return response.getEntity();
 	}
 	

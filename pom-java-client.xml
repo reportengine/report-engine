@@ -5,7 +5,7 @@
 	<groupId>com.report.engine</groupId>
 	<artifactId>report-engine-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3</version>
 	<name>Report Engine Java Client</name>
 	<url>http://maven.apache.org</url>
 

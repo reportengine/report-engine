@@ -11,49 +11,35 @@ import java.util.logging.Logger;
  * Mar 28, 2012
  */
 public class LogHandler {
-	protected static Logger _logger = Logger.getLogger(LogHandler.class.getName());
+	
 	protected static RemoteAPI remoteApi;
 	protected static boolean isLoadedHandler = false;
 	protected static JulReportEngineLogHandler reportEngineHandler = null;
+	private static final Logger _logger = Logger.getLogger(LogHandler.class.getName());
 	
 	public static void julLoggerSetup() {
 		// Create Logger
 		Logger logger = Logger.getLogger("");
 		//Logger logger = LogManager.getLogManager().getLogger("");
 		
-		if(remoteApi.getLogLevel().equalsIgnoreCase("ALL")){
-			logger.setLevel(Level.ALL);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("FINEST")){
-			logger.setLevel(Level.FINEST);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("FINER")){
-			logger.setLevel(Level.FINER);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("FINE")){
-			logger.setLevel(Level.FINE);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("INFO")){
-			logger.setLevel(Level.INFO);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("WARNING")){
-			logger.setLevel(Level.WARNING);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("SEVERE")){
-			logger.setLevel(Level.SEVERE);
-		}else if(remoteApi.getLogLevel().equalsIgnoreCase("CONFIG")){
-			logger.setLevel(Level.CONFIG);
-		}else{
-			//Ignore
+		if(!remoteApi.getLogLevel().equalsIgnoreCase("DEFAULT")){
+			logger.setLevel(Level.parse(remoteApi.getLogLevel()));
 		}
-		
-		_logger.log(Level.INFO, "Log Level: "+logger.getLevel());
 		
 		if(isLoadedHandler){
 			logger.removeHandler(reportEngineHandler);
-			reportEngineHandler = new JulReportEngineLogHandler(getRemoteApi());
+			//reportEngineHandler = new JulReportEngineLogHandler(getRemoteApi());
 			logger.addHandler(reportEngineHandler);	
-			_logger.log(Level.INFO, "JUL Handler reloaded...");
+			remoteApi.setLoggers(RemoteAPI.loggersToWarn, Level.WARNING);
+			_logger.log(Level.INFO, "Report Engine Client: JUL Handler reloaded...");
 		}else{
 			reportEngineHandler = new JulReportEngineLogHandler(getRemoteApi());
-			logger.addHandler(reportEngineHandler);	
-			_logger.log(Level.INFO, "JUL Handler added...");
+			logger.addHandler(reportEngineHandler);
+			remoteApi.setLoggers(RemoteAPI.loggersToWarn, Level.WARNING);
+			_logger.log(Level.INFO, "Report Engine Client: JUL Handler added...");
 			isLoadedHandler = true;
 		}
+		_logger.log(Level.INFO, "Report Engine Client: Log Level: "+logger.getLevel());
 	}
 
 	public static RemoteAPI getRemoteApi() {
@@ -68,7 +54,7 @@ public class LogHandler {
 		if(remoteApi.getLoggerType().equalsIgnoreCase("JUL")){
 			julLoggerSetup();
 		}else{
-			_logger.log(Level.WARNING, "Un-supported Logger Type: "+remoteApi.getLoggerType());
+			_logger.log(Level.WARNING, "Report Engine Client: Un-supported Logger Type: "+remoteApi.getLoggerType());
 		}
 	}
 }
