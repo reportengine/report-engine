@@ -182,7 +182,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	public void onFinish(ISuite suite) {
 		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
-				reportEngine.updateTestSuite(TestSuite.COMPLETED, reportEngine.getBuildVersionReference());
+				reportEngine.updateTestSuite(TestSuite.COMPLETED, System.getProperty(reportEngine.getBuildVersionReference()));
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}	
