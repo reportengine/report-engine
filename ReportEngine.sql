@@ -327,7 +327,7 @@ CREATE VIEW viewgetjobschedulerall AS SELECT js.id, js.job_enabled, js.system_jo
 -----------------------------------------------------------------
 -- View - Get Test Details
 -----------------------------------------------------------------
-CREATE VIEW re_view_gettestcasedetailreport AS SELECT id, test_suite_id, test_group_id, test_name, test_arguments, test_result, local_start_time, local_end_time, test_gui_files, COALESCE(((EXTRACT(EPOCH FROM local_end_time)*1000) - EXTRACT(EPOCH FROM local_start_time)*1000),0) as test_duration from re_test_case
+CREATE VIEW re_view_gettestcasedetailreport AS SELECT id, test_suite_id, test_group_id, test_name, test_arguments, test_result, local_start_time, local_end_time, test_gui_files, COALESCE(((EXTRACT(EPOCH FROM local_end_time)*1000) - EXTRACT(EPOCH FROM local_start_time)*1000),0) as test_duration from re_test_case;
 
 
 ----------------------------------------------------------
@@ -372,4 +372,196 @@ CREATE INDEX re_index_test_logs_test_case_id ON re_test_logs (test_case_id);
 CREATE INDEX re_index_file_storage_test_case_id ON re_file_storage (test_case_id);
 
 
+
+--------------------------------------------------
+-- Sequence for LDAP Details
+--------------------------------------------------
+CREATE SEQUENCE re_auth_ldap_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+
+--------------------------------------------------
+-- This table is used to store LDAP Details.
+--------------------------------------------------
+CREATE TABLE re_auth_ldap
+(
+  id integer NOT NULL default nextval('re_auth_ldap_id_seq'),
+  enabled boolean default true,
+  name character varying(100) NOT NULL,
+  url character varying(1000) NOT NULL,
+  basedn character varying(1000) NOT NULL,
+  unique(id),
+  unique(name),
+  unique(url)
+);
+
+  
+--------------------------------------------------
+-- Sequence for Users
+--------------------------------------------------
+CREATE SEQUENCE re_auth_user_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+--------------------------------------------------
+-- This table is used to store User Details.
+--------------------------------------------------
+CREATE TABLE re_auth_user
+(
+  id integer NOT NULL default nextval('re_auth_user_id_seq'),
+  enabled boolean default true,
+  internal boolean default true,
+  ldap_id integer NULL,
+  user_name character varying(100) NOT NULL,
+  first_name character varying(100) NOT NULL,
+  last_name character varying(100) NULL,
+  email character varying(100) NOT NULL,
+  creation_time timestamp NOT NULL,
+  last_edit_time timestamp NULL,
+  unique(id),
+  unique(user_name),
+  unique(email),
+  FOREIGN KEY (ldap_id) REFERENCES re_auth_ldap(id) ON DELETE CASCADE
+);
+
+
+--------------------------------------------------
+-- This table is used to store User Details.
+--------------------------------------------------
+CREATE TABLE re_auth_user_password
+(
+  userid integer NOT NULL,
+  password character varying(500) NOT NULL,
+  password_salt character varying(500) NOT NULL,
+  unique(userid),
+  FOREIGN KEY (userid) REFERENCES re_auth_user(id) ON DELETE CASCADE
+);
+
+
+--------------------------------------------------
+-- Sequence for Forget Password
+--------------------------------------------------
+CREATE SEQUENCE re_auth_user_forget_password_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+  ------------------------------------------------------
+-- This table is used to store Forget Password details.
+--------------------------------------------------------
+CREATE TABLE re_auth_user_forget_password
+(
+  id integer NOT NULL default nextval('re_auth_user_forget_password_id_seq'),
+  userid integer NOT NULL,
+  reference character varying(1500) NOT NULL,
+  creation_time timestamp NOT NULL default statement_timestamp(),
+  unique(userid),
+  unique(reference),
+  FOREIGN KEY (userid) REFERENCES re_auth_user(id) ON DELETE CASCADE
+);
+
+-----------------------------------------------------------------
+-- View - Get Test Details
+-----------------------------------------------------------------
+CREATE VIEW re_view_getuserlist AS SELECT * FROM re_auth_user AS au LEFT OUTER JOIN re_auth_user_password AS ap ON au.id=ap.userid;
+
+
+--------------------------------------------------
+-- Sequence for Roles
+--------------------------------------------------
+CREATE SEQUENCE re_auth_role_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+--------------------------------------------------
+-- This table is used to store Roles Names.
+--------------------------------------------------
+CREATE TABLE re_auth_role
+(
+  id integer NOT NULL default nextval('re_auth_role_id_seq'),
+  name character varying(500) NOT NULL,
+  description character varying(5000) NULL,
+  unique(id),
+  unique(name)
+);
+
+--------------------------------------------------
+-- Sequence for Auth Permissions
+--------------------------------------------------
+CREATE SEQUENCE re_auth_permission_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+--------------------------------------------------
+-- This table is used to store Auth Permissions.
+--------------------------------------------------
+CREATE TABLE re_auth_permission
+(
+  id integer NOT NULL default nextval('re_auth_permission_id_seq'),
+  system_level boolean default false,
+  name character varying(500) NOT NULL,
+  description character varying(5000) NULL,
+  unique(id),
+  unique(name)
+);
+
+--------------------------------------------------
+-- Insert Permissions default data
+--------------------------------------------------
+INSERT INTO re_auth_permission (system_level, name, description) values (true, 'Manage Security', 'Manage Users Enable/Disable, Add new permissions, etc.,');
+INSERT INTO re_auth_permission (system_level, name, description) values (true, 'Manage Settings', 'System Level Settings');
+INSERT INTO re_auth_permission (system_level, name, description) values (true, 'Manage Backup', 'System Backup');
+INSERT INTO re_auth_permission (system_level, name, description) values (true, 'Manage Restore', 'System Restore');
+INSERT INTO re_auth_permission (system_level, name, description) values (true, 'Manage Purge', 'System Purge');
+INSERT INTO re_auth_permission (system_level, name, description) values (true, 'Manage Configuration', 'System Level Configurations');
+INSERT INTO re_auth_permission (system_level, name, description) values (true, 'Manage Resources', 'Users Resource');
+
+--------------------------------------------------
+-- Insert Roles default data
+--------------------------------------------------
+INSERT INTO re_auth_role (name, description) values ('Super Admin', 'Super Admin has all access');
+
+--------------------------------------------------
+-- This table is used to store Roles Details.
+--------------------------------------------------
+CREATE TABLE re_auth_role_permission_map
+(
+  roleid integer NOT NULL,
+  permissionid integer NOT NULL,
+  unique(roleid, permissionid),
+  FOREIGN KEY (roleid) REFERENCES re_auth_role(id) ON DELETE CASCADE,
+  FOREIGN KEY (permissionid) REFERENCES re_auth_permission(id) ON DELETE CASCADE
+);
+
+--------------------------------------------------
+-- Insert Role-Permissions default map data
+--------------------------------------------------
+INSERT INTO re_auth_role_permission_map (roleid, permissionid) SELECT role.id, permission.id FROM re_auth_role role, re_auth_permission permission WHERE role.name='Super Admin' AND permission.system_level=true;
+
+--------------------------------------------------
+-- This table is used to store Users-Roles Map.
+--------------------------------------------------
+CREATE TABLE re_auth_user_role_map
+(
+  userid integer NOT NULL,
+  roleid integer NOT NULL,
+  unique(userid, roleid),
+  FOREIGN KEY (userid) REFERENCES re_auth_user(id) ON DELETE CASCADE,
+  FOREIGN KEY (roleid) REFERENCES re_auth_role(id) ON DELETE CASCADE
+);
 

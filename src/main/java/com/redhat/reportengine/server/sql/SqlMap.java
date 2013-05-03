@@ -27,10 +27,10 @@ public class SqlMap {
 	}
 	private static final void initSqlMap() {
 		try {
-			String resource = "com/redhat/reportengine/ibatis/conf/SqlMapConfig.xml";
+			String resource = "SqlMapConfig.xml";
 			Reader reader = Resources.getResourceAsReader (resource);
-		
-			sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+			
+			sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader, System.getProperties());
 			_logger.info("SQL Client loaded successfully!");
 			
 		}catch (Exception ex) {

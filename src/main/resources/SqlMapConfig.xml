@@ -9,26 +9,21 @@
 
 	<!-- <properties resource="conf/SqlMapConfig.properties" /> -->
 	
-	
   <!-- Configure a built-in transaction manager.  If you're using an 
        app server, you probably want to use its transaction manager 
        and a managed datasource -->
   <transactionManager type="JDBC" commitRequired="false">
     <dataSource type="SIMPLE">
-      <property name="JDBC.Driver" value="org.postgresql.Driver"/>
-      <property name="JDBC.ConnectionURL" value="jdbc:postgresql://mercury.lab.eng.pnq.redhat.com:5432/reportengine"/>
-      <property name="JDBC.Username" value="reportadmin"/>
-      <property name="JDBC.Password" value="reportadmin"/>
+      <property name="JDBC.Driver" value="${JDBC.Driver}"/>
+      <property name="JDBC.ConnectionURL" value="${JDBC.ConnectionURL}"/>
+      <property name="JDBC.Username" value="${JDBC.Username}"/>
+      <property name="JDBC.Password" value="${JDBC.Password}"/>
     </dataSource>
   </transactionManager>
 
   <!-- List the SQL Map XML files. They can be loaded from the 
        classpath, as they are here (com.domain.data...) -->
 
-	 <sqlMap resource="com/redhat/reportengine/ibatis/conf/ReportEngine.xml"/>
-  <!-- List more here...
-  <sqlMap resource="com/mydomain/data/Order.xml"/>
-  <sqlMap resource="com/mydomain/data/Documents.xml"/>
-  -->
+	 <sqlMap resource="ReportEngine.xml"/>
 
 </sqlMapConfig>

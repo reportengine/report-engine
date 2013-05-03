@@ -6,7 +6,6 @@ package com.redhat.reportengine.server.dbmap;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

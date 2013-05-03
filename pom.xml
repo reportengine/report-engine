@@ -5,7 +5,7 @@
 	<groupId>com.report.engine</groupId>
 	<artifactId>report-engine-server</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Report Engine WebApp</name>
 	<url>http://maven.apache.org</url>
 
@@ -149,6 +149,11 @@
 			<version>2.3.5.Final</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
 
 	</dependencies>
 

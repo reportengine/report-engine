@@ -777,4 +777,311 @@ DELETE FROM re_settings WHERE key='$key$'
 
 <!-- Report Engine Settings - END -->
 
+<!-- Users - START -->
+<parameterMap id="AuthUserParameterMap" class="com.redhat.reportengine.server.dbmap.AuthUser">
+<parameter property="enabled"/>
+<parameter property="internal"/>
+<parameter property="ldapId"/>
+<parameter property="userName"/>
+<parameter property="firstName"/>
+<parameter property="lastName"/>
+<parameter property="email"/>
+<parameter property="creationTime"/>
+<parameter property="lastEditTime"/>
+</parameterMap>
+
+<parameterMap id="AuthUserPasswordParameterMap" class="com.redhat.reportengine.server.dbmap.AuthUser">
+<parameter property="password"/>
+<parameter property="passwordSalt"/>
+<parameter property="userid"/>
+</parameterMap>
+
+<resultMap id="AuthUserResultMap" class="com.redhat.reportengine.server.dbmap.AuthUser">
+<result property="id" column="id"/>
+<result property="enabled" column="enabled"/>
+<result property="internal" column="internal"/>
+<result property="userName" column="user_name"/>
+<result property="firstName" column="first_name"/>
+<result property="lastName" column="last_name"/>
+<result property="email" column="email"/>
+<result property="creationTime" column="creation_time"/>
+<result property="lastEditTime" column="last_edit_time"/>
+<result property="userid" column="userid"/>
+<result property="password" column="password"/>
+<result property="passwordSalt" column="password_salt"/>
+</resultMap>
+
+<insert id="insertAuthUser" parameterMap="AuthUserParameterMap">
+INSERT INTO re_auth_user (enabled, internal, ldap_id, user_name, first_name, last_name, email, creation_time, last_edit_time) values (?,?,?,?,?,?,?,?,?)
+</insert>
+
+<update id="updateAuthUser" parameterClass="com.redhat.reportengine.server.dbmap.AuthUser">
+UPDATE re_auth_user SET enabled=$enabled$, ldap_id=$ldapId$, user_name='$userName$', first_name='$firstName$', last_name='$lastName$', email='$email$', last_edit_time='$lastEditTime$' WHERE id=$id$ 
+</update>
+
+<insert id="insertAuthUserPassword" parameterMap="AuthUserPasswordParameterMap">
+INSERT INTO re_auth_user_password (password, password_salt, userid) values (?,?,?);
+</insert>
+
+<update id="updateAuthUserPassword" parameterMap="AuthUserPasswordParameterMap">
+UPDATE re_auth_user_password SET password=?, password_salt=? WHERE userid=? 
+</update>
+
+<select id="getAuthUserAll" resultMap="AuthUserResultMap">
+SELECT * FROM re_view_getuserlist
+</select>
+
+<select id="getAuthUserAllEnabled" resultMap="AuthUserResultMap">
+SELECT * FROM re_view_getuserlist WHERE enabled=true
+</select>
+
+<select id="getAuthUserByName" parameterClass="com.redhat.reportengine.server.dbmap.AuthUser" resultMap="AuthUserResultMap">
+SELECT * FROM re_view_getuserlist WHERE user_name='$userName$'
+</select>
+
+<select id="getAuthUserById" parameterClass="com.redhat.reportengine.server.dbmap.AuthUser" resultMap="AuthUserResultMap">
+SELECT * FROM re_view_getuserlist WHERE id=$id$
+</select>
+
+<select id="getAuthUserByEmail" parameterClass="com.redhat.reportengine.server.dbmap.AuthUser" resultMap="AuthUserResultMap">
+SELECT * FROM re_view_getuserlist WHERE email='$email$'
+</select>
+
+<!-- Users - END -->
+
+<!-- LDAP - START -->
+<parameterMap id="LdapParameterMap" class="com.redhat.reportengine.server.dbmap.LDAPDetails">
+<parameter property="enabled"/>
+<parameter property="name"/>
+<parameter property="url"/>
+<parameter property="baseDn"/>
+</parameterMap>
+
+<resultMap id="LdapResultMap" class="com.redhat.reportengine.server.dbmap.LDAPDetails">
+<result property="id" column="id"/>
+<result property="enabled" column="enabled"/>
+<result property="name" column="name"/>
+<result property="url" column="url"/>
+<result property="baseDn" column="basedn"/>
+</resultMap>
+
+<insert id="insertLdap" parameterMap="LdapParameterMap">
+INSERT INTO re_auth_ldap (enabled, name, url, basedn) values (?,?,?,?)
+</insert>
+
+<update id="updateLdap" parameterClass="com.redhat.reportengine.server.dbmap.LDAPDetails">
+UPDATE re_auth_ldap SET enabled=$enabled$, name='$name$', url='$url$', basedn='$baseDn$' WHERE id=$id$ 
+</update>
+
+<select id="getLdapAll" resultMap="LdapResultMap">
+SELECT * FROM re_auth_ldap
+</select>
+
+<select id="getLdapEnabled" resultMap="LdapResultMap">
+SELECT * FROM re_auth_ldap WHERE enabled=true
+</select>
+
+<select id="getLdapByName" parameterClass="java.lang.String" resultMap="LdapResultMap">
+SELECT * FROM re_auth_ldap WHERE name='$ldapName$'
+</select>
+
+<select id="getLdapById" parameterClass="java.lang.Integer" resultMap="LdapResultMap">
+SELECT * FROM re_auth_ldap WHERE id=$id$
+</select>
+
+<!-- LDAP - END -->
+
+
+<!-- Auth Role - START -->
+<parameterMap id="AuthRoleParameterMap" class="com.redhat.reportengine.server.dbmap.AuthRole">
+<parameter property="name"/>
+<parameter property="description"/>
+</parameterMap>
+
+<resultMap id="AuthRoleResultMap" class="com.redhat.reportengine.server.dbmap.AuthRole">
+<result property="id" column="id"/>
+<result property="name" column="name"/>
+<result property="description" column="description"/>
+</resultMap>
+
+<insert id="insertAuthRole" parameterMap="AuthRoleParameterMap">
+INSERT INTO re_auth_role (name, description) values (?,?)
+</insert>
+
+<update id="updateAuthRole" parameterClass="com.redhat.reportengine.server.dbmap.AuthRole">
+UPDATE re_auth_role SET name='$name$', description='$description$' WHERE id=$id$ 
+</update>
+
+<select id="getAuthRoleAll" resultMap="AuthRoleResultMap">
+SELECT * FROM re_auth_role
+</select>
+
+<select id="getAuthRoleByName" parameterClass="com.redhat.reportengine.server.dbmap.AuthRole" resultMap="AuthRoleResultMap">
+SELECT * FROM re_auth_role WHERE name='$name$'
+</select>
+
+<select id="getAuthRoleById" parameterClass="com.redhat.reportengine.server.dbmap.AuthRole" resultMap="AuthRoleResultMap">
+SELECT * FROM re_auth_role WHERE id=$id$
+</select>
+
+<delete id="deleteAuthRoleById" parameterClass="com.redhat.reportengine.server.dbmap.AuthRole">
+DELETE FROM re_auth_role WHERE id=$id$
+</delete>
+
+<!-- Auth Role - END -->
+
+
+<!-- Auth Permission - START -->
+<parameterMap id="AuthPermissionParameterMap" class="com.redhat.reportengine.server.dbmap.AuthPermission">
+<parameter property="systemLevel"/>
+<parameter property="name"/>
+<parameter property="description"/>
+</parameterMap>
+
+<resultMap id="AuthPermissionResultMap" class="com.redhat.reportengine.server.dbmap.AuthPermission">
+<result property="id" column="id"/>
+<result property="name" column="name"/>
+<result property="description" column="description"/>
+</resultMap>
+
+<insert id="insertAuthPermission" parameterMap="AuthPermissionParameterMap">
+INSERT INTO re_auth_permission (name, description) values (?,?)
+</insert>
+
+<update id="updateAuthPermission" parameterClass="com.redhat.reportengine.server.dbmap.AuthPermission">
+UPDATE re_auth_permission SET name='$name$', description='$description$' WHERE id=$id$ 
+</update>
+
+<select id="getAuthPermissionAll" resultMap="AuthPermissionResultMap">
+SELECT * FROM re_auth_permission
+</select>
+
+<select id="getAuthPermissionByName" parameterClass="com.redhat.reportengine.server.dbmap.AuthPermission" resultMap="AuthPermissionResultMap">
+SELECT * FROM re_auth_permission WHERE name='$name$'
+</select>
+
+<select id="getAuthPermissionById" parameterClass="com.redhat.reportengine.server.dbmap.AuthPermission" resultMap="AuthPermissionResultMap">
+SELECT * FROM re_auth_role WHERE id=$id$
+</select>
+
+<delete id="deleteAuthPermissionById" parameterClass="com.redhat.reportengine.server.dbmap.AuthPermission">
+DELETE FROM re_auth_permission WHERE id=$id$
+</delete>
+
+<!-- Auth Permission - END -->
+
+
+<!-- Auth User Role Map - START -->
+
+<parameterMap id="AuthUserRoleMapParameterMap" class="com.redhat.reportengine.server.dbmap.AuthUserRoleMap">
+<parameter property="userId"/>
+<parameter property="roleId"/>
+</parameterMap>
+
+<resultMap id="AuthUserRoleMapResultMap" class="com.redhat.reportengine.server.dbmap.AuthUserRoleMap">
+<result property="userId" column="userid"/>
+<result property="roleId" column="roleid"/>
+</resultMap>
+
+<insert id="insertAuthUserRoleMap" parameterMap="AuthUserRoleMapParameterMap">
+INSERT INTO re_auth_user_role_map (userid, roleid) values (?,?)
+</insert>
+
+<select id="getAuthUserRoleMapAll" resultMap="AuthUserRoleMapResultMap">
+SELECT * FROM re_auth_user_role_map
+</select>
+
+<select id="getAuthUserRoleMapByUserId" parameterClass="com.redhat.reportengine.server.dbmap.AuthUserRoleMap" resultMap="AuthUserRoleMapResultMap">
+SELECT * FROM re_auth_user_role_map WHERE userid=$userId$
+</select>
+
+<select id="getAuthUserRoleMapByRoleId" parameterClass="com.redhat.reportengine.server.dbmap.AuthUserRoleMap" resultMap="AuthUserRoleMapResultMap">
+SELECT * FROM re_auth_user_role_map WHERE roleid=$roleId$
+</select>
+
+<delete id="deleteAuthUserRoleMapByUserId" parameterClass="com.redhat.reportengine.server.dbmap.AuthUserRoleMap">
+DELETE FROM re_auth_user_role_map WHERE userid=$userId$
+</delete>
+
+<!-- Auth User Role Map - END -->
+
+<!-- Auth Role Permission Map - START -->
+
+<parameterMap id="AuthRolePermissionMapParameterMap" class="com.redhat.reportengine.server.dbmap.AuthRolePermissionMap">
+<parameter property="roleId"/>
+<parameter property="permissionId"/>
+</parameterMap>
+
+<resultMap id="AuthRolePermissionMapResultMap" class="com.redhat.reportengine.server.dbmap.AuthRolePermissionMap">
+<result property="roleId" column="roleid"/>
+<result property="permissionId" column="permissionid"/>
+</resultMap>
+
+<insert id="insertAuthRolePermissionMap" parameterMap="AuthRolePermissionMapParameterMap">
+INSERT INTO re_auth_role_permission_map (userid, roleid) values (?,?)
+</insert>
+
+<select id="getAuthRolePermissionMapAll" resultMap="AuthRolePermissionMapResultMap">
+SELECT * FROM re_auth_role_permission_map
+</select>
+
+<select id="getAuthRolePermissionMapByRoleId" parameterClass="com.redhat.reportengine.server.dbmap.AuthRolePermissionMap" resultMap="AuthRolePermissionMapResultMap">
+SELECT * FROM re_auth_role_permission_map WHERE roleid=$roleId$
+</select>
+
+<select id="getAuthRolePermissionMapByPermissionId" parameterClass="com.redhat.reportengine.server.dbmap.AuthRolePermissionMap" resultMap="AuthRolePermissionMapResultMap">
+SELECT * FROM re_auth_role_permission_map WHERE permissionid=$permissionId$
+</select>
+
+<delete id="deleteAuthRolePermissionMapByRoleId" parameterClass="com.redhat.reportengine.server.dbmap.AuthRolePermissionMap">
+DELETE FROM re_auth_role_permission_map WHERE roleid=$roleId$
+</delete>
+
+<!-- Auth Role Permission Map - END -->
+
+
+<!-- Forget Password - START -->
+
+<parameterMap id="ForgetPasswordParameterMap" class="com.redhat.reportengine.server.dbmap.ForgetPassword">
+<parameter property="userId"/>
+<parameter property="reference"/>
+</parameterMap>
+
+<resultMap id="ForgetPasswordResultMap" class="com.redhat.reportengine.server.dbmap.ForgetPassword">
+<result property="id" column="id"/>
+<result property="userId" column="userid"/>
+<result property="reference" column="reference"/>
+<result property="creationTime" column="creation_time"/>
+</resultMap>
+
+<insert id="insertForgetPassword" parameterMap="ForgetPasswordParameterMap">
+INSERT INTO re_auth_user_forget_password (userid, reference) values (?,?)
+</insert>
+
+<select id="getForgetPasswordAll" resultMap="ForgetPasswordResultMap">
+SELECT * FROM re_auth_user_forget_password
+</select>
+
+<select id="getForgetPasswordById" parameterClass="com.redhat.reportengine.server.dbmap.ForgetPassword" resultMap="ForgetPasswordResultMap">
+SELECT * FROM re_auth_user_forget_password WHERE id=$id$
+</select>
+
+<select id="getForgetPasswordByUserId" parameterClass="com.redhat.reportengine.server.dbmap.ForgetPassword" resultMap="ForgetPasswordResultMap">
+SELECT * FROM re_auth_user_forget_password WHERE userid=$userId$
+</select>
+
+<delete id="deleteForgetPasswordByUserId" parameterClass="com.redhat.reportengine.server.dbmap.ForgetPassword">
+DELETE FROM re_auth_user_forget_password WHERE userid=$userId$
+</delete>
+
+<delete id="deleteForgetPasswordById" parameterClass="com.redhat.reportengine.server.dbmap.ForgetPassword">
+DELETE FROM re_auth_user_forget_password WHERE id=$id$
+</delete>
+
+<delete id="deleteForgetPasswordByCreationTime" parameterClass="com.redhat.reportengine.server.dbmap.ForgetPassword">
+DELETE FROM re_auth_user_forget_password WHERE creation_time &lt;= '$creationTime$'
+</delete>
+
+<!-- Auth Role Permission Map - END -->
+
 </sqlMap>

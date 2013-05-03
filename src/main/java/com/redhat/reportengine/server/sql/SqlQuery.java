@@ -129,6 +129,11 @@ public class SqlQuery {
 	public static String INSERT_ENGINE_SETTINGS				= "insertEngineSettings";
 	public static String UPDATE_ENGINE_SETTINGS				= "updateEngineSettings";
 	public static String DELETE_ENGINE_SETTINGS				= "deleteEngineSettings";
+	
+	//User 
+	
+	public static String GET_USER_DETAILS_BY_USER_NAME		= "getUserByUserName";
+	
 
 	
 	}

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 public class SendEmail {
 	private static Logger _logger = Logger.getLogger(SendEmail.class);
 
-	public static void sendEmail(String emailTo, String emailCc, String emailFrom, String mailSub, String bodyMsg, String serverName, String port)throws Exception {
+	public void sendEmail(String emailTo, String emailCc, String emailFrom, String mailSub, String bodyMsg, String serverName, String port)throws Exception {
 		InternetAddress[] emailToAdd = null; 
 		InternetAddress[] emailCcAdd = null; 
 

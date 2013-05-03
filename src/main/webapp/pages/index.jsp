@@ -9,4 +9,3 @@ Hi, <%=session.getAttribute(Keys.SESSION_USER_ID)%> Welcome to Report Engine!
 </div>
 
 <%@ include file="index-part3.jsp"%>
-

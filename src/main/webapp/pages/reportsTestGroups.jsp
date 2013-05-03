@@ -33,7 +33,6 @@ int id = Integer.valueOf(request.getParameter("id"));
 TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(id);
 %>
 
- 
 <div id="dt_page">
 <div id="container">
 

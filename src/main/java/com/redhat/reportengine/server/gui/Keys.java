@@ -9,12 +9,17 @@ package com.redhat.reportengine.server.gui;
  */
 public class Keys {	
 	public static String USER_ID 			= "userId";
+	public static String TMP_USER_ID		= "tmpUserId";
 	public static String USER_PASSWORD 		= "userPassword";
+	public static String USER_PASSWORD_CONF	= "userPasswordConf";
 	public static String SESSION_USER_ID 	= "sessionUserId";
 	public static String SESSION_STATUS    	= "sessionStatus";
 	public static String USER_FIRST_NAME	= "userFirstName";
 	public static String USER_LAST_NAME		= "userLastName";
 	public static String USER_EMAIL			= "userEmail";
+	public static String USER_FORGET_PASSWORD_REFERENCE		= "userForgetPasswordReference";
+	public static String SESSION_PASSWORD_RESET 	= "sessionPasswordReset";
+
 	
 	public static String TEST_LOG_AJAX_REF    	= "TestLogAjaxRef";
 	
@@ -102,6 +107,9 @@ public class Keys {
 	public static final String REPORT_EMAIL_GROUP_EMAIL_TO		= "emailTo";
 	public static final String REPORT_EMAIL_GROUP_EMAIL_CC		= "emailCc";
 	
+	//Login Page
+	public static final String LOGIN_DB							= "loginDatabase";
+	public static final String TMP_LOGIN_DB						= "tmpLoginDatabase";
 	
 	
 	
