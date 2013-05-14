@@ -106,6 +106,7 @@ public class Keys {
 	public static final String REPORT_EMAIL_GROUP_REFERENCE		= "groupReference";
 	public static final String REPORT_EMAIL_GROUP_EMAIL_TO		= "emailTo";
 	public static final String REPORT_EMAIL_GROUP_EMAIL_CC		= "emailCc";
+	public static final String REPORT_EMAIL_GROUP_GROUP_ENABLED = "isGroupEnabled";
 	
 	//Login Page
 	public static final String LOGIN_DB							= "loginDatabase";

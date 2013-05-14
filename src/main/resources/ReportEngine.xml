@@ -589,6 +589,7 @@ select id, test_gui_files from re_test_case where test_gui_files is not null ord
 <parameter property="emailTo"/>
 <parameter property="emailCc"/>
 <parameter property="creationTime"/>
+<parameter property="testSuiteGroupEnabled"/>
 <parameter property="id"/>
 </parameterMap>
 
@@ -598,6 +599,7 @@ select id, test_gui_files from re_test_case where test_gui_files is not null ord
 <result property="emailTo" column="email_to"/>
 <result property="emailCc" column="email_cc"/>
 <result property="creationTime" column="creation_time"/>
+<result property="testSuiteGroupEnabled" column="test_suite_group_enabled"/>
 </resultMap>
 
 <select id="getReportGroupNextId" resultClass="java.lang.Integer">
@@ -605,11 +607,11 @@ select * from nextval('re_report_group_id_seq') as id
 </select>
 
 <insert id="insertReportGroup" parameterMap="ReportGroupParameterMap">
-INSERT INTO re_report_group (group_name, email_to, email_cc, creation_time, id) values (?,?,?,?,?)
+INSERT INTO re_report_group (group_name, email_to, email_cc, creation_time, test_suite_group_enabled, id) values (?,?,?,?,?,?)
 </insert>
 
 <update id="updateReportGroup" parameterMap="ReportGroupParameterMap">
-UPDATE re_report_group SET group_name=?, email_to=?, email_cc=?, creation_time=? WHERE id=? 
+UPDATE re_report_group SET group_name=?, email_to=?, email_cc=?, creation_time=?, test_suite_group_enabled=? WHERE id=? 
 </update>
 
 <delete id="deleteReportGroup" parameterClass="java.lang.Integer">

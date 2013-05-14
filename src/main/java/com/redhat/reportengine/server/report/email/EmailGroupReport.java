@@ -6,8 +6,10 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 
 import com.redhat.reportengine.server.ServerSettings;
+import com.redhat.reportengine.server.dbmap.TestGroup;
 import com.redhat.reportengine.server.dbmap.TestSuite;
 import com.redhat.reportengine.server.gui.General;
+import com.redhat.reportengine.server.gui.TestGroupReport;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -57,6 +59,10 @@ public class EmailGroupReport {
 			"border-bottom: 2px solid #6678b1;" +
 			"border-top: 2px solid #6678b1;" +
 			"}" +
+			"#email-table-style-a tline" +
+			"{" +
+			"border-top: 2px solid #6678b1;" +
+			"}" +
 			"#email-table-style-a td" +
 			"{" +
 			"border-bottom: 1px solid #ccc;" +
@@ -83,8 +89,20 @@ public class EmailGroupReport {
 			"</thead>" +
 			"    <tbody>";
 	
+	static String table_header_group_details = "<table id=\"email-table-style-a\" summary=\"Test Suite Group Details\">" +
+			"<thead>" +
+			" 	<tr>" +
+			"      	<th scope=\"col\">Group Name</th>" +
+			"      	<th scope=\"col\">Total</th>" +
+			"      	<th scope=\"col\">Passed</th>" +
+			"      	<th scope=\"col\">Failed</th>" +
+			"      	<th scope=\"col\">Skipped</th>" +
+			"  </tr>" +
+			"</thead>" +
+			"    <tbody>";
 	
-	public String getGroupReport(ArrayList<TestSuite> testSuites, String reportName) throws Exception{
+	
+	public String getReport(ArrayList<TestSuite> testSuites, String reportName, boolean isTestSuiteGroupEnabled) throws Exception{
 		StringBuffer finalReport = new StringBuffer();
 		finalReport.append(html_header);
 		finalReport.append("Hello, This is auto generated email from Report Engine. It's based on <b>").append(reportName).append("</b>");
@@ -121,6 +139,32 @@ public class EmailGroupReport {
 		finalReport.append("<td>").append("<b>").append(General.getGuiDuration(tmpTestSuite.getTestDuration())).append("</b>").append("</td>");
 		finalReport.append(" </tr></tfoot></tbody></table>");
 		finalReport.append("</BR>");
+		
+		if(isTestSuiteGroupEnabled){
+			finalReport.append("<b><u>Test Suite Detaild View:</u></b><BR><BR>");
+			for(TestSuite testSuite : testSuites){
+				ArrayList<TestGroup> testGroups = new TestGroupReport().getGroups(testSuite.getId());
+				finalReport.append("Test Suite: <b>").append(testSuite.getTestSuiteName()).append("</b>");
+				finalReport.append(table_header_group_details);
+				for(TestGroup testGroup : testGroups){
+					finalReport.append("<tr>");
+					finalReport.append("<td>").append(testGroup.getTestGroup()).append("</td>");
+					finalReport.append("<td>").append("<b>").append(testGroup.getTotalCases()).append("</b></td>");
+					finalReport.append("<td>").append("<font color=\"green\"><b>").append(testGroup.getPassedCases()).append("</font></b></td>");
+					finalReport.append("<td>").append("<font color=\"red\"><b>").append(testGroup.getFailedCases()).append("</font></b></td>");
+					finalReport.append("<td>").append("<font color=\"brown\"><b>").append(testGroup.getSkippedCases()).append("</font></b></td>");
+					finalReport.append(" </tr>");					
+				}	
+				finalReport.append("<tfoot><tr>");
+				finalReport.append("<td><b>Total:</b></td>");
+				finalReport.append("<td>").append("<b>").append(testSuite.getTotalCases()).append("</b>").append("</td>");
+				finalReport.append("<td>").append("<font color=\"green\"><b>").append(testSuite.getPassedCases()).append("</font></b>").append("</td>");
+				finalReport.append("<td>").append("<font color=\"red\"><b>").append(testSuite.getFailedCases()).append("</font></b>").append("</td>");
+				finalReport.append("<td>").append("<font color=\"brown\"><b>").append(testSuite.getSkippedCases()).append("</font></b>").append("</td>");
+				finalReport.append(" </tr></tfoot></tbody></table>");
+			}
+		}
+		
 		finalReport.append("Report Engine URL: <a href=\"").append(ServerSettings.getEngineURL()).append("\">").append(ServerSettings.getEngineURL()).append("</a>");
 		finalReport.append("</BR>");
 		finalReport.append("Report Generated on: ").append(General.getGuiDateTime(new Date()));

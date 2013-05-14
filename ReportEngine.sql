@@ -212,6 +212,7 @@ CREATE TABLE re_report_group
   group_name character varying(200) NOT NULL,
   email_to character varying (1000) NOT NULL,
   email_cc character varying (1000) NULL,
+  test_suite_group_enabled boolean default false,
   creation_time timestamp NOT NULL,
   unique(id),
 );

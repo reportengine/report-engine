@@ -24,6 +24,10 @@ public class ManageReportGroup {
 		String emailTo = request.getParameter(Keys.REPORT_EMAIL_GROUP_EMAIL_TO);
 		String emailCc = request.getParameter(Keys.REPORT_EMAIL_GROUP_EMAIL_CC);
 		String groupName = request.getParameter(Keys.REPORT_EMAIL_GROUP_NAME);
+		boolean isSuiteGroupEnabled = false;
+		if(request.getParameter(Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED) != null){
+			isSuiteGroupEnabled = true;
+		}
 		
 		if(!(references != null) && (emailTo != null) && (groupName != null)){
 			return;						
@@ -39,6 +43,8 @@ public class ManageReportGroup {
 		reportGroup.setGroupName(groupName.trim());
 		reportGroup.setEmailTo(emailTo);
 		reportGroup.setEmailCc(emailCc);	
+		
+		reportGroup.setTestSuiteGroupEnabled(isSuiteGroupEnabled);
 		
 		if(isNewGroup){
 			reportGroup.setId((Integer) SqlMap.getSqlMapClient().queryForObject(SqlQuery.GET_REPORT_GROUP_SEQ_ID));

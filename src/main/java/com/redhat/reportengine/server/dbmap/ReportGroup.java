@@ -15,6 +15,7 @@ public class ReportGroup {
 	private String emailCc;
 	private String owner;
 	private Date creationTime;
+	private boolean testSuiteGroupEnabled;
 	private List<ReportGroupReference> reportGroupReference = null;
 	/**
 	 * @return the id
@@ -93,5 +94,17 @@ public class ReportGroup {
 	}
 	public void setReportGroupReference(List<ReportGroupReference> reportGroupReference) {
 		this.reportGroupReference = reportGroupReference;
+	}
+	/**
+	 * @return the testSuiteGroupEnabled
+	 */
+	public boolean isTestSuiteGroupEnabled() {
+		return testSuiteGroupEnabled;
+	}
+	/**
+	 * @param testSuiteGroupEnabled the testSuiteGroupEnabled to set
+	 */
+	public void setTestSuiteGroupEnabled(boolean testSuiteGroupEnabled) {
+		this.testSuiteGroupEnabled = testSuiteGroupEnabled;
 	}
 }

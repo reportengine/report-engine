@@ -37,7 +37,7 @@ public class EmailReportGroupJob implements Job{
 			}
 		}
 		ArrayList<TestSuite> testSuites = (ArrayList<TestSuite>) SqlMap.getSqlMapClient().queryForList(SqlQuery.GET_TOP_TEST_SUITE_BY_TEST_REFERENCE_IDS, testSuiteReferences);
-		String emailBody = new EmailGroupReport().getGroupReport(testSuites, reportGroup.getGroupName());
+		String emailBody = new EmailGroupReport().getReport(testSuites, reportGroup.getGroupName(), reportGroup.isTestSuiteGroupEnabled());
 		new SendEmail().sendEmail(reportGroup.getEmailTo(), reportGroup.getEmailCc(), ServerSettings.getEmailFrom(), "Summary report for '"+reportGroup.getGroupName()+"'", emailBody, ServerSettings.getEmailServer(), ServerSettings.getEmailServerPort());
 	}
 

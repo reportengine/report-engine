@@ -69,6 +69,13 @@ if(buttonName != null){
 		</tr>
 
 		<tr>
+			<td align="left">Test Suite Group (Include)</td>
+			<td valign="top">:</td>
+			<td colspan="2"><input type="checkbox" name="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" id="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" value="groupEnabled" 
+			<%if(reportGroup.isTestSuiteGroupEnabled()){%> checked <%}%> ></td>	
+		</tr>
+
+		<tr>
 			<td align="left" valign="top">Email To</td>
 			<td valign="top">:</td>
 			<td colspan="2"><textarea name="<%=Keys.REPORT_EMAIL_GROUP_EMAIL_TO%>" id="<%=Keys.REPORT_EMAIL_GROUP_EMAIL_TO%>" rows="4" cols="25" style="width:320px;"><%=reportGroup.getEmailTo()%></textarea></td>	
@@ -143,6 +150,13 @@ if(buttonName != null){
   			</td>	
 		</tr>
 
+		<tr>
+			<td align="left">Test Suite Group (Include)</td>
+			<td valign="top">:</td>
+			<td colspan="2"><input type="checkbox" name="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" id="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" value="groupEnabled" ></td>	
+		</tr>
+		
+		
 		<tr>
 			<td align="left" valign="top">Email To</td>
 			<td valign="top">:</td>
@@ -251,6 +265,7 @@ if(buttonName != null){
 			null,
 			null,
 			null,
+			null,
 			null
 			],
 			"iDisplayLength":15
@@ -277,7 +292,8 @@ if(buttonName != null){
 		<tr>
 			<th></th>	
 			<th>S.No</th>
-			<th>Group Name</th>
+			<th>Email Group Name</th>
+			<th>Test Suite Group</th>
 			<th>Email To</th>
             <th>Email Cc</th>		
 			<th>Creation Time</th>
@@ -289,7 +305,7 @@ if(buttonName != null){
 		ArrayList<ReportGroup> reportGroups = new ManageReportGroup().getAllReportGroup();
 		
 		for(int i = 0; i<reportGroups.size(); i++){			
-			out.println("<tr><td align=\"center\"><input type=\"radio\" name=\""+Keys.REPORT_EMAIL_GROUP_ID+"\" value=\""+reportGroups.get(i).getId()+"\"></td><td>"+(i+1)+"</td><td align=\"left\">"+reportGroups.get(i).getGroupName()+"</td><td align=\"left\">"+reportGroups.get(i).getEmailTo()+"</td><td align=\"left\">"+General.getNotNullString(reportGroups.get(i).getEmailCc())+"</td><td align=\"left\">"+General.getGuiDateTime(reportGroups.get(i).getCreationTime())+"</td></tr>");	
+			out.println("<tr><td align=\"center\"><input type=\"radio\" name=\""+Keys.REPORT_EMAIL_GROUP_ID+"\" value=\""+reportGroups.get(i).getId()+"\"></td><td>"+(i+1)+"</td><td align=\"left\">"+reportGroups.get(i).getGroupName()+"</td><td align=\"center\"><img width=\"16\" height=\"16\"  src='../images/icons/"+reportGroups.get(i).isTestSuiteGroupEnabled()+".png' alt='"+reportGroups.get(i).isTestSuiteGroupEnabled()+"'></td><td align=\"left\">"+reportGroups.get(i).getEmailTo()+"</td><td align=\"left\">"+General.getNotNullString(reportGroups.get(i).getEmailCc())+"</td><td align=\"left\">"+General.getGuiDateTime(reportGroups.get(i).getCreationTime())+"</td></tr>");	
 		}
 
 	%>
@@ -301,6 +317,14 @@ if(buttonName != null){
 	<input type="submit" name="SUBMIT" value="Add" style="width:80px;"> <input type="submit" name="SUBMIT" value="Edit" style="width:80px;"> <input type="submit" name="SUBMIT" value="Delete" style="width:80px;"> <input type="submit" name="SUBMIT" value="Run Now" style="width:80px;">
 </div>
 </form>
+<BR>
+<BR>
+<table cellpadding="0" cellspacing="0" border="0" id="dt_table">
+<tr>
+<td><img width="16" height="16"  src='../images/icons/true.png'  alt='Enabled'></td><td valign="top">- Enabled&nbsp;</td>
+<td><img width="16" height="16"  src='../images/icons/false.png' alt='Disabled'></td><td valign="top">- Disabled&nbsp;</td> 
+<tr>
+</table>
 
 <div id="deleteDialog" title="Delete Confirmation!">
 	<p>&nbsp;You are about to delete this item.<br> 
