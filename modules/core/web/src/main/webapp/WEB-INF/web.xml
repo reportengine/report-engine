@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:web="http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+
+	<display-name>Report Engine 1.0</display-name>
+
+	<context-param>
+		<param-name>reportengine.home.dir</param-name>
+		<param-value>${user.home}/.java/reportengine</param-value>
+	</context-param>
+
+	<!-- Listener(s) -->
+
+
+	<listener>
+		<listener-class>com.redhat.reportengine.server.ContextListener.ReportEngineBasicStuffInitializer</listener-class>
+	</listener>
+
+	<!-- -->
+
+	<!-- **************************************** -->
+
+	<!-- RestEasy -->
+
+	<!-- Auto scan REST service -->
+	<context-param>
+		<param-name>resteasy.scan</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<!-- this need same with resteasy servlet url-pattern -->
+	<context-param>
+		<param-name>resteasy.servlet.mapping.prefix</param-name>
+		<param-value>/resteasy</param-value>
+	</context-param>
+
+
+	<!-- to return data according to extension -->
+
+	<context-param>
+		<param-name>resteasy.media.type.mappings</param-name>
+		<param-value>json : application/json, xml : application/xml</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+	</listener>
+
+	<!-- ** INSERT YOUR LISTENERS HERE!!!! -->
+
+	<servlet>
+		<servlet-name>Resteasy</servlet-name>
+		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Resteasy</servlet-name>
+		<url-pattern>/resteasy/*</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	<servlet>
+		<servlet-name>RE-Init-Class</servlet-name>
+		<servlet-class>com.redhat.reportengine.server.InitServer</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<session-config>
+		<session-timeout>1440</session-timeout>
+	</session-config>
+
+	<security-constraint> 
+		<web-resource-collection> 
+			<web-resource-name>Secure Stuff</web-resource-name> 
+			<url-pattern>/pages/*</url-pattern>
+		</web-resource-collection> 
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee> 
+		</user-data-constraint> 
+	</security-constraint>
+
+</web-app>

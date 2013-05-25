@@ -214,7 +214,7 @@ CREATE TABLE re_report_group
   email_cc character varying (1000) NULL,
   test_suite_group_enabled boolean default false,
   creation_time timestamp NOT NULL,
-  unique(id),
+  unique(id)
 );
 
 ----------------------------------------------------------
@@ -306,8 +306,6 @@ VALUES ((SELECT id FROM nextval('re_job_scheduler_id_seq') AS id), true, 'Test S
 INSERT INTO re_job_scheduler (id, system_job, job_name, target_class_id, data_reference_id, simple_job, repeat_interval, repeat_count, creation_time, job_description) 
 VALUES ((SELECT id FROM nextval('re_job_scheduler_id_seq') AS id), true, 'Test Suite Status Update Job', (SELECT id FROM re_job_classes WHERE target_class LIKE 'com.redhat.reportengine.server.jobs.UpdateJobStatus'), 0, true, 1000*60*30, -1, now(), '-');
 
-INSERT INTO re_job_scheduler (id, system_job, job_name, target_class_id, data_reference_id, simple_job, cron_expression, creation_time, job_description) 
-VALUES ((SELECT id FROM nextval('re_job_scheduler_id_seq') AS id), false, 'RHQ Group Report Schedule', (SELECT id FROM re_job_classes WHERE target_class LIKE 'com.redhat.reportengine.server.jobs.EmailReportGroupJob'), 8, false, '0 30 18 * * ?', now(), '-');
 
 -------------------------------------------------------
 -- View - Get Test Suites - Detailed
