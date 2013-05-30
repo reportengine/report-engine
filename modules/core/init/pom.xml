@@ -8,8 +8,8 @@
   </parent>
   <artifactId>init</artifactId>
   <name>RE Init module</name>
-  
-  	<dependencies>
+
+	<dependencies>
 		<!-- Internal Dependencies -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -23,7 +23,12 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
 	</dependencies>
-	
 	
 </project>

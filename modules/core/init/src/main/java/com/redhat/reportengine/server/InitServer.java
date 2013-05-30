@@ -5,10 +5,7 @@ package com.redhat.reportengine.server;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
 import com.redhat.reportengine.server.cache.ServerSettings;
 import com.redhat.reportengine.server.jobs.TestSuiteAggregationImpl;
 import com.redhat.reportengine.server.jobs.UpdateJobStatus;
@@ -35,10 +32,6 @@ public class InitServer extends HttpServlet {
 		try {
 			ServerSettings.setBaseLocation(getServletContext().getRealPath("/"));
 			System.out.println("Report Engine: Base Location: "+ServerSettings.getBaseLocation());
-			System.setProperty("log4file.location", ServerSettings.getBaseLocation()+ServerSettings.getLog4jloglocation());			
-			PropertyConfigurator.configureAndWatch(ServerSettings.getBaseLocation()+ServerSettings.getLog4jlocation());
-			
-			//ServerSettings.setServerRmiPort(21013);
 			
 			//Make database connection
 			SqlMap.setUpSqlClient();
