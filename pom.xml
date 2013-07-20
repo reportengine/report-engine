@@ -60,6 +60,10 @@
 			<id>JBOSS</id>
 			<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
 		</repository>
+		<repository>
+			<id>clojars</id>
+			<url>https://clojars.org/repo</url>
+		</repository>
 	</repositories>
 
 </project>
