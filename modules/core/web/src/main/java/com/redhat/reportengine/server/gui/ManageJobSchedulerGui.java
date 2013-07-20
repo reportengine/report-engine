@@ -12,8 +12,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.quartz.SchedulerException;
 
+import com.redhat.reportengine.server.dbdata.JobClassesTable;
 import com.redhat.reportengine.server.dbdata.JobSchedulerTable;
+import com.redhat.reportengine.server.dbdata.ServerJobTable;
 import com.redhat.reportengine.server.dbmap.JobScheduler;
+import com.redhat.reportengine.server.dbmap.ServerJob;
 import com.redhat.reportengine.server.reports.Keys;
 import com.redhat.reportengine.server.scheduler.ManageJobs;
 
@@ -86,12 +89,39 @@ public class ManageJobSchedulerGui {
 			}
 			jobScheduler.setCreationTime(new Date());
 			new JobSchedulerTable().add(jobScheduler);
-			ManageJobs.addAJobInScheduler(jobScheduler.getJobName());
+			jobScheduler = new JobSchedulerTable().get(jobScheduler.getJobName());
+			//Put Entry on other tables like Server-Job map, etc
+			addJobEntryOnOtherTable(jobScheduler);
+			ManageJobs.addAJobInScheduler(jobScheduler);
 		}
 	}
 	
+	private void addJobEntryOnOtherTable(JobScheduler jobScheduler) throws SQLException{
+		if(jobScheduler.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_RESOURCE)){
+			addEntryServerJobMap(jobScheduler);
+		}
+	}
+	private void addEntryServerJobMap(JobScheduler jobScheduler) throws SQLException{
+		ServerJob serverJob = new ServerJob();
+		serverJob.setJobId(jobScheduler.getId());
+		serverJob.setServerId(jobScheduler.getDataReferenceId());
+		new ServerJobTable().add(serverJob);
+	}
+	
+	private void removeJobEntryOnOtherTable(JobScheduler jobScheduler) throws SQLException{
+		if(jobScheduler.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_RESOURCE)){
+			removeEntryServerJobMap(jobScheduler);
+		}
+	}
+	
+	private void removeEntryServerJobMap(JobScheduler jobScheduler) throws SQLException{
+		new ServerJobTable().removeByJobId(jobScheduler.getId());
+	}
+	
 	public void deleteScheduledJob(int id) throws SQLException, ParseException, SchedulerException{
-		ManageJobs.removeAJobFromScheduler(id);
+		JobScheduler jobScheduler = new JobSchedulerTable().get(id);
+		ManageJobs.removeAJobFromScheduler(jobScheduler);
+		removeJobEntryOnOtherTable(jobScheduler);		
 		new JobSchedulerTable().remove(id);
 	}
 	

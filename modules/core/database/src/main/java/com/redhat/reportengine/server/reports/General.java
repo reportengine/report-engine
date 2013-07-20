@@ -13,11 +13,13 @@ import java.util.Date;
  */
 public class General {
 	public static final String guiInputDateFormat 	= "dd-MM-yyyy";
+	public static final String guiInputDateTimeFormat 	= "dd-MM-yyyy HH:mm:ss";
 	public static final String dbDateFormat 		= "yyyy-MM-dd";
 	public static final String dbDateTimeFormat		= "yyyy-MM-dd HH:mm:ss.S";
 	public static final String GUI_DATE_TIME = "MMM dd HH:mm:ss z yyyy";
 	public static final String GUI_LOG_DATE_TIME = "MMM dd, HH:mm:ss.S z yyyy";
 	public static final String GUI_TIME = "HH:mm:ss";
+	public static final DecimalFormat decimalDigit2 = new DecimalFormat("#.##");
 	
 	public static String getColor(int value, boolean positive){
 		StringBuffer strValue = new StringBuffer("");
@@ -152,6 +154,14 @@ public class General {
 			return level.substring(0, 4);
 		}else{
 			return level;
+		}
+	}
+	
+	public static boolean isCheckBoxEnabled(String status){
+		if(status == null){
+			return false;
+		}else{
+			return true;
 		}
 	}
 }

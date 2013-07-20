@@ -11,7 +11,7 @@ import com.redhat.reportengine.server.dbdata.ReportGroupReferenceTable;
 import com.redhat.reportengine.server.dbdata.ReportGroupTable;
 import com.redhat.reportengine.server.dbmap.ReportGroup;
 import com.redhat.reportengine.server.dbmap.ReportGroupReference;
-import com.redhat.reportengine.server.jobs.EmailReportGroupJob;
+import com.redhat.reportengine.server.jobs.user.EmailReportGroupJob;
 import com.redhat.reportengine.server.reports.Keys;
 
 /**

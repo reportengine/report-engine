@@ -31,7 +31,7 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 
-public class TestResultsREST {	
+public class TestResultsREST {	 
 
 	@GET
 	@Path(TestResultsRestUrlMap.GET_SERVER_TIME)

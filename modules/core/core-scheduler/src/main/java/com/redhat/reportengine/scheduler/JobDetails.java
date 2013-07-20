@@ -1,8 +1,9 @@
 /**
  * 
  */
-package com.redhat.reportengine.server.scheduler;
+package com.redhat.reportengine.scheduler;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.quartz.JobDataMap;
@@ -11,9 +12,14 @@ import org.quartz.JobDataMap;
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Apr 19, 2012
  */
-public class JobDetails {
-	private String jobName;
-	private String jobGroupName;
+public class JobDetails implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1045470215747095305L;
+	
+	private String name;
+	private String group;
 	private String triggerGroupName;
 	private String jobCronExpression;
 	private Integer repeatCount;
@@ -25,26 +31,26 @@ public class JobDetails {
 	/**
 	 * @return the jobName
 	 */
-	public String getJobName() {
-		return this.jobName;
+	public String getName() {
+		return this.name;
 	}
 	/**
 	 * @param jobName the jobName to set
 	 */
-	public void setJobName(String jobName) {
-		this.jobName = jobName;
+	public void setName(String jobName) {
+		this.name = jobName;
 	}
 	/**
 	 * @return the jobType
 	 */
-	public String getJobGroupName() {
-		return this.jobGroupName;
+	public String getGroup() {
+		return this.group;
 	}
 	/**
 	 * @param jobType the jobType to set
 	 */
-	public void setJobGroupName(String jobType) {
-		this.jobGroupName = jobType;
+	public void setGroup(String jobType) {
+		this.group = jobType;
 	}
 	/**
 	 * @return the jobFrequency

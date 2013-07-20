@@ -42,6 +42,12 @@ public class Keys {
 	//For reports
 	
 	public static final String REPORT_FOR						= "reportFor";
+	public static final String REPORT_FOR_LAST_30_MINS			= "last30minutes";
+	public static final String REPORT_FOR_LAST_60_MINS			= "last60minutes";
+	public static final String REPORT_FOR_LAST_3_HOURS			= "last3hours";
+	public static final String REPORT_FOR_LAST_6_HOURS			= "last6hours";
+	public static final String REPORT_FOR_LAST_12_HOURS			= "last12hours";
+	public static final String REPORT_FOR_LAST_24_HOURS			= "last24hours";
 	public static final String REPORT_FOR_LAST_7_DAYS			= "last7days";
 	public static final String REPORT_FOR_LAST_15_DAYS			= "last15days";
 	public static final String REPORT_FOR_LAST_30_DAYS			= "last30days";
@@ -54,6 +60,10 @@ public class Keys {
 	
 	public static final String REPORT_DATE_FROM					= "datepickerFrom";
 	public static final String REPORT_DATE_TO					= "datepickerTo";
+	public static final String REPORT_HOUR_FROM					= "hourFrom";
+	public static final String REPORT_HOUR_TO					= "hourTo";
+	public static final String REPORT_MINUTE_FROM				= "minuteFrom";
+	public static final String REPORT_MINUTE_TO					= "minuteTo";
 	
 	//Job Scheduler
 	public static final String JOB_ID							= "jobId";
@@ -113,5 +123,28 @@ public class Keys {
 	public static final String TMP_LOGIN_DB						= "tmpLoginDatabase";
 	
 	
+	//Servers
+	public static final String SERVER_ID							= "serverId";
+	public static final String SERVER_NAME							= "serverName";
+	public static final String SERVER_HOSTIP						= "serverHostIp";
+	public static final String SERVER_AGENT_PORT					= "serverAgentPort";
+	public static final String SERVER_UPDATE_INTERVAL				= "serverUpdateInterval";
+	
+	//Resource CPU/Memory
+	public static final String RESOURCE_CPU							= "CPU";
+	public static final String RESOURCE_CPU_NO						= "resourceCpuNo";
+	public static final String RESOURCE_CPUS						= "CPUS";
+	public static final String RESOURCE_CPUS_SPLITER				= "-";
+	public static final String RESOURCE_MEMORY						= "Memory";
+	public static final String RESOURCE_MEMORY_AU					= "Memory Actual";
+	public static final String RESOURCE_SWAP						= "Swap";
+	public static final String RESOURCE_TYPE						= "resourceType";
+	public static final String RESOURCE_NETWORK						= "Network";
+	public static final String RESOURCE_OS							= "OS";
+	
+	//URL Encoding Decoding
+	public static final String URL_ENCODE_UTF_8						= "UTF-8";
+	
+
 	
 }

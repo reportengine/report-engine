@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.redhat.reportengine.server.jobs;
+package com.redhat.reportengine.server.jobs.system;
 
 import java.util.ArrayList;
 

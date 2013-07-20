@@ -21,6 +21,8 @@ public class JobSchedulerTable {
 	private final static String DELETE_SCHEDULED_JOB							= "deleteAscehduledJob";
 	private final static String ENABLE_SCHEDULED_JOB							= "enableAscehduledJob";
 	private final static String DISABLE_SCHEDULED_JOB							= "disableAscehduledJob";
+	private final static String GET_JOB_BY_TARGET_CLASS_ID_AND_REFERENCE_ID		= "getJobSchedulerByTargetClassIdAndReferenceId";
+	
 	
 	public Integer getNextSeqId() throws SQLException{
 		return (Integer) SqlMap.getSqlMapClient().queryForObject(GET_JOB_SCHEDULER_NEXT_SEQ_ID);
@@ -38,6 +40,10 @@ public class JobSchedulerTable {
 	
 	public JobScheduler get(Integer id) throws SQLException{
 		return (JobScheduler) SqlMap.getSqlMapClient().queryForObject(GET_JOB_SCHEDULER_BY_ID, id);
+	}
+	
+	public JobScheduler getByTargetClassIdAndDataReferenceId(JobScheduler jobScheduler) throws SQLException{
+		return (JobScheduler) SqlMap.getSqlMapClient().queryForObject(GET_JOB_BY_TARGET_CLASS_ID_AND_REFERENCE_ID, jobScheduler);
 	}
 	
 	public JobScheduler get(String name) throws SQLException{

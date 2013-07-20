@@ -35,16 +35,15 @@ if(exception.toString().contains("The connection attempt failed..")){
 <BR>&nbsp;&nbsp;&nbsp;&nbsp;Please start the service!
 </font></DIV>
 <%
-}else if(exception.toString().contains("java.rmi.ConnectException: Connection refused to host:")){
-//<%=exception.toString().trim().replace("java.rmi.ConnectException: Connection refused to host:", "").replace("; nested exception is: java.net.ConnectException: Connection refused: connect", "").trim()
-%>
-<div id="parent" style="width:80%; border: 2px solid red; padding: 10px;">
-<font size="2" face="Verdana" color="red">
-<IMG height=17 src="../images/icons/error.png" width=17 align=top border=0>&nbsp;Unable to communicate with the client RMI service!
+}else if(exception.toString().contains("org.apache.http.conn.HttpHostConnectException:")){
+	%>
+	<div id="parent" style="width:80%; border: 2px solid red; padding: 10px;">
+	<font size="2" face="Verdana" color="red">
+	<IMG height=17 src="../images/icons/error.png" width=17 align=top border=0>&nbsp;Agent or Server might be down!
 
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;Client RMI service may not be running on this host.
-<BR>&nbsp;&nbsp;&nbsp;&nbsp;Please check the service on client machine.
-</font></DIV>
+	<BR>&nbsp;&nbsp;&nbsp;&nbsp;Sometimes on network failure...
+	<BR>&nbsp;&nbsp;&nbsp;&nbsp;Please check the agent service on server machine or Is server reachable?
+	</font></DIV>
 
 <%
 }else if(exception.toString().contains("This method has not been implemented on this platform")){

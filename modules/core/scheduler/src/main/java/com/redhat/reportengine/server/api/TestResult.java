@@ -21,7 +21,7 @@ import com.redhat.reportengine.server.dbmap.TestGroup;
 import com.redhat.reportengine.server.dbmap.TestLogs;
 import com.redhat.reportengine.server.dbmap.TestReference;
 import com.redhat.reportengine.server.dbmap.TestSuite;
-import com.redhat.reportengine.server.jobs.TestSuiteAggregationImpl;
+import com.redhat.reportengine.server.jobs.system.TestSuiteAggregationImpl;
 import com.redhat.reportengine.server.queue.TestLogsQueue;
 
 

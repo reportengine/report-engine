@@ -18,6 +18,20 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>core-scheduler</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>rest</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		
+		<!-- External Dependencies -->
+		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mailapi</artifactId>
 			<version>1.4.3</version>
@@ -28,19 +42,7 @@
 			<artifactId>smtp</artifactId>
 			<version>1.4.4</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.opensymphony.quartz</groupId>
-			<artifactId>quartz</artifactId>
-			<version>1.6.5</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
-		</dependency>
-
+		
 	</dependencies>
 	
 	

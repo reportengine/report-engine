@@ -743,8 +743,38 @@ SELECT * FROM viewgetjobschedulerall WHERE id=$id$
 SELECT * FROM viewgetjobschedulerall WHERE job_name='$jobName$'
 </select>
 
+<select id="getJobSchedulerByTargetClassIdAndReferenceId" parameterClass="com.redhat.reportengine.server.dbmap.JobScheduler" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE target_class_id=$targetClassId$ AND data_reference_id=$dataReferenceId$
+</select>
+
 
 <!-- Report Group - END -->
+
+<!-- Job Classes - START -->
+<resultMap id="JobClassesResultMap" class="com.redhat.reportengine.server.dbmap.JobClasses">
+<result property="id" column="id"/>
+<result property="targetClass" column="target_class"/>
+<result property="targetClassDescription" column="target_class_description"/>
+</resultMap>
+
+<select id="getJobClassesById" parameterClass="java.lang.Integer" resultMap="JobClassesResultMap">
+SELECT * FROM re_job_classes WHERE id=$id$
+</select>
+
+<select id="getJobClassesByClass" parameterClass="java.lang.String" resultMap="JobClassesResultMap">
+SELECT * FROM re_job_classes WHERE target_class='$target_class$'
+</select>
+
+<select id="getJobClassesByClassLike" parameterClass="java.lang.String" resultMap="JobClassesResultMap">
+SELECT * FROM re_job_classes WHERE target_class LIKE '$target_class$%'
+</select>
+
+<select id="getJobClasses" resultMap="JobClassesResultMap">
+SELECT * FROM re_job_classes
+</select>
+
+<!-- Job Classes - END -->
+
 
 <!-- Report Engine Settings - START -->
 <parameterMap id="EngineSettingsParameterMap" class="com.redhat.reportengine.server.dbmap.EngineSettings">
@@ -1085,5 +1115,561 @@ DELETE FROM re_auth_user_forget_password WHERE creation_time &lt;= '$creationTim
 </delete>
 
 <!-- Auth Role Permission Map - END -->
+
+<!-- Resource measurement - CPU -->
+<insert id="createCpuTableSequence" parameterClass="java.lang.String">
+CREATE SEQUENCE re_resource_cpu_id_seq_$sub_name$
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+</insert>
+
+<insert id="createCpuTable" parameterClass="java.lang.String">
+CREATE TABLE re_resource_cpu_$sub_name$
+(
+  id integer NOT NULL default nextval('re_resource_cpu_id_seq_$sub_name$'),
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  remote_time timestamp NOT NULL,
+  "user" real NULL,
+  sys real NULL,
+  nice real NULL,
+  idle real NULL,
+  wait real NULL,
+  irq real NULL,
+  softIrq real NULL,
+  stolen real NULL,
+  combined real NULL,
+  unique(id)
+);
+</insert>
+
+<!-- Resource measurement - CPUs -->
+<insert id="createCpusTableSequence" parameterClass="java.lang.String">
+CREATE SEQUENCE re_resource_cpus_id_seq_$sub_name$
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+</insert>
+
+<insert id="createCpusTable" parameterClass="java.lang.String">
+CREATE TABLE re_resource_cpus_$sub_name$
+(
+  id integer NOT NULL default nextval('re_resource_cpus_id_seq_$sub_name$'),
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  remote_time timestamp NOT NULL,
+  "user" real[] NULL,
+  sys real[] NULL,
+  nice real[] NULL,
+  idle real[] NULL,
+  wait real[] NULL,
+  irq real[] NULL,
+  softIrq real[] NULL,
+  stolen real[] NULL,
+  combined real[] NULL,
+  unique(id)
+);
+</insert>
+
+<!-- CPU - Usage -START -->
+<parameterMap id="resourceCpuParameterMap" class="com.redhat.reportengine.server.dbmap.ResourceCpu">
+<parameter property="remoteTime"/>
+<parameter property="user"/>
+<parameter property="sys"/>
+<parameter property="nice"/>
+<parameter property="idle"/>
+<parameter property="wait"/>
+<parameter property="irq"/>
+<parameter property="softIrq"/>
+<parameter property="stolen"/>
+<parameter property="combined"/>
+</parameterMap>
+
+<resultMap id="resourceCpuResultMap" class="com.redhat.reportengine.server.dbmap.ResourceCpu">
+<result property="id" column="id"/>
+<result property="localTime" column="local_time"/>
+<result property="remoteTime" column="remote_time"/>
+<result property="user" column="user"/>
+<result property="sys" column="sys"/>
+<result property="nice" column="nice"/>
+<result property="idle" column="idle"/>
+<result property="wait" column="wait"/>
+<result property="softIrq" column="softIrq"/>
+<result property="stolen" column="stolen"/>
+<result property="combined" column="combined"/>
+</resultMap>
+
+<insert id="insertCpuUsage" parameterMap="resourceCpuParameterMap">
+INSERT INTO re_resource_cpu_$tableSubName$ (remote_time, "user", sys, nice, idle, wait, irq, softIrq, stolen, combined) values (?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<select id="getCpuUsage" parameterClass="java.lang.String" resultMap="resourceCpuResultMap">
+SELECT * FROM re_resource_cpu_$tableSubName$ ORDER BY id ASC
+</select>
+
+<select id="getCpuUsageByTimeRange" parameterClass="com.redhat.reportengine.server.dbmap.ResourceCpu" resultMap="resourceCpuResultMap">
+SELECT * FROM re_resource_cpu_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$' ORDER BY id ASC
+</select>
+
+
+<!-- CPU - Usage - END -->
+
+<!-- CPUs - Usage -START -->
+<parameterMap id="resourceCpusParameterMap" class="com.redhat.reportengine.server.dbmap.ResourceCpus">
+<parameter property="remoteTime"/>
+<parameter property="user"/>
+<parameter property="sys"/>
+<parameter property="nice"/>
+<parameter property="idle"/>
+<parameter property="wait"/>
+<parameter property="irq"/>
+<parameter property="softIrq"/>
+<parameter property="stolen"/>
+<parameter property="combined"/>
+</parameterMap>
+
+<insert id="insertCpusUsage" parameterMap="resourceCpusParameterMap">
+INSERT INTO re_resource_cpus_$tableSubName$ (remote_time, "user", sys, nice, idle, wait, irq, softIrq, stolen, combined) values (?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<select id="getCpusUsage" parameterClass="java.lang.String" resultClass="com.redhat.reportengine.server.dbmap.ResourceCpus">
+SELECT * FROM re_resource_cpu_$tableSubName$ ORDER BY id ASC
+</select>
+
+<select id="getCpusUsageByTimeRange" parameterClass="com.redhat.reportengine.server.dbmap.ResourceCpus" resultClass="com.redhat.reportengine.server.dbmap.ResourceCpus">
+SELECT * FROM re_resource_cpus_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$' ORDER BY id ASC
+</select>
+
+<!-- CPUs - Usage - END -->
+
+
+<!-- Server Table -->
+<parameterMap id="serverInsertParameterMap" class="com.redhat.reportengine.server.dbmap.Server">
+<parameter property="name"/>
+<parameter property="hostIp"/>
+<parameter property="agentPort"/>
+<parameter property="updateInterval"/>
+</parameterMap>
+
+<parameterMap id="serverUpdateParameterMap" class="com.redhat.reportengine.server.dbmap.Server">
+<parameter property="name"/>
+<parameter property="hostIp"/>
+<parameter property="agentPort"/>
+<parameter property="updateInterval"/>
+<parameter property="platform"/>
+<parameter property="id"/>
+</parameterMap>
+
+<resultMap id="serverResultMap" class="com.redhat.reportengine.server.dbmap.Server">
+<result property="id" column="id"/>
+<result property="name" column="name"/>
+<result property="hostIp" column="host_ip"/>
+<result property="platform" column="platform"/>
+<result property="agentPort" column="agent_port"/>
+<result property="referenceKey" column="reference_key"/>
+<result property="discoveryStatus" column="discovery_status"/>
+<result property="updateInterval" column="update_interval"/>
+<result property="creationTime" column="creation_time"/>
+<result property="reachable" column="reachable"/>
+<result property="agentStatus" column="agent_status"/>
+<result property="localTime" column="local_time"/>
+</resultMap>
+
+<insert id="insertServerDetail" parameterMap="serverInsertParameterMap">
+INSERT INTO re_server (name, host_ip, agent_port, update_interval) values (?,?,?,?)
+</insert>
+
+<update id="updateServerDetail" parameterMap="serverUpdateParameterMap">
+UPDATE re_server SET name=?, host_ip=?, agent_port=?, update_interval=?, platform=? WHERE id=?
+</update>
+
+<select id="getServerDetailAll" resultMap="serverResultMap">
+SELECT * FROM re_view_getserverdetailwithstatus ORDER BY id ASC
+</select>
+
+<select id="getServerDetailById" parameterClass="java.lang.Integer" resultMap="serverResultMap">
+SELECT * FROM re_view_getserverdetailwithstatus WHERE id=$id$
+</select>
+
+<select id="getServerDetailByName" parameterClass="java.lang.String" resultMap="serverResultMap">
+SELECT * FROM re_view_getserverdetailwithstatus WHERE name='$name$' 
+</select>
+
+<delete id="deleteServerDetailById" parameterClass="java.lang.Integer">
+DELETE FROM re_server WHERE id=$id$
+</delete>
+
+<!-- Server Table - END -->
+
+<!-- Server-JOB  Table START -->
+<parameterMap id="serverJobInsertParameterMap" class="com.redhat.reportengine.server.dbmap.ServerJob">
+<parameter property="serverId"/>
+<parameter property="jobId"/>
+</parameterMap>
+
+<resultMap id="serverJobResultMap" class="com.redhat.reportengine.server.dbmap.ServerJob">
+<result property="id" column="id"/>
+<result property="serverId" column="server_id"/>
+<result property="jobId" column="job_id"/>
+</resultMap>
+
+<insert id="insertServerJobDetail" parameterMap="serverJobInsertParameterMap">
+INSERT INTO re_server_job (server_id, job_id) values (?,?)
+</insert>
+
+<select id="getServerJobDetailAll" resultMap="serverJobResultMap">
+SELECT * FROM re_server_job ORDER BY server_id ASC
+</select>
+
+<select id="getServerJobDetailByServerId" parameterClass="java.lang.Integer" resultMap="serverJobResultMap">
+SELECT * FROM re_server_job WHERE server_id=$serverId$
+</select>
+
+<select id="getServerJobDetailByJobId" parameterClass="java.lang.String" resultMap="serverJobResultMap">
+SELECT * FROM re_server_job WHERE job_id=$jobId$
+</select>
+
+<delete id="deleteServerJobDetailByServerId" parameterClass="java.lang.Integer">
+DELETE FROM re_server_job WHERE server_id=$serverId$
+</delete>
+
+<delete id="deleteServerJobDetailByJobId" parameterClass="java.lang.Integer">
+DELETE FROM re_server_job WHERE job_id=$jobId$
+</delete>
+
+<!-- Server-JOB Table - END -->
+
+
+<!-- Server Status Table - START -->
+<parameterMap id="serverStatusInsertParameterMap" class="com.redhat.reportengine.server.dbmap.ServerStatus">
+<parameter property="serverId"/>
+<parameter property="reachable"/>
+<parameter property="agentStatus"/>
+</parameterMap>
+
+<parameterMap id="serverStatusTimeRangeParameterMap" class="com.redhat.reportengine.server.dbmap.ServerStatus">
+<parameter property="serverId"/>
+<parameter property="reachable"/>
+<parameter property="agentStatus"/>
+</parameterMap>
+
+<resultMap id="serverStatusResultMap" class="com.redhat.reportengine.server.dbmap.ServerStatus">
+<result property="id" column="id"/>
+<result property="serverId" column="server_id"/>
+<result property="reachable" column="reachable"/>
+<result property="agentStatus" column="agent_status"/>
+<result property="localTime" column="local_time"/>
+</resultMap>
+
+<insert id="insertServerStatusDetail" parameterMap="serverStatusInsertParameterMap">
+INSERT INTO re_server_status (server_id, reachable, agent_status) values (?,?,?)
+</insert>
+
+<select id="getServerStatusDetailByServerId" parameterClass="java.lang.Integer" resultMap="serverStatusResultMap">
+SELECT * FROM re_server_status WHERE server_id=$serverId$
+</select>
+
+<select id="getServerStatusDetailByTimeRange" parameterMap="serverStatusTimeRangeParameterMap" resultMap="serverStatusResultMap">
+SELECT * FROM re_server_status WHERE server_id=? AND local_time &gt;= ? AND local_time &lt;= ?  ORDER BY id ASC
+</select>
+
+<delete id="deleteServerStatusDetailByServerId" parameterClass="java.lang.Integer">
+DELETE FROM re_server_status WHERE server_id=$id$
+</delete>
+
+
+
+<!-- Resource measurement - Memory - START-->
+<insert id="createMemoryTableSequence" parameterClass="java.lang.String">
+CREATE SEQUENCE re_resource_memory_id_seq_$tableSubName$
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+</insert>
+
+<insert id="createMemoryTable" parameterClass="java.lang.String">
+CREATE TABLE re_resource_memory_$tableSubName$
+(
+  id integer NOT NULL default nextval('re_resource_memory_id_seq_$tableSubName$'),
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  remote_time timestamp NOT NULL,
+  total bigint NOT NULL,
+  used bigint NOT NULL,
+  actual_used bigint NOT NULL,
+  swap_total bigint NOT NULL,
+  swap_used bigint NOT NULL,
+  swap_page_in bigint NOT NULL,
+  swap_page_out bigint NOT NULL,
+  unique(id)
+);
+</insert>
+
+<parameterMap id="resourceMemoryParameterMap" class="com.redhat.reportengine.server.dbmap.ResourceMemory">
+<parameter property="remoteTime"/>
+<parameter property="total"/>
+<parameter property="used"/>
+<parameter property="actualUsed"/>
+<parameter property="swapTotal"/>
+<parameter property="swapUsed"/>
+<parameter property="swapPageIn"/>
+<parameter property="swapPageOut"/>
+</parameterMap>
+
+<resultMap id="resourceMemoryResultMap" class="com.redhat.reportengine.server.dbmap.ResourceMemory">
+<result property="id" column="id"/>
+<result property="localTime" column="local_time"/>
+<result property="remoteTime" column="remote_time"/>
+<result property="total" column="total"/>
+<result property="used" column="used"/>
+<result property="actualUsed" column="actual_used"/>
+<result property="swapTotal" column="swap_total"/>
+<result property="swapUsed" column="swap_used"/>
+<result property="swapPageIn" column="swap_page_in"/>
+<result property="swapPageOut" column="swap_page_out"/>
+</resultMap>
+
+<insert id="insertMemoryUsage" parameterMap="resourceMemoryParameterMap">
+INSERT INTO re_resource_memory_$tableSubName$ (remote_time, total, used, actual_used, swap_total, swap_used, swap_page_in, swap_page_out) values (?,?,?,?,?,?,?,?)
+</insert>
+
+<select id="getMemoryUsage" parameterClass="java.lang.String" resultMap="resourceMemoryResultMap">
+SELECT * FROM re_resource_memory_$tableSubName$  ORDER BY id ASC
+</select>
+
+<select id="getMemoryUsageByTimeRange" parameterClass="com.redhat.reportengine.server.dbmap.ResourceMemory" resultMap="resourceMemoryResultMap">
+SELECT * FROM re_resource_memory_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$' ORDER BY id ASC
+</select>
+
+<!-- Resource measurement - Memory - END-->
+
+<!-- Server CPU Detail - START-->
+<parameterMap id="serverCpuDetailParameterMap" class="com.redhat.reportengine.server.dbmap.ServerCpuDetail">
+<parameter property="remoteTime"/>
+<parameter property="serverId"/>
+<parameter property="cacheSize"/>
+<parameter property="coresPerSocket"/>
+<parameter property="mhz"/>
+<parameter property="model"/>
+<parameter property="totalCores"/>
+<parameter property="totalSockets"/>
+<parameter property="vendor"/>
+</parameterMap>
+
+<resultMap id="serverCpuDetailResultMap" class="com.redhat.reportengine.server.dbmap.ServerCpuDetail">
+<result property="id" column="id"/>
+<result property="localTime" column="local_time"/>
+<result property="remoteTime" column="remote_time"/>
+<result property="serverId" column="server_id"/>
+<result property="cacheSize" column="cache_size"/>
+<result property="coresPerSocket" column="cores_per_socket"/>
+<result property="mhz" column="mhz"/>
+<result property="model" column="model"/>
+<result property="totalCores" column="total_cores"/>
+<result property="totalSockets" column="total_sockets"/>
+<result property="vendor" column="vendor"/>
+</resultMap>
+
+<insert id="insertServerCpuDetail" parameterMap="serverCpuDetailParameterMap">
+INSERT INTO re_server_cpu_detail (remote_time, server_id, cache_size, cores_per_socket, mhz, model, total_cores, total_sockets, vendor) values (?,?,?,?,?,?,?,?,?)
+</insert>
+
+<update id="updateServerCpuDetail" parameterMap="serverCpuDetailParameterMap">
+UPDATE re_server_cpu_detail SET local_time=statement_timestamp(), remote_time=?, server_id=?, cache_size=?, cores_per_socket=?, mhz=?, model=?, total_cores=?, total_sockets=?, vendor=? WHERE server_id=$serverId$
+</update>
+
+<select id="getServerCpuDetailByServerId" parameterClass="java.lang.Integer" resultMap="serverCpuDetailResultMap">
+SELECT * FROM re_server_cpu_detail WHERE server_id=$serverId$
+</select>
+
+<delete id="deleteServerCpuDetailByServerId" parameterClass="java.lang.Integer" >
+DELETE FROM re_server_cpu_detail WHERE server_id=$serverId$
+</delete>
+
+<!-- Server CPU Detail - END-->
+
+<!-- Server Network Detail - START-->
+<parameterMap id="serverNetworkDetailParameterMap" class="com.redhat.reportengine.server.dbmap.ServerNetworkDetail">
+<parameter property="remoteTime"/>
+<parameter property="serverId"/>
+<parameter property="hostname"/>
+<parameter property="defaultGateway"/>
+<parameter property="primaryDns"/>
+<parameter property="secondaryDns"/>
+<parameter property="domainName"/>
+<parameter property="interfaceName"/>
+<parameter property="interfaceDescription"/>
+<parameter property="interfaceType"/>
+<parameter property="ipAddress"/>
+<parameter property="subnetmask"/>
+<parameter property="broadcast"/>
+<parameter property="destination"/>
+<parameter property="mac"/>
+<parameter property="flags"/>
+<parameter property="metric"/>
+<parameter property="mtu"/>
+</parameterMap>
+
+<resultMap id="serverNetworkDetailResultMap" class="com.redhat.reportengine.server.dbmap.ServerNetworkDetail">
+<result property="id" column="id"/>
+<result property="localTime" column="local_time"/>
+<result property="remoteTime" column="remote_time"/>
+<result property="serverId" column="server_id"/>
+<result property="hostname" column="hostname"/>
+<result property="defaultGateway" column="default_gateway"/>
+<result property="primaryDns" column="primary_dns"/>
+<result property="secondaryDns" column="secondary_dns"/>
+<result property="domainName" column="domain_name"/>
+<result property="interfaceName" column="iface_name"/>
+<result property="interfaceDescription" column="iface_description"/>
+<result property="interfaceType" column="iface_type"/>
+<result property="ipAddress" column="ip_address"/>
+<result property="subnetmask" column="subnetmask"/>
+<result property="broadcast" column="broadcast"/>
+<result property="destination" column="destination"/>
+<result property="mac" column="mac"/>
+<result property="flags" column="flags"/>
+<result property="metric" column="metric"/>
+<result property="mtu" column="mtu"/>
+</resultMap>
+
+<insert id="insertServerNetworkDetail" parameterMap="serverNetworkDetailParameterMap">
+INSERT INTO re_server_network_detail (remote_time, server_id, hostname, default_gateway, primary_dns, secondary_dns, domain_name, iface_name, iface_description, iface_type, ip_address, subnetmask, broadcast, destination, mac, flags, metric, mtu) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<update id="updateServerNetworkDetail" parameterMap="serverNetworkDetailParameterMap">
+UPDATE re_server_network_detail SET local_time=statement_timestamp(), remote_time=?, server_id=?, hostname=?, default_gateway=?, primary_dns=?, secondary_dns=?, domain_name=?, iface_name=?, iface_description=?, iface_type=?, ip_address=?, subnetmask=?, broadcast=?, destination=?, mac=?, flags=?, metric=?, mtu=? WHERE server_id=$serverId$
+</update>
+
+<select id="getServerNetworkDetailByServerId" parameterClass="java.lang.Integer" resultMap="serverNetworkDetailResultMap">
+SELECT * FROM re_server_network_detail WHERE server_id=$serverId$
+</select>
+
+<delete id="deleteServerNetworkDetailByServerId" parameterClass="java.lang.Integer" >
+DELETE FROM re_server_network_detail WHERE server_id=$serverId$
+</delete>
+
+<!-- Server Network Detail - END-->
+
+
+<!-- Server OS Detail - START-->
+
+<parameterMap id="serverOsDetailParameterMap" class="com.redhat.reportengine.server.dbmap.ServerOsDetail">
+<parameter property="remoteTime"/>
+<parameter property="serverId"/>
+<parameter property="name"/>
+<parameter property="description"/>
+<parameter property="arch"/>
+<parameter property="machine"/>
+<parameter property="kernelVersion"/>
+<parameter property="patchLevel"/>
+<parameter property="vendor"/>
+<parameter property="vendorVersion"/>
+<parameter property="vendorCodeName"/>
+<parameter property="dataModel"/>
+<parameter property="cpuEndian"/>
+<parameter property="vendorName"/>
+</parameterMap>
+
+<resultMap id="serverOsDetailResultMap" class="com.redhat.reportengine.server.dbmap.ServerOsDetail">
+<result property="id" column="id"/>
+<result property="localTime" column="local_time"/>
+<result property="remoteTime" column="remote_time"/>
+<result property="serverId" column="server_id"/>
+<result property="name" column="name"/>
+<result property="description" column="description"/>
+<result property="arch" column="arch"/>
+<result property="machine" column="machine"/>
+<result property="kernelVersion" column="kernel_version"/>
+<result property="patchLevel" column="patch_level"/>
+<result property="vendor" column="vendor"/>
+<result property="vendorVersion" column="vendor_version"/>
+<result property="vendorCodeName" column="vendor_code_name"/>
+<result property="dataModel" column="data_model"/>
+<result property="cpuEndian" column="cpu_endian"/>
+<result property="vendorName" column="vendor_name"/>
+</resultMap>
+
+<insert id="insertServerOsDetail" parameterMap="serverOsDetailParameterMap">
+INSERT INTO re_server_os_detail (remote_time, server_id, name, description, arch, machine, kernel_version, patch_level, vendor, vendor_version, vendor_code_name, data_model, cpu_endian, vendor_name) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+</insert>
+
+<update id="updateServerOsDetail" parameterMap="serverOsDetailParameterMap">
+UPDATE re_server_os_detail SET local_time=statement_timestamp(), remote_time=?, server_id=?, name=?, description=?, arch=?, machine=?, kernel_version=?, patch_level=?, vendor=?, vendor_version=?, vendor_code_name=?, data_model=?, cpu_endian=?, vendor_name=? WHERE server_id=$serverId$
+</update>
+
+<select id="getServerOsDetailByServerId" parameterClass="java.lang.Integer" resultMap="serverOsDetailResultMap">
+SELECT * FROM re_server_os_detail WHERE server_id=$serverId$
+</select>
+
+<delete id="deleteServerOsDetailByServerId" parameterClass="java.lang.Integer" >
+DELETE FROM re_server_os_detail WHERE server_id=$serverId$
+</delete>
+<!-- Server Os Detail - END-->
+
+<!-- Server MEMORY Detail - START-->
+
+<parameterMap id="serverMemoryDetailParameterMap" class="com.redhat.reportengine.server.dbmap.ServerMemoryDetail">
+<parameter property="remoteTime"/>
+<parameter property="serverId"/>
+<parameter property="physical"/>
+<parameter property="swap"/>
+</parameterMap>
+
+<resultMap id="serverMemoryDetailResultMap" class="com.redhat.reportengine.server.dbmap.ServerMemoryDetail">
+<result property="id" column="id"/>
+<result property="localTime" column="local_time"/>
+<result property="remoteTime" column="remote_time"/>
+<result property="serverId" column="server_id"/>
+<result property="physical" column="physical"/>
+<result property="swap" column="swap"/>
+</resultMap>
+
+<insert id="insertServerMemoryDetail" parameterMap="serverMemoryDetailParameterMap">
+INSERT INTO re_server_memory_detail (remote_time, server_id, physical, swap) values (?,?,?,?)
+</insert>
+
+<update id="updateServerMemoryDetail" parameterMap="serverMemoryDetailParameterMap">
+UPDATE re_server_memory_detail SET local_time=statement_timestamp(), remote_time=?, server_id=?, physical=?, swap=? WHERE server_id=$serverId$
+</update>
+
+<select id="getServerMemoryDetailByServerId" parameterClass="java.lang.Integer" resultMap="serverMemoryDetailResultMap">
+SELECT * FROM re_server_memory_detail WHERE server_id=$serverId$
+</select>
+
+<delete id="deleteServerMemoryDetailByServerId" parameterClass="java.lang.Integer" >
+DELETE FROM re_server_memory_detail WHERE server_id=$serverId$
+</delete>
+
+<!-- Server Memory Detail - END-->
+
+<!-- Drop Resource Tables - START-->
+
+<!-- CPU Table-->
+<delete id="dropCpuTableSequence" parameterClass="java.lang.String" >
+DROP SEQUENCE IF EXISTS re_resource_cpu_id_seq_$tableName$ CASCADE
+</delete>
+
+<delete id="dropCpuTable" parameterClass="java.lang.String" >
+DROP TABLE IF EXISTS re_resource_cpu_$tableName$ CASCADE
+</delete>
+
+<!-- Memory Table-->
+
+<delete id="dropMemoryTableSequence" parameterClass="java.lang.String" >
+DROP SEQUENCE IF EXISTS re_resource_memory_id_seq_$tableName$ CASCADE
+</delete>
+
+<delete id="dropMemoryTable" parameterClass="java.lang.String" >
+DROP TABLE IF EXISTS re_resource_memory_$tableName$ CASCADE
+</delete>
+
+
+<!-- Drop Resource Tables - END-->
+
 
 </sqlMap>

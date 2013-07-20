@@ -17,6 +17,7 @@
   	<module>scheduler</module>
   	<module>init</module>
     <module>web</module>
+    <module>core-scheduler</module>
   </modules>
 
 	<dependencies>
@@ -45,6 +46,31 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.7</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.1.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>		
+		
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>2.2.3.GA</version>
+		</dependency>
+		
+				<dependency>
+			<groupId>org.hyperic</groupId>
+			<artifactId>sigar</artifactId>
+			<version>1.6.5.132-5</version>
+		</dependency>
+		
 	</dependencies>
   
  

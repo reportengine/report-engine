@@ -1,3 +1,4 @@
+	<%@ include file="re_jsp.jsp"%>
 	<!-- datatable CSS-->		
 	<link rel="stylesheet" href="../media/css/dt_page.css"/>
 	<link rel="stylesheet" href="../media/css/dt_table_jui.css"/>
@@ -74,8 +75,8 @@
 	<link rel="stylesheet" href="../css/jquery.multiselect.filter.css" type="text/css"/>
 	
 	<!-- highchart JS files -->
-	<script type='text/javascript' src="../js/Highcharts/js/highcharts.js"></script>
-	<script type='text/javascript' src="../js/Highcharts/js/modules/exporting.js"></script>
+<!-- 	<script type='text/javascript' src="../js/Highcharts/js/highcharts.js"></script>
+	<script type='text/javascript' src="../js/Highcharts/js/modules/exporting.js"></script> -->
 	
 	<!-- highstock JS files -->
 	<script type='text/javascript' src="../js/Highstock/js/highstock.js"></script>
@@ -107,5 +108,13 @@
 			showAnim:"clip",
 			dateFormat: 'dd-mm-yy' });
 		
+	});
+	</script>
+	
+	<script type="text/javascript">
+	Highcharts.setOptions({
+		global: {
+			useUTC: false
+		}
 	});
 	</script>

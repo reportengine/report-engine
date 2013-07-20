@@ -6,11 +6,12 @@ package com.redhat.reportengine.server;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import org.apache.log4j.Logger;
+
+import com.redhat.reportengine.scheduler.ManageScheduler;
 import com.redhat.reportengine.server.cache.ServerSettings;
-import com.redhat.reportengine.server.jobs.TestSuiteAggregationImpl;
-import com.redhat.reportengine.server.jobs.UpdateJobStatus;
+import com.redhat.reportengine.server.jobs.system.TestSuiteAggregationImpl;
+import com.redhat.reportengine.server.jobs.system.UpdateJobStatus;
 import com.redhat.reportengine.server.queue.actions.ManageQueues;
-import com.redhat.reportengine.server.scheduler.ManageScheduler;
 import com.redhat.reportengine.server.scheduler.ManageJobs;
 import com.redhat.reportengine.server.sql.SqlMap;
 
@@ -42,15 +43,11 @@ public class InitServer extends HttpServlet {
 			
 			//Start Quartz Scheduler..
 			new Thread(new ManageScheduler()).start();
-			Thread.sleep(1000*5);
+			Thread.sleep(1000*3);
 			
 			//Add system jobs in scheduler
 			ManageJobs.loadAllJobs();
-			
 
-			//Add user jobs in job scheduler
-			//TODO: add user jobs in job scheduler
-			
 			
 			_logger.debug("Starting Aggregation................");
 			TestSuiteAggregationImpl.doAggregateTestSuite();
@@ -75,7 +72,7 @@ public class InitServer extends HttpServlet {
 		 _logger.info("Shutdown application command has been issued! Shutting down services (Threads)...");
 		 
 		 //Stop Quartz Scheduler...
-		 ManageScheduler.shutdownScheduler();
+		 ManageScheduler.shutdown();
 		 //Stopping Queue Managers
 		 ManageQueues.stopAllQueueManagers();
 		 //Closing SQL Map active session

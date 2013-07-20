@@ -254,9 +254,15 @@ CREATE TABLE re_job_classes
 --------------------------------------------------
 -- Insert JOB classes
 --------------------------------------------------
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.TestSuiteAggregationImpl', 'Test Suite Aggregation');
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.UpdateJobStatus', 'Update Incomplete Jobs Status');
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.EmailReportGroupJob', 'Email Test Reports');
+INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.system.TestSuiteAggregationImpl', 'Test Suite Aggregation');
+INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.system.UpdateJobStatus', 'Update Incomplete Jobs Status');
+INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.system.ServerAgentReachableStatus', 'Update Server Reachable Status');
+
+INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.EmailReportGroupJob', 'Email: Test Reports');
+INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.MeasureCpuUsage', 'Resource: Measure CPU usage');
+INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.MeasureMemoryUsage', 'Resource: Measure Memory/Swap usage');
+INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.MeasureCpuMemoryCpusSwap', 'Resource: Measure CPU/CPUs/Memory/Swap usage');
+
 
 --------------------------------------------------
 -- Sequence for Job Scheduler
@@ -286,7 +292,7 @@ CREATE TABLE re_job_scheduler
   valid_from_time timestamp NULL,
   valid_to_time timestamp NULL,
   job_frequency character varying(50) NULL,
-  job_weekday character varying(50) NULL,
+  job_weekday character varying(50) NULL,  
   job_day_month character varying(50) NULL,
   job_execution_time time NULL,
   job_description character varying(200) NULL,
@@ -564,3 +570,226 @@ CREATE TABLE re_auth_user_role_map
   FOREIGN KEY (roleid) REFERENCES re_auth_role(id) ON DELETE CASCADE
 );
 
+
+--------------------------------------------------
+-- Tables to record mesurments from remote
+--------------------------------------------------
+
+--------------------------------------------------
+-- Sequence for Server
+--------------------------------------------------
+CREATE SEQUENCE re_server_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+--------------------------------------------------
+-- This table is used to store Server Details
+--------------------------------------------------
+CREATE TABLE re_server
+(
+  id integer NOT NULL default nextval('re_server_id_seq'),
+  name character varying(500) NOT NULL,
+  host_ip character varying(100) NOT NULL,
+  platform character varying(100) NULL,
+  agent_port integer NOT NULL,
+  reference_key character varying(100) NULL,
+  discovery_status character varying(100) NULL,
+  update_interval integer NOT NULL DEFAULT 300,  
+  creation_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  unique(id),
+  unique(name),
+  unique(reference_key)
+);
+
+
+--------------------------------------------------
+-- Sequence for Server-job table
+--------------------------------------------------
+CREATE SEQUENCE re_server_job_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+--------------------------------------------------
+-- This table is used to store Server-Job Map
+--------------------------------------------------
+CREATE TABLE re_server_job
+(
+  id integer NOT NULL default nextval('re_server_job_id_seq'),
+  server_id integer NOT NULL,
+  job_id integer NOT NULL,
+  unique(id),
+  FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE,
+  FOREIGN KEY (job_id) REFERENCES re_job_scheduler(id) ON DELETE CASCADE
+);
+
+--------------------------------------------------
+-- Sequence for Server Status
+--------------------------------------------------
+CREATE SEQUENCE re_server_status_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+----------------------------------------------------
+-- This table is used to store Server Status Details
+----------------------------------------------------
+CREATE TABLE re_server_status
+(
+  id integer NOT NULL default nextval('re_server_status_id_seq'),
+  server_id integer NOT NULL,
+  reachable boolean NOT NULL DEFAULT false,
+  agent_status boolean NOT NULL DEFAULT false,
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  unique(id),
+  FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
+);
+
+
+-----------------------------------------------------------------
+-- View - Get Server Details with status
+-----------------------------------------------------------------
+CREATE VIEW re_view_getserverdetailwithstatus AS SELECT sr.id, sr.name, sr.host_ip, sr.platform, sr.agent_port, sr.reference_key, sr.discovery_status, sr.update_interval, sr.creation_time, COALESCE(srs1.reachable, false) AS reachable,  COALESCE(srs1.agent_status,false) AS agent_status, srs1.local_time FROM re_server AS sr LEFT JOIN re_server_status AS srs1 ON (sr.id=srs1.server_id) LEFT OUTER JOIN re_server_status AS srs2 ON (sr.id = srs2.server_id AND srs1.id < srs2.id) WHERE srs2.id IS NULL;
+
+
+
+--------------------------------------------------
+-- Sequence for Server CPU Details
+--------------------------------------------------
+CREATE SEQUENCE re_server_cpu_detail_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+----------------------------------------------------
+-- This table is used to store Server Status Details
+----------------------------------------------------
+CREATE TABLE re_server_cpu_detail
+(
+  id integer NOT NULL default nextval('re_server_cpu_detail_id_seq'),
+  server_id integer NOT NULL,
+  remote_time timestamp NOT NULL,
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  cache_size bigint NOT NULL,
+  cores_per_socket bigint NOT NULL,
+  mhz integer NOT NULL,
+  model varchar(100) NOT NULL,
+  total_cores integer NOT NULL,
+  total_sockets integer NOT NULL,
+  vendor varchar(100) NOT NULL,
+  unique(id),
+  unique(server_id),
+  FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
+);
+
+--------------------------------------------------
+-- Sequence for Server Network Details
+--------------------------------------------------
+CREATE SEQUENCE re_server_network_detail_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+----------------------------------------------------
+-- This table is used to store Server Network Details
+----------------------------------------------------
+CREATE TABLE re_server_network_detail
+(
+  id integer NOT NULL default nextval('re_server_network_detail_id_seq'),
+  server_id integer NOT NULL,
+  remote_time timestamp NOT NULL,
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  hostname varchar(100) NOT NULL,
+  default_gateway varchar(100) NULL,
+  primary_dns varchar(100) NULL,
+  secondary_dns varchar(100) NULL,
+  domain_name varchar(100) NULL,
+  iface_name varchar(50) NOT NULL,
+  iface_description varchar(500) NULL,
+  iface_type varchar(100) NOT NULL,
+  ip_address varchar(100) NOT NULL,
+  subnetmask varchar(100) NOT NULL,
+  broadcast varchar(100) NOT NULL,
+  destination varchar(100) NULL,
+  mac varchar(100) NOT NULL,
+  flags bigint NULL,
+  metric bigint NULL,
+  mtu bigint NULL,
+  unique(id),
+  unique(server_id),
+  FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
+);
+
+
+--------------------------------------------------
+-- Sequence for Server OS Details
+--------------------------------------------------
+CREATE SEQUENCE re_server_os_detail_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+----------------------------------------------------
+-- This table is used to store Server Network Details
+----------------------------------------------------
+CREATE TABLE re_server_os_detail
+(
+  id integer NOT NULL default nextval('re_server_os_detail_id_seq'),
+  server_id integer NOT NULL,
+  remote_time timestamp NOT NULL,
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  name varchar(100) NOT NULL,
+  description varchar(300) NULL,
+  arch varchar(100) NOT NULL,
+  machine varchar(100) NULL,
+  kernel_version varchar(300) NULL,
+  patch_level varchar(500) NULL,
+  vendor varchar(300) NOT NULL,
+  vendor_version varchar(500) NULL,
+  vendor_code_name varchar(100) NULL,
+  data_model varchar(100) NULL,
+  cpu_endian varchar(100) NULL,
+  vendor_name varchar(100) NULL,
+  unique(id),
+  unique(server_id),
+  FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
+);
+
+--------------------------------------------------
+-- Sequence for Server MEMORY Details
+--------------------------------------------------
+CREATE SEQUENCE re_server_memory_detail_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+----------------------------------------------------
+-- This table is used to store Server Network Details
+----------------------------------------------------
+CREATE TABLE re_server_memory_detail
+(
+  id integer NOT NULL default nextval('re_server_memory_detail_id_seq'),
+  server_id integer NOT NULL,
+  remote_time timestamp NOT NULL,
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  physical bigint NOT NULL,
+  swap bigint NOT NULL,
+  unique(id),
+  unique(server_id),
+  FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
+);

@@ -1,3 +1,4 @@
+<%@ include file="include/re_jsp.jsp"%>
 <%@page import="com.redhat.reportengine.server.authentication.Authentication"%>
 <%@page import="com.redhat.reportengine.server.dbmap.AuthUser"%>
 <%@page import="com.redhat.reportengine.server.dbdata.LDAPTable"%>

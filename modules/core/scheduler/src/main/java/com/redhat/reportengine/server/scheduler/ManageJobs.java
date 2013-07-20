@@ -8,8 +8,12 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.quartz.JobDataMap;
+import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 
+
+import com.redhat.reportengine.scheduler.JobDetails;
+import com.redhat.reportengine.scheduler.ManageScheduler;
 import com.redhat.reportengine.server.dbdata.JobSchedulerTable;
 import com.redhat.reportengine.server.dbmap.JobScheduler;
 import com.redhat.reportengine.server.reports.Keys;
@@ -19,56 +23,45 @@ import com.redhat.reportengine.server.reports.Keys;
  */
 public class ManageJobs {
 	final static Logger _logger = Logger.getLogger(ManageJobs.class);
-	static String jobGroupName = "reportEngineJobGroup";
-	static String triggerGroupName = "reportEngineTriggerGroup";
-	public static void addAllJobsInScheduler(){		
-		JobDetails job = new JobDetails();
-		job.setTriggerGroupName(triggerGroupName);
-		job.setJobName("System Job - Test Suite Aggregation");
-		job.setJobTargetClass("com.redhat.reportengine.server.jobs.TestSuiteAggregationImpl");
-		job.setJobFromTime(new Date());
-		//job.setJobToTime(new Date(new Date().getTime()+(1000*10)));
-		job.setJobGroupName(jobGroupName);
-		job.setRepeatInterval(1000*60*30L); //30 minutes once
-		job.setRepeatCount(-1);
-		//job.setJobCronExpression("* * * ? * *");
-		ManageScheduler.addNewSimpleJob(job);		
-		//ManageScheduler.addNewCronJob(job);
-		
-		/*
-		JobDataMap jobDataMap = new JobDataMap();
-		jobDataMap.put("InactiveTime", 1000*60*60*3); //3 hours
-		job.setJobDataMap(jobDataMap);
-		*/		
-		job.setJobName("System Job - Update Job Status");
-		job.setJobTargetClass("com.redhat.reportengine.server.jobs.UpdateJobStatus");
-		ManageScheduler.addNewSimpleJob(job);	
-	}
-	
+
 	public static void addAJobInScheduler(int id) throws SQLException{
-		addJobInscheduler(new JobSchedulerTable().get(id));
+		addAJobInScheduler(new JobSchedulerTable().get(id));
 	}
 	
 	public static void addAJobInScheduler(String jobName) throws SQLException{
-		addJobInscheduler(new JobSchedulerTable().get(jobName));
+		addAJobInScheduler(new JobSchedulerTable().get(jobName));
 	}
 	
-	public static boolean removeAJobFromScheduler(int id) throws ParseException, SchedulerException, SQLException{
-		return removeAJobFromScheduler((new JobSchedulerTable().get(id)).getJobName());
+	public static boolean removeAJobFromScheduler(int id) throws ParseException, SQLException, SchedulerException{
+		JobScheduler jobScheduler = new JobSchedulerTable().get(id);
+		return removeAJobFromScheduler(jobScheduler);
 	}
 	
-	public static boolean removeAJobFromScheduler(String jobName) throws ParseException, SchedulerException{
-		return ManageScheduler.removeJob(jobName, jobGroupName);
+	public static boolean removeAJobFromScheduler(JobScheduler jobScheduler) throws ParseException, SQLException, SchedulerException{
+		return removeAJobFromScheduler(new JobKey(jobScheduler.getJobName(), jobScheduler.getTargetClassDescription()));
+	}
+	
+	public static boolean removeAJobFromScheduler(String jobName) throws ParseException, SQLException, SchedulerException{
+		JobScheduler jobScheduler = new JobSchedulerTable().get(jobName);
+		if(jobScheduler == null){
+			_logger.info("Job Not available on scheduler Table: "+jobName);
+			return false;
+		}
+		return removeAJobFromScheduler(new JobKey(jobScheduler.getJobName(), jobScheduler.getTargetClassDescription()));
+	}
+	
+	public static boolean removeAJobFromScheduler(JobKey jobKey) throws ParseException, SchedulerException{
+		return ManageScheduler.removeJob(jobKey);
 	}
 	
 	public static void loadAllJobs() throws SQLException{
 		ArrayList<JobScheduler> jobs = new JobSchedulerTable().getAll();
 		for(JobScheduler job : jobs){
-			addJobInscheduler(job);
+			addAJobInScheduler(job);
 		}
 	}
 	
-	private static void addJobInscheduler(JobScheduler jobScheduler) {
+	public static void addAJobInScheduler(JobScheduler jobScheduler) {
 		if(!jobScheduler.isJobEnabled()){
 			_logger.debug("["+jobScheduler.getJobName()+"] Job has been disabled.. Skipped to update in scheduler...");
 			return;
@@ -77,8 +70,8 @@ public class ManageJobs {
 		JobDetails job = new JobDetails();
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(Keys.DATA_REFERENCDE_ID, jobScheduler.getDataReferenceId());
-		job.setTriggerGroupName(triggerGroupName);
-		job.setJobName(jobScheduler.getJobName());
+		job.setTriggerGroupName(jobScheduler.getTargetClassDescription());
+		job.setName(jobScheduler.getJobName());
 		job.setJobTargetClass(jobScheduler.getTargetClass());
 		job.setJobDataMap(jobDataMap);// JOB data added here
 		if(jobScheduler.getValidFromTime() != null){
@@ -91,13 +84,17 @@ public class ManageJobs {
 			job.setJobToTime(jobScheduler.getValidToTime());
 		}
 		
-		job.setJobGroupName(jobGroupName);
+		job.setGroup(jobScheduler.getTargetClassDescription());
 		
 		// This is for simple jobs
 		if(jobScheduler.isSimpleJob()){
 			job.setRepeatInterval(jobScheduler.getRepeatInterval()*1000L);
-			job.setRepeatCount(jobScheduler.getRepeatCount());
-			ManageScheduler.addNewSimpleJob(job);
+			if(jobScheduler.getRepeatCount() != null){
+				job.setRepeatCount(jobScheduler.getRepeatCount());
+			}else{
+				job.setRepeatCount(-1);
+			}
+			ManageScheduler.addJob(job);
 			return;
 		}else{ //For cron jobs			
 			if(jobScheduler.getCronExpression() != null){
@@ -129,9 +126,7 @@ public class ManageJobs {
 					return;
 				}
 			}
-			
-			ManageScheduler.addNewCronJob(job);
-			
+			ManageScheduler.addJob(job);			
 		}
 			
 	}

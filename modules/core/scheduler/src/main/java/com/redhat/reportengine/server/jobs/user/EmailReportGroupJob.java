@@ -1,4 +1,4 @@
-package com.redhat.reportengine.server.jobs;
+package com.redhat.reportengine.server.jobs.user;
 
 import java.util.ArrayList;
 

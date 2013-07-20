@@ -1,3 +1,4 @@
+<%@ include file="include/re_jsp.jsp"%>
 <tr><td align="center">	
 			<form method="post" name="loginform" action="login.jsp" >
 		<table border="0" cellspacing="3" cellpadding="0" align="center">
