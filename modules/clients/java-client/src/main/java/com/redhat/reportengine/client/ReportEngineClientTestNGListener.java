@@ -62,7 +62,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 			try {
 				reportEngine.insertTestGroup(context.getName());
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on onStart,", ex);
 			}
 		}
 	}
@@ -85,7 +85,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 				reportEngine.takeScreenShot();
 				reportEngine.updateTestCase(TestCase.FAILED, ClientCommon.toString(result.getThrowable()));
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on onTestFailure,", ex);
 			}
 		}		
 	}
@@ -103,7 +103,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 					reportEngine.insertTestCase(result.getName(), result.getName()+"("+getParametersString(result.getParameters())+")", TestCase.SKIPPED);
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on onTestSkipped,", ex);
 			}
 		}
 		
@@ -118,7 +118,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 			try {
 				reportEngine.insertTestCase(test.getName(), test.getName()+"("+getParametersString(test.getParameters())+")", TestCase.RUNNING);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on onTestStart,", ex);
 			}
 		}		
 	}
@@ -132,7 +132,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 			try {
 				reportEngine.updateTestCase(TestCase.PASSED);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on onTestSuccess,", ex);
 			}
 		}		
 	}
@@ -184,7 +184,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 			try {
 				reportEngine.updateTestSuite(TestSuite.COMPLETED, System.getProperty(reportEngine.getBuildVersionReference()));
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on onFinish,", ex);
 			}	
 		}	
 	}
@@ -199,7 +199,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 				reportEngine.runLogHandler();
 				reportEngine.updateTestSuiteName(suite.getName());				
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on onStart,", ex);
 			}	
 		}
 	}

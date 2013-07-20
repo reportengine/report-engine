@@ -35,12 +35,15 @@ public class ReportEngineClientJunitListener extends RunListener{
 		if(RemoteAPI.isClientLoadedSuccess()){
 			reportEngineClientAPI.runLogHandler();
 			try {
-				if(description.getDisplayName() != null){
-					reportEngineClientAPI.updateTestSuiteName(description.getDisplayName());
-				}		
+				if(description != null){
+					if(description.getDisplayName() != null){
+						reportEngineClientAPI.updateTestSuiteName(description.getDisplayName());
+						return;
+					}
+				}
 				reportEngineClientAPI.insertTestGroup("Junit - No groups");
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on testRunStarted,", ex);
 			}
 		}
 	}
@@ -51,9 +54,9 @@ public class ReportEngineClientJunitListener extends RunListener{
 	public void testRunFinished(Result result) {
 		if(RemoteAPI.isClientLoadedSuccess()){
 			try {
-				reportEngineClientAPI.updateTestSuite(TestSuite.COMPLETED, reportEngineClientAPI.getBuildVersionReference());
+				reportEngineClientAPI.updateTestSuite(TestSuite.COMPLETED, System.getProperty(reportEngineClientAPI.getBuildVersionReference()));
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on testRunFinished,", ex);
 			}	
 		}
 	}
@@ -66,7 +69,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 			try {
 				reportEngineClientAPI.insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.RUNNING);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on testStarted,", ex);
 			}
 		}		
 	}
@@ -79,7 +82,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 			try {
 				reportEngineClientAPI.updateTestCase(TestCase.PASSED);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on testFinished,", ex);
 			}
 		}
 	}
@@ -93,7 +96,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 				reportEngineClientAPI.takeScreenShot();
 				reportEngineClientAPI.updateTestCase(TestCase.FAILED, ClientCommon.toString(failure.getException()));
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on testFailure,", ex);
 			}
 		}	
 	}
@@ -110,7 +113,7 @@ public class ReportEngineClientJunitListener extends RunListener{
 					reportEngineClientAPI.insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.SKIPPED);
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				_logger.log(Level.SEVERE, "Error on testIgnored,", ex);
 			}
 		}
 	}

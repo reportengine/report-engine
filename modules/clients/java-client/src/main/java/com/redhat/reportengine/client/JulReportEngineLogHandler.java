@@ -34,7 +34,6 @@ public class JulReportEngineLogHandler extends Handler {
 		testLogs.setClassName(record.getSourceClassName());
 		testLogs.setMethodName(record.getSourceMethodName());
 		testLogs.setThrowable(ClientCommon.toString(record.getThrown()));
-		//System.out.println("Report Engine Client: "+testLogs.getMethodName()+" - "+testLogs.getLogLevel()+" - "+testLogs.getMessage());	
 		try {
 			remoteApi.insertLogMessage(testLogs);
 		} catch (Exception ex) {

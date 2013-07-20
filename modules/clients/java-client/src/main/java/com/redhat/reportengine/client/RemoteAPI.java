@@ -38,7 +38,7 @@ public class RemoteAPI {
 	protected static boolean initialized = false;
 	private static boolean clientConfigurationSuccess = false;
 	private static boolean clientLoadedSuccess = false;
-	
+
 	private static final String rePropertyFile 		= "REPORT_ENGINE_PROPERTY_FILE";	
 	private static final String originalFile 		= "ORIGINAL.FILE";
 	private static final String testReference 		= "REPORT.ENGINE.TEST.REFERENCE";
@@ -48,13 +48,25 @@ public class RemoteAPI {
 	private static final String loggerType	 		= "REPORT.RENGINE.LOGGER.TYPE";
 	private static final String logLevel	 		= "REPORT.ENGINE.LOGGER.LEVEL";
 	private static final String serverRESTUrl 		= "REPORT.ENGINE.SERVER.REST.URL";
-	
+
 	private static final String testSuiteName 		= "TEST.SUITE.NAME";
-	
-	protected static final String loggersToWarn		= "sun.rmi,org.apache.http,com.sun.xml.bind,com.sun.jersey";
-	
+
+	protected static final String loggersToWarn		= 
+			"org.apache.http," +
+			"com.sun.xml.bind," +
+			"com.sun.jersey," +
+			"org.jboss.resteasy";
+
 	private RESTClientRestEasy restClient = null;
 
+	public RemoteAPI() {
+		super();
+		//For JUL
+		this.setJulLoggers(loggersToWarn, Level.WARNING);
+		//For LOG4J
+		this.setLog4jLoggers(loggersToWarn, org.apache.log4j.Level.WARN);
+		_logger.log(Level.INFO, loggersToWarn+", set to "+Level.WARNING+" Level...");
+	}
 
 	public boolean isLastTestStateRunning(){
 		if(test.getTestCaseId() != null){
@@ -77,7 +89,7 @@ public class RemoteAPI {
 
 			_logger.log(Level.INFO, "System.getenv: "+System.getenv(rePropertyFile));
 			_logger.log(Level.INFO, "System.getProperty: "+System.getProperty(rePropertyFile));
-			
+
 			if(System.getenv(rePropertyFile) != null){				//get property file from system ENV variable
 				primaryPropertyFile = System.getenv(rePropertyFile).trim(); 
 			}else if(System.getProperty(rePropertyFile) != null){ 	//Get Property file by System Property variable
@@ -108,7 +120,7 @@ public class RemoteAPI {
 				propertyFile.clear();
 				propertyFile.load(new FileReader(newPropertyFile));
 			}
-			
+
 			test.setServerRestUrl(propertyFile.getProperty(serverRESTUrl).trim());
 			test.setTestReference(propertyFile.getProperty(testReference).trim());
 			test.setTakeScreenShot(Boolean.parseBoolean(propertyFile.getProperty(screenShot).trim()));
@@ -116,7 +128,7 @@ public class RemoteAPI {
 			test.setLoggerType(propertyFile.getProperty(loggerType).trim());
 			test.setLogLevel(propertyFile.getProperty(logLevel).trim());
 			test.setBuildVersionReference(propertyFile.getProperty(buildVersion).trim());
-			
+
 			if((propertyFile.getProperty(testSuiteName) != null) && propertyFile.getProperty(testSuiteName).trim().length() > 0){
 				test.setTestSuiteName(propertyFile.getProperty(testSuiteName));
 			}
@@ -142,12 +154,17 @@ public class RemoteAPI {
 			initialized = true;
 		}
 	}
-	
-	protected void setLoggers(String loggers, Level level){
+
+	protected void setJulLoggers(String loggers, Level level){
 		for(String logger : loggers.split(",")){
 			Logger.getLogger(logger.trim()).setLevel(level);
 		}
-		_logger.log(Level.INFO, "["+loggersToWarn+"] loggers log level set to "+level.toString());
+	}
+	
+	protected void setLog4jLoggers(String loggers, org.apache.log4j.Level level){
+		for(String logger : loggers.split(",")){
+			org.apache.log4j.Logger.getLogger(logger.trim()).setLevel(level);
+		}
 	}
 
 	public void runLogHandler(){
@@ -155,8 +172,6 @@ public class RemoteAPI {
 			LogHandler.setRemoteApi(this);
 			LogHandler.initLogger(); 		// Initialize Log watcher
 			_logger.log(Level.INFO, "Enabled Watch Logger, Logger Type: "+test.getLoggerType());
-		}else{
-			this.setLoggers(loggersToWarn, Level.WARNING);
 		}
 	}
 
@@ -196,11 +211,11 @@ public class RemoteAPI {
 		testSuite.setTestHost(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");	
 		restClient.post(TestResultsRestUrlMap.INSERT_TESTSUITE, testSuite, TestSuite.class);
 	}
-	
+
 	public void updateTestSuiteName(String testSuiteName) throws Exception{
 		updateTestSuiteName(testSuiteName, null);
 	}
-	
+
 	public void updateTestSuiteName(String testSuiteName, String comments) throws Exception{
 		TestSuite testSuite = new TestSuite();
 		testSuite.setId(test.getTestSuiteId());
@@ -212,7 +227,7 @@ public class RemoteAPI {
 		testSuite.setTestComments(comments);
 		restClient.put(TestResultsRestUrlMap.UPDATE_TESTSUITE_NAME, testSuite, TestSuite.class);
 	}
-	
+
 
 	public void updateTestSuite(String status, String build) throws Exception{
 		updateTestSuite(status, build, null);
@@ -262,13 +277,17 @@ public class RemoteAPI {
 	}
 
 	public void updateTestCase(String status, String comments) throws Exception{
+		if(test.getTestCaseId() == null){
+			_logger.log(Level.INFO, "Seems selected test already get finished...skipping...");
+			return;
+		}
 		TestCase testCase = new TestCase();
 		testCase.setId(test.getTestCaseId());
 		testCase.setTestResult(status);
 		if(comments != null){
 			testCase.setTestComments(comments);
 		}	
-		
+
 		if(test.getScreenShotFileName() != null){
 			testCase.setScreenShotFileName(test.getScreenShotFileName());
 			testCase.setScreenShotFileBase64(test.getScreenShotFileBase64String());
@@ -293,13 +312,13 @@ public class RemoteAPI {
 			Robot robot = new Robot();
 			BufferedImage image = robot.createScreenCapture(screenRectangle);			
 			//image to bytes
-	        ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-	        ImageIO.write(image, "png", byteArrayStream);
-	        byteArrayStream.flush();
-	        byte[] imageAsRawBytes = byteArrayStream.toByteArray();
-	        byteArrayStream.close();	        
-	        //bytes to string
-	        test.setScreenShotFileBase64String(new String(Base64.encodeBase64(imageAsRawBytes)));	
+			ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+			ImageIO.write(image, "png", byteArrayStream);
+			byteArrayStream.flush();
+			byte[] imageAsRawBytes = byteArrayStream.toByteArray();
+			byteArrayStream.close();	        
+			//bytes to string
+			test.setScreenShotFileBase64String(new String(Base64.encodeBase64(imageAsRawBytes)));	
 			_logger.log(Level.FINE, "ScreenShot File name: {0}, Screen shot done", fileName);
 			test.setScreenShotFileName(fileName);
 		}catch(Exception ex){
