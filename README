@@ -1,5 +1,15 @@
-To create war file --> command: mvn clean compile war:war
+Create Eclipse Project:
 
-To create eclipse project --> command: mvn eclipse:eclipse -Dwtpversion=2.0
+  mvn eclipse:eclpise
+  
+Create web module as web eclipse project:
+  move to the location "cd report-engine/modules/core/web"
+  mvn eclipse:eclipse -Dwtpversion=2.0
 
-To create client jar file --> command: mvn -f pom-java-client.xml clean compile jar:jar
+To create jar files and war files:
+
+  run it on parent location (report-engine)
+  mvn clean package
+  
+  war file will be generated on "report-engine/modules/core/web/target/re.war"
+  Java Client (testNG and Junit) will  be on "report-engine/modules/clients/java-client/target/java-client-*.jar"
