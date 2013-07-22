@@ -331,7 +331,7 @@ if(buttonName != null){
 		ArrayList<ReportGroup> reportGroups = new ManageReportGroup().getAllReportGroup();
 		
 		for(int i = 0; i<reportGroups.size(); i++){			
-			out.println("<tr><td align=\"center\"><input type=\"radio\" name=\""+Keys.REPORT_EMAIL_GROUP_ID+"\" value=\""+reportGroups.get(i).getId()+"\"></td><td>"+(i+1)+"</td><td align=\"left\">"+reportGroups.get(i).getGroupName()+"</td><td align=\"center\"><img width=\"16\" height=\"16\"  src='../images/icons/"+reportGroups.get(i).isTestSuiteGroupEnabled()+".png' alt='"+reportGroups.get(i).isTestSuiteGroupEnabled()+"'></td><td align=\"left\">"+reportGroups.get(i).getEmailTo()+"</td><td align=\"left\">"+General.getNotNullString(reportGroups.get(i).getEmailCc())+"</td><td align=\"left\">"+General.getGuiDateTime(reportGroups.get(i).getCreationTime())+"</td></tr>");	
+			out.println("<tr><td align=\"center\"><input type=\"radio\" name=\""+Keys.REPORT_EMAIL_GROUP_ID+"\" value=\""+reportGroups.get(i).getId()+"\"></td><td>"+(i+1)+"</td><td align=\"left\">"+reportGroups.get(i).getGroupName()+"</td><td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+reportGroups.get(i).isTestSuiteGroupEnabled()+".png' alt='"+reportGroups.get(i).isTestSuiteGroupEnabled()+"'></td><td align=\"left\">"+reportGroups.get(i).getEmailTo()+"</td><td align=\"left\">"+General.getNotNullString(reportGroups.get(i).getEmailCc())+"</td><td align=\"left\">"+General.getGuiDateTime(reportGroups.get(i).getCreationTime())+"</td></tr>");	
 		}
 
 	%>
@@ -347,8 +347,8 @@ if(buttonName != null){
 <BR>
 <table cellpadding="0" cellspacing="0" border="0" id="dt_table">
 <tr>
-<td><img width="16" height="16"  src='../images/icons/true.png'  alt='Enabled'></td><td valign="top">- Enabled&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/false.png' alt='Disabled'></td><td valign="top">- Disabled&nbsp;</td> 
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>true.png'  alt='Enabled'></td><td valign="top">- Enabled&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>false.png' alt='Disabled'></td><td valign="top">- Disabled&nbsp;</td> 
 <tr>
 </table>
 

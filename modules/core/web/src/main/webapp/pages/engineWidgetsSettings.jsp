@@ -11,9 +11,9 @@ if(buttonName == null){
 		<div id="container">		
 		<form method="post" name="EngineWedgetsSettings" action="engineWidgetsSettings.jsp"> 
 		<table border="0" cellpadding="3" align="left" id="dt_table">
-		<tr><td colspan="5"><h1>Widgets Settings:</h1></td></tr>
+		<tr><td colspan="5"><h1>Theme Settings:</h1></td></tr>
 		<tr>
-			<td align="left">Current WidGet</td>
+			<td align="left">Current Theme</td>
 			<td>:</td>
 			<td colspan="2">
 				<%=ServerSettings.getCurrentWidget()%>
@@ -21,10 +21,10 @@ if(buttonName == null){
 		</tr>
 		
 		<tr>
-			<td align="left">Available Widgets</td>
+			<td align="left">Available Themes</td>
 			<td>:</td>
 			<td colspan="2">
-				<select name="<%=ServerSettings.KEY_ENGINE_CURRENT_WIDGET%>" id="<%=ServerSettings.KEY_ENGINE_CURRENT_WIDGET%>" style="width:320px;">
+				<select data-placeholder="Choose a Theme..."  tabindex="1" class="chosen" name="<%=ServerSettings.KEY_ENGINE_CURRENT_WIDGET%>" id="<%=ServerSettings.KEY_ENGINE_CURRENT_WIDGET%>" style="width:320px;">
 				<%
 				String[] themes = ServerSettings.getAvailableWidgets().split(",");
 				for(String theme : themes){
@@ -50,7 +50,7 @@ if(buttonName == null){
 			<td align="left">Available Menu Styles</td>
 			<td>:</td>
 			<td colspan="2">
-				<select name="<%=ServerSettings.KEY_ENGINE_CURRENT_MENU_STYLE%>" id="<%=ServerSettings.KEY_ENGINE_CURRENT_MENU_STYLE%>" style="width:320px;">
+				<select data-placeholder="Choose a Menu..."  tabindex="2" class="chosen" name="<%=ServerSettings.KEY_ENGINE_CURRENT_MENU_STYLE%>" id="<%=ServerSettings.KEY_ENGINE_CURRENT_MENU_STYLE%>" style="width:320px;">
 				<%
 				themes = ServerSettings.getAvailableMenuStyles().split(",");
 				for(String theme : themes){
@@ -77,5 +77,7 @@ if(buttonName == null){
 		ServerSettings.updateWidgetsSettings(request, session);
 		response.sendRedirect("engineWidgetsSettings.jsp");
 }%>
-
+<script type="text/javascript"> 
+      $('.chosen').chosen();
+  </script>
 <%@ include file="index-part3.jsp"%>

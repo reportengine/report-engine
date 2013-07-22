@@ -78,7 +78,7 @@ TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(id);
 				skippedStr.append("<font color=\"brown\"><b>").append(testGroups.get(i).getSkippedCases()).append("</b></font>");
 			}
 			
-			out.println("<tr><td>"+(i+1)+"</td><td><a href=\"reportsTestCases.jsp?suiteid="+testGroups.get(i).getTestSuiteId()+"&groupid="+testGroups.get(i).getId()+"\">"+testGroups.get(i).getTestGroup()+"</a></td><td align=\"center\"><b>"+testGroups.get(i).getTotalCases()+"</b></td><td align=\"center\">"+passedStr.toString()+"</td></td><td align=\"center\">"+failedStr.toString()+"</td><td align=\"center\">"+skippedStr.toString()+"</td><td align=\"center\"><a href=\"reportsTestLogs.jsp?groupId="+testGroups.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='../images/icons/debug.png'  alt='Debug'></a></td></tr>");		
+			out.println("<tr><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsTestCases.jsp?suiteid="+testGroups.get(i).getTestSuiteId()+"&groupid="+testGroups.get(i).getId()+"\">"+testGroups.get(i).getTestGroup()+"</a></td><td align=\"center\"><b>"+testGroups.get(i).getTotalCases()+"</b></td><td align=\"center\">"+passedStr.toString()+"</td></td><td align=\"center\">"+failedStr.toString()+"</td><td align=\"center\">"+skippedStr.toString()+"</td><td align=\"center\"><a href=\"reportsTestLogs.jsp?groupId="+testGroups.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td></tr>");		
 		}
 
 	%>

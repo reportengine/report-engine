@@ -4,8 +4,13 @@
 package com.redhat.reportengine.server.gui;
 
 import java.sql.SQLException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import com.redhat.reportengine.server.dbdata.TestSuiteTable;
+import com.redhat.reportengine.server.reports.Keys;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -15,19 +20,16 @@ public class PurgeLogs {
 	Logger _logger = Logger.getLogger(PurgeLogs.class);
 	
 	public void deleteSuiteLogs(Integer id) throws SQLException{
-		/*
-		ArrayList<TestCase> testCases = (ArrayList<TestCase>) SqlMap.getSqlMapClient().queryForList(SqlQuery.GET_TEST_CASES_SCREEN_SHOT_BY_ID, id);
-		for(TestCase testCase : testCases){
-			if(!new File(ServerSettings.getBaseLocation()+"/"+ServerSettings.getScreenShotFileLocation()+"/"+testCase.getTestGuiFiles()).delete()){
-				_logger.error("Failed to delete the Screen Shot file: "+ServerSettings.getBaseLocation()+"/"+ServerSettings.getScreenShotFileLocation()+"/"+testCase.getTestGuiFiles());
-			}else{
-				_logger.debug("Successfully Deleted Screen Shot file: "+ServerSettings.getBaseLocation()+"/"+ServerSettings.getScreenShotFileLocation()+"/"+testCase.getTestGuiFiles());
-			}
-		}
-		SqlMap.getSqlMapClient().delete(SqlQuery.DELETE_TEST_LOGS_BY_TEST_SUITE_ID, id);
-		SqlMap.getSqlMapClient().delete(SqlQuery.DELETE_TEST_CASE_BY_TEST_SUITE_ID, id);
-		SqlMap.getSqlMapClient().delete(SqlQuery.DELETE_TEST_GROUP_BY_TEST_SUITE_ID, id);
-		SqlMap.getSqlMapClient().delete(SqlQuery.DELETE_TEST_SUITE_AGGREGSTION_BY_TEST_SUITE_ID, id);*/
 		new TestSuiteTable().remove(id);		
+	}
+	
+	public void deleteSuiteLogs(HttpServletRequest request, HttpServletResponse response) throws SQLException{
+		String[] idArray =request.getParameterValues(Keys.DELETE_REPORTS);
+		StringBuilder ids = new StringBuilder();
+		for(String id : idArray){
+			ids.append(id).append(",");
+		}
+		ids.setLength(ids.length()-1);
+		new TestSuiteTable().remove(ids.toString());
 	}
 }

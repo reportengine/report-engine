@@ -93,7 +93,7 @@ $(function () {
 	<TR>
 		<td align="left">Status</td>
 		<TD>:</TD>
-		<td align="left"><img width="16" height="16"  src='../images/icons/<%=testSuite.getTestStatus()%>.png' alt='<%=testSuite.getTestStatus()%>'></td>		
+		<td align="left"><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%><%=testSuite.getTestStatus()%>.png' alt='<%=testSuite.getTestStatus()%>'></td>		
 	</tr>
 	<TR>
 		<td align="left">Test Reference</td>
@@ -133,7 +133,7 @@ $(function () {
 	<TR>
 		<td align="left">Trend Report For Last</td>
 		<TD>:</TD>
-		<td align="left"><a href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_7_DAYS%>&SUBMIT=Get">7 Days,</a>&nbsp;<a href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_15_DAYS%>&SUBMIT=Get">15 Days,</a>&nbsp;<a href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_30_DAYS%>&SUBMIT=Get">30 Days</a>&nbsp;<a href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_60_DAYS%>&SUBMIT=Get">60 Days</a>&nbsp;<a href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_90_DAYS%>&SUBMIT=Get">90 Days</a></td>		
+		<td align="left"><a class="alink" href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_7_DAYS%>&SUBMIT=Get">7 Days,</a>&nbsp;<a class="alink" href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_15_DAYS%>&SUBMIT=Get">15 Days,</a>&nbsp;<a class="alink" href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_30_DAYS%>&SUBMIT=Get">30 Days</a>&nbsp;<a class="alink" href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_60_DAYS%>&SUBMIT=Get">60 Days</a>&nbsp;<a class="alink" href="testTrendReport.jsp?references=<%=testSuite.getTestReferenceId()%>&chartType=area&<%=Keys.REPORT_FOR%>=<%=Keys.REPORT_FOR_LAST_90_DAYS%>&SUBMIT=Get">90 Days</a></td>		
 	</tr>
 	
 	<%if(!testSuite.getTestStatus().equalsIgnoreCase(TestSuite.RUNNING)){%>

@@ -484,6 +484,10 @@ DELETE FROM re_test_suite_aggregation WHERE test_suite_id=$id$
 DELETE FROM re_test_suite WHERE id=$id$
 </delete>
 
+<delete id="deleteTestSuiteByIds" parameterClass="java.lang.String">
+DELETE FROM re_test_suite WHERE id IN ($ids$)
+</delete>
+
 <!-- Test References - START -->
 
 <parameterMap id="TestReferenceParameterMap" class="com.redhat.reportengine.server.dbmap.TestReference">

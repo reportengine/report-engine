@@ -3,6 +3,7 @@ package com.redhat.reportengine.server.dbdata;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.redhat.reportengine.server.dbmap.TestReference;
 import com.redhat.reportengine.server.dbmap.TestSuite;
 import com.redhat.reportengine.server.sql.SqlMap;
 
@@ -29,7 +30,8 @@ public class TestSuiteTable {
 	private final static String UPDATE_TEST_SUITE_STATUS_ID					= "updateTestSuiteStatusById";
 	private final static String INSERT_TEST_SUITE 			= "insertTestSuite";
 	private final static String GET_TEST_SUITE_NEXT_SEQ_ID 	= "getTestSuiteNextId";
-	private final static String DELETE_TEST_SUITE_BY_ID						= "deleteTestSuiteById";	
+	private final static String DELETE_TEST_SUITE_BY_ID						= "deleteTestSuiteById";
+	private final static String DELETE_TEST_SUITE_BY_IDS						= "deleteTestSuiteByIds";
 	
 	
 	public TestSuite get(int id) throws SQLException{
@@ -88,6 +90,17 @@ public class TestSuiteTable {
 		 return (ArrayList<TestSuite>) SqlMap.getSqlMapClient().queryForList(GET_TOP_TEST_SUITE_BY_TEST_REFERENCE_IDS, referenceIds);
 	}
 	
+	public ArrayList<TestSuite> getTopNByRefIds() throws SQLException {
+		StringBuilder refids = new StringBuilder();
+		ArrayList<TestReference> referenceIds = new TestReferenceTable().getAll();
+		for(TestReference reference: referenceIds){
+			refids.append(reference.getId()).append(",");
+		}
+		refids.setLength(refids.length()-1);
+		return getTopNByRefIds(refids.toString());
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public ArrayList<TestSuite> getNonAggregate() throws SQLException {
 		return (ArrayList<TestSuite>) SqlMap.getSqlMapClient().queryForList(GET_TEST_SUITES_NON_AGGREGATE);
@@ -132,6 +145,10 @@ public class TestSuiteTable {
 	
 	public void remove(int testSuiteId) throws SQLException{
 		SqlMap.getSqlMapClient().delete(DELETE_TEST_SUITE_BY_ID, testSuiteId);
+	}
+	
+	public void remove(String testSuiteIds) throws SQLException{
+		SqlMap.getSqlMapClient().delete(DELETE_TEST_SUITE_BY_IDS, testSuiteIds);
 	}
 	
 }

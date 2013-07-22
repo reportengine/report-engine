@@ -180,7 +180,7 @@ public class ManageScheduler implements Runnable{
 	public static synchronized void shutdown(){
 		try {
 			if(scheduler != null){
-				scheduler.shutdown(true);
+				scheduler.shutdown();
 				if(scheduler.isShutdown()){
 					_logger.info("Quartz Scheduler stopped...");
 				}else{

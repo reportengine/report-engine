@@ -1,4 +1,3 @@
-<%@page import="com.redhat.reportengine.server.dbdata.ServerTable"%>
 <%@ include file="include/re_jsp.jsp"%>
 
 <%
@@ -252,11 +251,11 @@ if(buttonName != null){
 			out.println("<tr>"
 			+"<td align=\"center\"><input type=\"radio\" name=\""+Keys.SERVER_ID+"\" value=\""+servers.get(i).getId()+"\"></td>"
 			+"<td align=\"left\">"+(i+1)+"</td>"
-			+"<td align=\"left\"><a href=\"serverLiveBasicData.jsp?"+Keys.SERVER_ID+"="+servers.get(i).getId()+"\"/>"+servers.get(i).getName()+"</td>"
+			+"<td align=\"left\">"+servers.get(i).getName()+"</td>"
 			+"<td align=\"left\">"+servers.get(i).getHostIp()+"</td>"
-			+"<td align=\"center\"><a href=\"popUpServerBasicData.jsp?"+Keys.SERVER_ID+"="+servers.get(i).getId()+"\" class='ajax'><img width=\"16\" height=\"16\"  src='../images/icons/"+servers.get(i).getPlatform()+".png' alt='"+servers.get(i).getPlatform()+"'></td>"
-			+"<td align=\"center\"><img width=\"16\" height=\"16\"  src='../images/icons/"+servers.get(i).isReachable()+".png' alt='"+servers.get(i).isReachable()+"'></td>"
-			+"<td align=\"center\"><img width=\"16\" height=\"16\"  src='../images/icons/"+servers.get(i).isAgentStatus()+".png' alt='"+servers.get(i).isAgentStatus()+"'></td>"
+			+"<td align=\"center\"><a href=\"popUpServerBasicData.jsp?"+Keys.SERVER_ID+"="+servers.get(i).getId()+"\" class='ajax'><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).getPlatform()+".png' alt='"+servers.get(i).getPlatform()+"'></td>"
+			+"<td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).isReachable()+".png' alt='"+servers.get(i).isReachable()+"'></td>"
+			+"<td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).isAgentStatus()+".png' alt='"+servers.get(i).isAgentStatus()+"'></td>"
 			+"<td align=\"center\">"+servers.get(i).getAgentPort()+"</td>"
 			+"<td align=\"center\">"+servers.get(i).getUpdateInterval()/60+"</td>"
 			+"<td align=\"left\">"+General.getGuiDateTime(servers.get(i).getLocalTime())+"</td></tr>");	
@@ -275,8 +274,8 @@ if(buttonName != null){
 <BR>
 <table cellpadding="0" cellspacing="0" border="0" id="dt_table">
 <tr>
-<td><img width="16" height="16"  src='../images/icons/true.png'  alt='Reachable'></td><td valign="top">- Reachable&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/false.png' alt='Not Reachable'></td><td valign="top">- Not Reachable&nbsp;</td> 
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>true.png'  alt='Reachable'></td><td valign="top">- Reachable&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>false.png' alt='Not Reachable'></td><td valign="top">- Not Reachable&nbsp;</td> 
 <tr>
 </table>
 

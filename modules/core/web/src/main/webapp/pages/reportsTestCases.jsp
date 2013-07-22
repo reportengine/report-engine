@@ -89,7 +89,7 @@ if(groupid != null){
 		}
 		
 		for(int i = 0; i<testCases.size(); i++){	
-			out.println("<tr><td>"+(i+1)+"</td><td><a href=\"reportsSingleTestCase.jsp?caseId="+testCases.get(i).getId()+"\">"+testCases.get(i).getTestName()+"</a></td><td>"+testCases.get(i).getTestArguments()+"</td><td align=\"center\"><a href=\"ajaxReportTestCaseDetail.jsp?caseId="+testCases.get(i).getId()+"\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='../images/icons/"+testCases.get(i).getTestResult()+".png' alt='"+testCases.get(i).getTestResult()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?caseId="+testCases.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='../images/icons/debug.png'  alt='Debug'></a></td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testCases.get(i).getTestDuration())+"</td></tr>");		
+			out.println("<tr><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsSingleTestCase.jsp?caseId="+testCases.get(i).getId()+"\">"+testCases.get(i).getTestName()+"</a></td><td>"+testCases.get(i).getTestArguments()+"</td><td align=\"center\"><a href=\"ajaxReportTestCaseDetail.jsp?caseId="+testCases.get(i).getId()+"\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+testCases.get(i).getTestResult()+".png' alt='"+testCases.get(i).getTestResult()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?caseId="+testCases.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testCases.get(i).getTestDuration())+"</td></tr>");		
 		}
 %>
 
@@ -99,11 +99,11 @@ if(groupid != null){
 <BR>
 <table cellpadding="0" cellspacing="0" border="0" id="dt_table">
 <tr>
-<td><img width="16" height="16"  src='../images/icons/Running.png'  alt='Running'></td><td valign="top">- Running&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/Completed.png' alt='Passed'></td><td valign="top">- Passed&nbsp;</td> 
-<td><img width="16" height="16"  src='../images/icons/Failed.png'  alt='Failed'></td><td valign="top">- Failed&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/Skipped.png'  alt='Skipped'></td><td valign="top">- Skipped&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/debug.png'  alt='Debug N/A'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Running.png'  alt='Running'></td><td valign="top">- Running&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Completed.png' alt='Passed'></td><td valign="top">- Passed&nbsp;</td> 
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Failed.png'  alt='Failed'></td><td valign="top">- Failed&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Skipped.png'  alt='Skipped'></td><td valign="top">- Skipped&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug N/A'></td><td valign="top">- Debug Logs&nbsp;</td>
 <tr>
 </table>
 

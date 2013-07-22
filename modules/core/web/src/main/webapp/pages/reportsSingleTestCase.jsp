@@ -2,7 +2,7 @@
 
 	<script type="text/javascript">
 	$(document).ready(function(){
-		$(".ajax").colorbox({scrolling:"true", iframe:true,width:"85%", height:"100%"});
+		$(".alink").colorbox({scrolling:"true", iframe:true,width:"85%", height:"100%"});
 	});
 	</script>
 <%@ include file="index-part2.jsp"%>
@@ -16,7 +16,7 @@ if(screenShotFiles.size() == 0){
 	screenShot = "-";
 }
 for(FileStorage screenShotFile : screenShotFiles){
-	screenShot = "<a href=\"getScreenShotImage.jsp?imageId="+screenShotFile.getId()+"\" title=\"File Name: "+screenShotFile.getFileName()+"\" class=\"ajax\">"+screenShotFile.getFileName()+"</a></BR>";
+	screenShot = "<a href=\"getScreenShotImage.jsp?imageId="+screenShotFile.getId()+"\" title=\"File Name: "+screenShotFile.getFileName()+"\" class=\"alink\">"+screenShotFile.getFileName()+"</a></BR>";
 }
 /* 
 if(screenShot != null){
@@ -63,12 +63,12 @@ if(screenShot != null){
 	<TR>
 		<td align="left">Result</td>
 		<TD>:</TD>
-		<td><img width="16" height="16"  src='../images/icons/<%=testCase.getTestResult()%>.png' alt='<%=testCase.getTestResult()%>'></td>		
+		<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%><%=testCase.getTestResult()%>.png' alt='<%=testCase.getTestResult()%>'></td>		
 	</tr>
 	<TR>
 		<td align="left">Debug Log</td>
 		<TD>:</TD>
-		<td><a href="reportsTestLogs.jsp?caseId=<%=testCase.getId()%>"><img width="16" height="16"  src='../images/icons/debug.png'  alt='Debug'></a></td>
+		<td><a href="reportsTestLogs.jsp?caseId=<%=testCase.getId()%>"><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></a></td>
 	</tr>
 	<TR>
 		<td align="left">Local Start Time</td>
@@ -111,11 +111,11 @@ if(screenShot != null){
 <BR>
 <table cellpadding="0" cellspacing="0" border="0" id="dt_table">
 <tr>
-<td><img width="16" height="16"  src='../images/icons/Running.png'  alt='Running'></td><td valign="top">- Running&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/Completed.png' alt='Passed'></td><td valign="top">- Passed&nbsp;</td> 
-<td><img width="16" height="16"  src='../images/icons/Failed.png'  alt='Failed'></td><td valign="top">- Failed&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/Skipped.png'  alt='Skipped'></td><td valign="top">- Skipped&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/debug.png'  alt='Debug N/A'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Running.png'  alt='Running'></td><td valign="top">- Running&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Completed.png' alt='Passed'></td><td valign="top">- Passed&nbsp;</td> 
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Failed.png'  alt='Failed'></td><td valign="top">- Failed&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Skipped.png'  alt='Skipped'></td><td valign="top">- Skipped&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug N/A'></td><td valign="top">- Debug Logs&nbsp;</td>
 <tr>
 </table>
 

@@ -23,6 +23,8 @@ public class Keys {
 	
 	public static String TEST_LOG_AJAX_REF    	= "TestLogAjaxRef";
 	
+	public static String SUBMIT						    	= "SUBMIT";
+	
 	public static final String ORDER_BY_LOCAL_START_TIME 	= "local_start_time";
 	public static final String ORDER_BY_FAILED_CASES 		= "failed_cases";
 	public static final String ORDER_BY_PASSED_CASES 		= "passed_cases";
@@ -40,7 +42,9 @@ public class Keys {
 	public static final String DATA_REFERENCDE_ID			= "id";
 	
 	//For reports
-	
+	public static final String DELETE_REPORTS					= "deleteReports";
+	public static final String DELETE_REPORT					= "deleteReport";
+		
 	public static final String REPORT_FOR						= "reportFor";
 	public static final String REPORT_FOR_LAST_30_MINS			= "last30minutes";
 	public static final String REPORT_FOR_LAST_60_MINS			= "last60minutes";
@@ -64,6 +68,7 @@ public class Keys {
 	public static final String REPORT_HOUR_TO					= "hourTo";
 	public static final String REPORT_MINUTE_FROM				= "minuteFrom";
 	public static final String REPORT_MINUTE_TO					= "minuteTo";
+	public static final String REPORT_ACTION					= "action";
 	
 	//Job Scheduler
 	public static final String JOB_ID							= "jobId";

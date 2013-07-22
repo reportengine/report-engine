@@ -21,6 +21,9 @@ public class General {
 	public static final String GUI_TIME = "HH:mm:ss";
 	public static final DecimalFormat decimalDigit2 = new DecimalFormat("#.##");
 	
+	public static final String HTML_ICONS_LOCATION 		= "../gui/base/icons/";
+	public static final String HTML_IMAGES_LOCATION 	= "../gui/base/images/";
+	
 	public static String getColor(int value, boolean positive){
 		StringBuffer strValue = new StringBuffer("");
 		String color = "red";

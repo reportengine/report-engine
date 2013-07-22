@@ -30,12 +30,13 @@ import com.redhat.reportengine.server.restclient.agent.AgentsConnection;
 public class AjaxServerInfo {
 	
 	private void setTableHead(StringBuilder stringBuilder){
-		stringBuilder.append("\n<font size=\"2\" face=\"Courier\">");
+		//stringBuilder.append("\n<font size=\"2\" face=\"Courier\">");
 		stringBuilder.append("\n<table border=\"0\" cellpadding=\"3\" align=\"left\">");
 	}
 	
 	private void setTableTail(StringBuilder stringBuilder){
-		stringBuilder.append("</table>\n</font>\n");
+		stringBuilder.append("</table>\n");
+		//stringBuilder.append("</font>\n");
 	}
 	
 	private void setKeyValue(StringBuilder stringBuilder, String key, Object value){

@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Enumeration;
 
 import org.apache.log4j.Logger;
@@ -21,6 +22,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  */
 public class SqlMap {
 	final private static Logger _logger = Logger.getLogger(SqlMap.class);
+	final private static long CONNECTION_CLOSE_WAIT_TIME = 1000*10;
 	private static SqlMapClient sqlMap;
 	static{
 		initSqlMap();
@@ -59,19 +61,25 @@ public class SqlMap {
 	        while (drivers.hasMoreElements()) {
 	            Driver driver = drivers.nextElement();
 	            try {
-	                DriverManager.deregisterDriver(driver);
 	                _logger.info(String.format("deregistering jdbc driver: %s", driver));
-	            } catch (SQLException e) {
+	            	DriverManager.deregisterDriver(driver);
+	                } catch (SQLException e) {
 	            	_logger.info(String.format("Error deregistering driver %s", driver), e);
 	            }
-
 	        }
 			
 			if(!sqlMap.getCurrentConnection().isClosed()){
 				sqlMap.endTransaction();
 				sqlMap.getCurrentConnection().close();
+                _logger.info("Initiated Database Connection close...");
+                long startTime = new Date().getTime();
 				while(!sqlMap.getCurrentConnection().isClosed()){
-					Thread.sleep(10);
+					if(startTime >= (new Date().getTime() - CONNECTION_CLOSE_WAIT_TIME)){
+						Thread.sleep(10);
+					}else{
+		                _logger.warn("Unable to close the DB connection on the specified time... Terminating...");
+		                return;
+					}					
 				}
 				_logger.info("SQL MAP connection is not active!");
 				return;

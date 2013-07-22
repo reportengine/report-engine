@@ -25,10 +25,10 @@ $(function() {
 <h1>Server Details: <b><%=server.getName()%>(<%=server.getHostIp()%>)</b></h1>
 <div id="tabs" style="overflow:hidden;">
   <ul>
-    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_OS%>"><font color="#FFF">OS</font></a></li>
-    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_NETWORK%>"><font color="#FFF">Network</font></a></li>
-    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_CPU%>"><font color="#FFF">CPU</font></a></li>
-    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_MEMORY%>"><font color="#FFF">Memory</font></a></li>
+    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_OS%>">OS</a></li>
+    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_NETWORK%>">Network</a></li>
+    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_CPU%>">CPU</a></li>
+    <li><a href="ajaxServerBasicData.jsp?<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.RESOURCE_TYPE%>=<%=Keys.RESOURCE_MEMORY%>">Memory</a></li>
   </ul>
 </div>
 

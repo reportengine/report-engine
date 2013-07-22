@@ -113,6 +113,10 @@ if(buttonName != null){
 	$(document).ready(function(){
 		simpleJobChange();
 		endLessJobChange();
+
+      $('.chosen1').chosen();
+      $('.chosen2').chosen({ width: "100%" });
+
 		
 		//Select second drop down box
 		$('#<%=Keys.JOB_TYPE%>').change(function() {
@@ -129,6 +133,7 @@ if(buttonName != null){
 	            } else {
 	                dropdown2.append($('<option/>').text("Please select Job Type"));
 	            }
+		    $(".chosen2").trigger("liszt:updated");
 	        });
 	    });
 	});
@@ -152,7 +157,7 @@ if(buttonName != null){
 		<tr>
 			<td align="left">Job Type</td>
 			<td>:</td>
-			<td colspan="2"><select name="<%=Keys.JOB_TYPE%>" id="<%=Keys.JOB_TYPE%>">
+			<td colspan="2"><select data-placeholder="Choose a Job Type..."  tabindex="1" class="chosen1" name="<%=Keys.JOB_TYPE%>" id="<%=Keys.JOB_TYPE%>">			<option value=""></option> 
 			<%
  				ArrayList<JobClasses> jobClasses = new JobClassesTable().getUserJobClass();
  			 				for(JobClasses jobClass: jobClasses){
@@ -165,12 +170,9 @@ if(buttonName != null){
 		<tr>
 			<td align="left">Reference</td>
 			<td>:</td>
-			<td colspan="2"><select name="<%=Keys.JOB_REFERENCE%>" id="<%=Keys.JOB_REFERENCE%>"> 
+			<td colspan="2"><select data-placeholder="Choose a Job Type..."  tabindex="2" class="chosen2" name="<%=Keys.JOB_REFERENCE%>" id="<%=Keys.JOB_REFERENCE%>">  
 			<%
- 				ArrayList<ReportGroup> reportGroups = new ManageReportGroup().getAllReportGroup();
- 			 				for(ReportGroup reportGroup: reportGroups){
- 			 					out.println("<option value=\""+reportGroup.getId()+"\">"+reportGroup.getGroupName()+"</option>");
- 			 				}
+ 				
  			%>			
 			</select></td>	
 		</tr>
@@ -481,7 +483,7 @@ if(buttonName != null){
 			userJobs = new ManageJobSchedulerGui().getAllUserJobs();		
 			
 			for(int i = 0; i<userJobs.size(); i++){				
-				out.println("<tr><td align=\"center\"><input type=\"radio\" name=\""+Keys.JOB_ID+"\" value=\""+userJobs.get(i).getId()+"\"><td>"+(i+1)+"</td><td align=\"center\"><img width=\"16\" height=\"16\"  src='../images/icons/"+userJobs.get(i).isJobEnabled()+".png' alt='"+userJobs.get(i).isJobEnabled()+"'></td><td>"+userJobs.get(i).getJobName()+"</td><td>"+userJobs.get(i).getTargetClassDescription()+"</td><td nowrap>"+General.getNotNullString(userJobs.get(i).getCronExpression())+"</td><td>"+General.getJobFrequency(userJobs.get(i).getJobFrequency(), userJobs.get(i).getJobWeekday())+"</td><td>"+General.getHourMinute(userJobs.get(i).getJobExecutionTime())+"</td><td>"+General.getNotNullString(userJobs.get(i).getRepeatCount())+"</td><td>"+General.getNotNullString(userJobs.get(i).getRepeatInterval())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getValidFromTime())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getValidToTime())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getCreationTime())+"</td></tr>");	
+				out.println("<tr><td align=\"center\"><input type=\"radio\" name=\""+Keys.JOB_ID+"\" value=\""+userJobs.get(i).getId()+"\"><td>"+(i+1)+"</td><td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+userJobs.get(i).isJobEnabled()+".png' alt='"+userJobs.get(i).isJobEnabled()+"'></td><td>"+userJobs.get(i).getJobName()+"</td><td>"+userJobs.get(i).getTargetClassDescription()+"</td><td nowrap>"+General.getNotNullString(userJobs.get(i).getCronExpression())+"</td><td>"+General.getJobFrequency(userJobs.get(i).getJobFrequency(), userJobs.get(i).getJobWeekday())+"</td><td>"+General.getHourMinute(userJobs.get(i).getJobExecutionTime())+"</td><td>"+General.getNotNullString(userJobs.get(i).getRepeatCount())+"</td><td>"+General.getNotNullString(userJobs.get(i).getRepeatInterval())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getValidFromTime())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getValidToTime())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getCreationTime())+"</td></tr>");	
 			}
 	%>
     </tbody>
@@ -496,8 +498,8 @@ if(buttonName != null){
 <BR>
 <table cellpadding="0" cellspacing="0" border="0" id="dt_table">
 <tr>
-<td><img width="16" height="16"  src='../images/icons/true.png'  alt='Enabled'></td><td valign="top">- Enabled&nbsp;</td>
-<td><img width="16" height="16"  src='../images/icons/false.png' alt='Disabled'></td><td valign="top">- Disabled&nbsp;</td> 
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>true.png'  alt='Enabled'></td><td valign="top">- Enabled&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>false.png' alt='Disabled'></td><td valign="top">- Disabled&nbsp;</td> 
 <tr>
 </table>
 

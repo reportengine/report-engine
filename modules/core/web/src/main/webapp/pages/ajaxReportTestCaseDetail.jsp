@@ -25,7 +25,7 @@ TestCase testCase = new TestCaseReport().getTestCaseDetail(caseId);
 	<TR>
 		<td align="left">Result</td>
 		<TD>:</TD>
-		<td><img width="16" height="16"  src='../images/icons/<%=testCase.getTestResult()%>.png' alt='<%=testCase.getTestResult()%>'></td>		
+		<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%><%=testCase.getTestResult()%>.png' alt='<%=testCase.getTestResult()%>'></td>		
 	</tr>
 	<TR>
 		<td align="left">Duration</td>

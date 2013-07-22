@@ -10,7 +10,7 @@
     		
 <tr><td><font size=2>User Name</td><td>:</td><td align="left"><input type="text" style="width:330px;" name="<%=Keys.USER_ID%>" id="<%=Keys.USER_ID%>"></td></tr>
 <tr><td><font size=2>Password</td><td>:</td><td align="left"><input  style="width:330px;" type="password" name="<%=Keys.USER_PASSWORD%>" id="<%=Keys.USER_PASSWORD%>"></td></tr>
-<tr><td><font size=2>Domain</td><td>:</td><td align="left"><select name="<%=Keys.LOGIN_DB%>" id="<%=Keys.LOGIN_DB%>" style="width:330px;">
+<tr><td><font size=2>Domain</td><td>:</td><td align="left"><select data-placeholder="Choose a Domain..."  tabindex="1" class="chosen" name="<%=Keys.LOGIN_DB%>" id="<%=Keys.LOGIN_DB%>" style="width:330px;">
 				<%
 				out.print("<option value=\""+Authentication.AUTH_TYPE_INTERNAL+"\" selected>"+Authentication.AUTH_TYPE_INTERNAL+"</option>");
 				ArrayList<LDAPDetails> ldaps = new LDAPTable().getEnabled();
@@ -37,6 +37,8 @@ $('#<%=Keys.LOGIN_DB%>').change(function() {
 	}
 	
 });
+
+      $('.chosen').chosen();
 
 </script>
 </body>

@@ -60,7 +60,7 @@
 				<ul>
 					<li><a href="#">Engine Settings</a>
 						<ul>
-							<li><a href="engineWidgetsSettings.jsp">Widgets</a></li>
+							<li><a href="engineWidgetsSettings.jsp">Themes</a></li>
 							<li><a href="engineSettings.jsp">Common Settings</a></li>
 						</ul></li>
 				</ul></li>

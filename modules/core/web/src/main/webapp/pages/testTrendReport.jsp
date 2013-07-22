@@ -20,6 +20,9 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		dateOption();
+		 $('.chosen1').chosen();
+		 $('.chosen2').chosen({ width: "100px" });
+		 $('.chosen3').chosen({ width: "200px" });
 	});
 </script>
 
@@ -33,7 +36,7 @@
 				<tr>
 					<td align="left">Test Reference</td>
 					<td>:</td>
-					<td colspan="2"><select id="references" name="references">
+					<td colspan="2"><select data-placeholder="Choose a Reference..."  tabindex="1" class="chosen1" id="references" name="references">
 							<%
 								ArrayList<TestReference> testReferences = new ManageTestReference()
 												.getAllTestReference();
@@ -48,7 +51,7 @@
 				<tr>
 					<td align="left">Chart Type</td>
 					<td>:</td>
-					<td colspan="2"><select id="chartType" name="chartType">
+					<td colspan="2"><select data-placeholder="Choose a Type..."  tabindex="2" class="chosen2" id="chartType" name="chartType">
 							<option value="area">Area</option>
 							<option value="line">Line</option>
 					</select></td>
@@ -57,7 +60,7 @@
 				<tr>
 					<td align="left">Report For</td>
 					<td>:</td>
-					<td colspan="2"><select id="<%=Keys.REPORT_FOR%>"
+					<td colspan="2"><select data-placeholder="Choose a duration..."  tabindex="3" class="chosen3" id="<%=Keys.REPORT_FOR%>"
 						name="<%=Keys.REPORT_FOR%>" onchange="dateOption(this)">
 							<option value="<%=Keys.REPORT_FOR_LAST_7_DAYS%>">Last 7
 								Days</option>

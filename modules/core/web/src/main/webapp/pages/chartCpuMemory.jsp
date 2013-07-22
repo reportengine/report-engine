@@ -32,7 +32,7 @@
 				<tr>
 					<td align="left">Server</td>
 					<td>:</td>
-					<td colspan="2"><select id="<%=Keys.SERVER_ID%>" name="<%=Keys.SERVER_ID%>">
+					<td colspan="2"><select data-placeholder="Choose a Server..."  tabindex="1" class="chosen" id="<%=Keys.SERVER_ID%>" name="<%=Keys.SERVER_ID%>">            <option value=""></option> 
 							<%
 								ArrayList<Server> servers = new ServerTable().get();
 										for (Server server : servers) {
@@ -77,7 +77,7 @@
 				<tr>
 					<td align="left">Report For</td>
 					<td>:</td>
-					<td colspan="2"><select id="<%=Keys.REPORT_FOR%>"
+					<td colspan="2"><select data-placeholder="Choose a Server..."  tabindex="2" class="chosen" id="<%=Keys.REPORT_FOR%>"
 						name="<%=Keys.REPORT_FOR%>" onchange="dateOption(this)">
 							<option value="<%=Keys.REPORT_FOR_LAST_30_MINS%>">Last 30 Minutes</option>
 							<option value="<%=Keys.REPORT_FOR_LAST_60_MINS%>">Last 60 Minutes</option>
@@ -112,6 +112,9 @@
 					</td>
 				</tr>
 			</table>
+<script type="text/javascript"> 
+      $('.chosen').chosen({ width: "300px" });
+  </script>
 
 
 		</form>
