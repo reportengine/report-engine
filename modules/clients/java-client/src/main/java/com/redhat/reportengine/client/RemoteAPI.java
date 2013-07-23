@@ -149,11 +149,16 @@ public class RemoteAPI {
 				_logger.log(Level.WARNING, "Could not find report engine properties File any where, Please update property file by atleast one of the way, Disabled Report Engine logs!!");			
 			}
 
+			String origPropertyFileName = propertyFile.getProperty(originalFile); // get orig property file name form primary property file
+			if(System.getenv(originalFile) != null){ //get property file from system ENV variable
+			    origPropertyFileName = System.getenv(originalFile).trim(); 
+			}else if(System.getProperty(originalFile) != null){ //Get Property file by System Property variable
+			    origPropertyFileName = System.getProperty(originalFile).trim(); 
+			}
 
-			if((propertyFile.getProperty(originalFile) != null) && propertyFile.getProperty(originalFile).trim().length() > 0){
-				String newPropertyFile = propertyFile.getProperty(originalFile).trim();
-				_logger.log(Level.INFO, "Properties File(New): "+originalFile);
-				Properties original = loadProperties(new Properties(), newPropertyFile);
+			if((origPropertyFileName!= null) && origPropertyFileName.length() > 0){
+				_logger.log(Level.INFO, "Properties File(New): "+origPropertyFileName);
+				Properties original = loadProperties(new Properties(), origPropertyFileName);
 				// reload main properties with original values ad defaults
 				propertyFile = loadProperties(original, primaryPropertyFile);
 			}
