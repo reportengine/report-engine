@@ -10,8 +10,8 @@ import javax.ws.rs.core.MediaType;
 import com.redhat.reportengine.agent.rest.mapper.CpuInformation;
 import com.redhat.reportengine.agent.rest.mapper.NetworkInfo;
 import com.redhat.reportengine.agent.rest.mapper.OsDetail;
-import com.redhat.reportengine.agent.rest.mapper.URIReferenceAgent;
 import com.redhat.reportengine.agent.rest.mapper.UsageMemory;
+import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
 import com.redhat.reportengine.server.dbdata.ServerCpuDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerMemoryDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerNetworkDetailTable;
@@ -56,7 +56,7 @@ public class AjaxServerInfo {
 	
 	public void getLiveOSInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException, Exception{
 		int serverId = Integer.valueOf(request.getParameter(Keys.SERVER_ID));
-		OsDetail osDetail = (OsDetail)AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.CONF_OS, OsDetail.class);
+		OsDetail osDetail = (OsDetail)AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_OS, OsDetail.class);
 		StringBuilder osInfo = new StringBuilder();
 		
 		setTableHead(osInfo);
@@ -108,7 +108,7 @@ public class AjaxServerInfo {
 	
 	public void getLiveNetworkInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException, Exception{
 		int serverId = Integer.valueOf(request.getParameter(Keys.SERVER_ID));
-		NetworkInfo networkInfo = (NetworkInfo)AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.CONF_NW, NetworkInfo.class);
+		NetworkInfo networkInfo = (NetworkInfo)AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_NW, NetworkInfo.class);
 		StringBuilder info = new StringBuilder();
 		
 		setTableHead(info);
@@ -174,7 +174,7 @@ public class AjaxServerInfo {
 	
 	public void getLiveCpuInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException, Exception{
 		int serverId = Integer.valueOf(request.getParameter(Keys.SERVER_ID));
-		CpuInformation cpuInformation = (CpuInformation)AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.CONF_CPU, CpuInformation.class);
+		CpuInformation cpuInformation = (CpuInformation)AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_CPU, CpuInformation.class);
 		StringBuilder info = new StringBuilder();
 		
 		setTableHead(info);
@@ -214,7 +214,7 @@ public class AjaxServerInfo {
 	
 	public void getLiveMemoryInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException, Exception{
 		int serverId = Integer.valueOf(request.getParameter(Keys.SERVER_ID));
-		UsageMemory usageMemory = (UsageMemory)AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.USAGE_MEMORY, UsageMemory.class);
+		UsageMemory usageMemory = (UsageMemory)AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.USAGE_MEMORY, UsageMemory.class);
 		StringBuilder info = new StringBuilder();
 		
 		setTableHead(info);

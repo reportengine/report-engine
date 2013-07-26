@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.redhat.reportengine.server.restapi.testresult;
+package com.redhat.reportengine.restapi.urimap;
 
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Dec 28, 2012
  */
-public class TestResultsRestUrlMap {
+public class TestResultsRestUriMap {
 	public static final String DATE_FORMAT	= "dd-MMM-yyyy, HH:mm:ss.S, z";
 	
 	public static final String ROOT 							= "/testresults";

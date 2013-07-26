@@ -1,4 +1,4 @@
-package com.redhat.reportengine.server.restclient;
+package com.redhat.reportengine.restclient;
 
 import javax.ws.rs.core.MediaType;
 

@@ -9,8 +9,6 @@ import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import com.redhat.reportengine.server.dbdata.ResourceCpuTable;
 import com.redhat.reportengine.server.dbdata.ResourceMemoryTable;
 import com.redhat.reportengine.server.dbmap.ResourceCpu;
@@ -23,8 +21,7 @@ import com.redhat.reportengine.server.reports.Keys;
  * Sep 12, 2012
  */
 public class ChartCpuMemory {
-	private static Logger _logger = Logger.getLogger(ChartCpuMemory.class);
-	
+
 	private enum MEMORY {
 	    MEMORY, SWAP, MEMORY_AU
 	}

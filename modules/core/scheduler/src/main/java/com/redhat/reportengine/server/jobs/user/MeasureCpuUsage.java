@@ -6,8 +6,8 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.redhat.reportengine.agent.rest.mapper.URIReferenceAgent;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpu;
+import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
 import com.redhat.reportengine.server.insert.InsertCpuUsage;
 import com.redhat.reportengine.server.reports.Keys;
 import com.redhat.reportengine.server.restclient.agent.AgentsConnection;
@@ -22,7 +22,7 @@ public class MeasureCpuUsage implements Job {
 	public void updateCpuUsage(int serverId){
 		UsageCpu usageCpu =null;
 		try {
-			usageCpu = (UsageCpu) AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.USAGE_CPU, UsageCpu.class);
+			usageCpu = (UsageCpu) AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.USAGE_CPU, UsageCpu.class);
 			new Thread(new InsertCpuUsage(serverId, usageCpu)).start();
 		}catch (Exception ex) {
 			if(!ex.getMessage().contains("refused")){

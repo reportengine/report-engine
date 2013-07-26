@@ -12,6 +12,9 @@ import org.jboss.resteasy.plugins.server.netty.NettyJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 
 import com.redhat.reportengine.agent.rest.AgentResource;
+import com.redhat.reportengine.agent.scheduler.ManageJobs;
+import com.redhat.reportengine.scheduler.JobDetails;
+import com.redhat.reportengine.scheduler.ManageScheduler;
 
 
 
@@ -76,6 +79,18 @@ public class AgentMain {
 		
 		_logger.info("RE-Agent is listening on port "+AgentProperties.getAgentPort());
 		_logger.info(getSigarDetails());
+		
+		ManageScheduler.start();
+		_logger.info("RE-Agent Scheduler started successfully...");
+		
+		JobDetails details = new  JobDetails();
+		details.setName("Agent Job");
+		details.setGroup("RE- Group");
+		details.setJobTargetClass("com.redhat.reportengine.agent.jobs.SendCpuMemorySwapInfo");
+		details.setRepeatCount(new Integer(-1));
+		details.setRepeatInterval(new Long(1000*10));
+		
+		ManageJobs.addJob(details);
 	}
 
 }

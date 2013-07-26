@@ -6,10 +6,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.redhat.reportengine.agent.rest.mapper.URIReferenceAgent;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpuMemory;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpus;
 import com.redhat.reportengine.agent.rest.mapper.UsageMemory;
+import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
 import com.redhat.reportengine.server.insert.InsertCpusUsage;
 import com.redhat.reportengine.server.insert.InsertMemoryUsage;
 import com.redhat.reportengine.server.reports.Keys;
@@ -25,7 +25,7 @@ public class MeasureCpuMemoryCpusSwap implements Job{
 	public void updateMeasurements(int serverId){
 		UsageCpuMemory usageCpuMemory;
 		try {
-			usageCpuMemory = (UsageCpuMemory) AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.USAGE_CPU_MEMORY, UsageCpuMemory.class);
+			usageCpuMemory = (UsageCpuMemory) AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.USAGE_CPU_MEMORY, UsageCpuMemory.class);
 			
 			//Update Cpu/Cpus Usage
 			UsageCpus usageCpus = usageCpuMemory.getUsageCpus();

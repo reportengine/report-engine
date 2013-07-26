@@ -1,9 +1,9 @@
 <%@page import="com.redhat.reportengine.server.authentication.Authentication"%>
-<%@ include file="include/re_css_js.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <title><%=Settings.getAppTitle()%></title>
+<%@ include file="include/re_css_js.jsp"%>
 <script>
 
 if (window.top != window.self) {

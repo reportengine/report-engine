@@ -6,8 +6,8 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.redhat.reportengine.agent.rest.mapper.URIReferenceAgent;
 import com.redhat.reportengine.agent.rest.mapper.UsageMemory;
+import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
 import com.redhat.reportengine.server.insert.InsertMemoryUsage;
 import com.redhat.reportengine.server.reports.Keys;
 import com.redhat.reportengine.server.restclient.agent.AgentsConnection;
@@ -23,7 +23,7 @@ public class MeasureMemoryUsage implements Job{
 	public void updateMemorySwapUsage(int serverId){
 		UsageMemory usageMemory = null;
 		try {
-			usageMemory = (UsageMemory) AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.USAGE_MEMORY, UsageMemory.class);
+			usageMemory = (UsageMemory) AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.USAGE_MEMORY, UsageMemory.class);
 			new Thread(new InsertMemoryUsage(serverId, usageMemory)).start();
 		}catch (Exception ex) {
 			if(!ex.getMessage().contains("refused")){

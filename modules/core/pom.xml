@@ -18,6 +18,7 @@
   	<module>init</module>
     <module>web</module>
     <module>core-scheduler</module>
+    <module>udp-communication</module>
   </modules>
 
 	<dependencies>

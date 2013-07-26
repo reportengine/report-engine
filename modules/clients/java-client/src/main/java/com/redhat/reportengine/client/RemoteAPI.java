@@ -30,7 +30,7 @@ import com.redhat.reportengine.server.dbmap.TestCase;
 import com.redhat.reportengine.server.dbmap.TestGroup;
 import com.redhat.reportengine.server.dbmap.TestLogs;
 import com.redhat.reportengine.server.dbmap.TestSuite;
-import com.redhat.reportengine.server.restapi.testresult.TestResultsRestUrlMap;
+import com.redhat.reportengine.restapi.urimap.TestResultsRestUriMap;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -83,7 +83,7 @@ public class RemoteAPI {
 		return test.getBuildVersionReference();
 	}
 	public Date getServerTime() throws Exception{
-		return new SimpleDateFormat(TestResultsRestUrlMap.DATE_FORMAT).parse((String)restClient.get(TestResultsRestUrlMap.GET_SERVER_TIME, String.class));
+		return new SimpleDateFormat(TestResultsRestUriMap.DATE_FORMAT).parse((String)restClient.get(TestResultsRestUriMap.GET_SERVER_TIME, String.class));
 	}
 	/**
 	 * reads properties from given location
@@ -222,7 +222,7 @@ public class RemoteAPI {
 		setAllVariables();		
 		if(this.isClientConfigurationSuccess()){
 			restClient.setServerUrl(test.getServerRestUrl());
-			restClient.setRootUrl(TestResultsRestUrlMap.ROOT);
+			restClient.setRootUrl(TestResultsRestUriMap.ROOT);
 			_logger.log(Level.INFO, "Report Engine Server REST URL: "+test.getServerRestUrl());
 			_logger.log(Level.INFO, "Report Engine Server Time: "+getServerTime());
 			this.insertTestSuite(testSuiteName, comments);
@@ -238,7 +238,7 @@ public class RemoteAPI {
 	}
 
 	public void insertTestSuite(String TestSuitName, String comments) throws Exception{
-		test.setTestSuiteId(Integer.valueOf((String)restClient.get(TestResultsRestUrlMap.GET_TESTSUITE_NEXT_AVAILABLE_ID, String.class)));
+		test.setTestSuiteId(Integer.valueOf((String)restClient.get(TestResultsRestUriMap.GET_TESTSUITE_NEXT_AVAILABLE_ID, String.class)));
 		TestSuite testSuite = new TestSuite();
 		testSuite.setId(test.getTestSuiteId());
 		testSuite.setRemoteStartTime(new Date());
@@ -251,7 +251,7 @@ public class RemoteAPI {
 		}		
 		testSuite.setTestReference(test.getTestReference());
 		testSuite.setTestHost(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");	
-		restClient.post(TestResultsRestUrlMap.INSERT_TESTSUITE, testSuite, TestSuite.class);
+		restClient.post(TestResultsRestUriMap.INSERT_TESTSUITE, testSuite, TestSuite.class);
 	}
 
 	public void updateTestSuiteName(String testSuiteName) throws Exception{
@@ -267,7 +267,7 @@ public class RemoteAPI {
 			testSuite.setTestSuiteName(testSuiteName);
 		}	
 		testSuite.setTestComments(comments);
-		restClient.put(TestResultsRestUrlMap.UPDATE_TESTSUITE_NAME, testSuite, TestSuite.class);
+		restClient.put(TestResultsRestUriMap.UPDATE_TESTSUITE_NAME, testSuite, TestSuite.class);
 	}
 
 
@@ -281,7 +281,7 @@ public class RemoteAPI {
 		testSuite.setTestBuild(build);
 		testSuite.setTestComments(comments);
 		testSuite.setRemoteEndTime(new Date());
-		restClient.put(TestResultsRestUrlMap.UPDATE_TESTSUITE, testSuite, TestSuite.class);
+		restClient.put(TestResultsRestUriMap.UPDATE_TESTSUITE, testSuite, TestSuite.class);
 	}
 
 	public void insertTestGroup(String groupName) throws Exception{
@@ -290,7 +290,7 @@ public class RemoteAPI {
 			testGroup.setTestSuiteId(test.getTestSuiteId());
 			testGroup.setTestGroup(groupName);	
 			testGroup.setRemoteTime(new Date());
-			testGroup = (TestGroup) restClient.post(TestResultsRestUrlMap.INSERT_TESTGROUP, testGroup, TestGroup.class);
+			testGroup = (TestGroup) restClient.post(TestResultsRestUriMap.INSERT_TESTGROUP, testGroup, TestGroup.class);
 			test.setTestGroupId(testGroup.getId());
 			test.setTestGroupName(groupName);
 		}		
@@ -307,7 +307,7 @@ public class RemoteAPI {
 		testCase.setTestArguments(arguments);
 		testCase.setTestResult(result);
 		testCase.setRemoteStartTime(new Date());
-		test.setTestCaseId(((TestCase) restClient.post(TestResultsRestUrlMap.INSERT_TESTCASE, testCase, TestCase.class)).getId());
+		test.setTestCaseId(((TestCase) restClient.post(TestResultsRestUriMap.INSERT_TESTCASE, testCase, TestCase.class)).getId());
 		test.setScreenShotFileName(null);
 		if(!result.equalsIgnoreCase(TestCase.RUNNING)){
 			test.setTestCaseId(null);
@@ -335,7 +335,7 @@ public class RemoteAPI {
 			testCase.setScreenShotFileBase64(test.getScreenShotFileBase64String());
 		}
 		testCase.setRemoteEndTime(new Date());
-		restClient.put(TestResultsRestUrlMap.UPDATE_TESTCASE, testCase, TestCase.class);
+		restClient.put(TestResultsRestUriMap.UPDATE_TESTCASE, testCase, TestCase.class);
 		if(!status.equalsIgnoreCase(TestCase.RUNNING)){
 			test.setTestCaseId(null);
 		}
@@ -377,7 +377,7 @@ public class RemoteAPI {
 		if(test.getTestCaseId() != null){
 			testLogs.setTestCaseId(test.getTestCaseId());	
 		}		
-		restClient.post(TestResultsRestUrlMap.INSERT_TESTLOG, testLogs, TestLogs.class);
+		restClient.post(TestResultsRestUriMap.INSERT_TESTLOG, testLogs, TestLogs.class);
 	}
 
 	public String getLoggerType(){

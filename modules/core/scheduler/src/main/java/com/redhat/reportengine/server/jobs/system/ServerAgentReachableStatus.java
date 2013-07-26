@@ -16,8 +16,8 @@ import org.quartz.JobExecutionException;
 import com.redhat.reportengine.agent.rest.mapper.CpuInformation;
 import com.redhat.reportengine.agent.rest.mapper.NetworkInfo;
 import com.redhat.reportengine.agent.rest.mapper.OsDetail;
-import com.redhat.reportengine.agent.rest.mapper.URIReferenceAgent;
 import com.redhat.reportengine.agent.rest.mapper.UsageMemory;
+import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
 import com.redhat.reportengine.server.dbdata.ServerCpuDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerMemoryDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerNetworkDetailTable;
@@ -43,7 +43,7 @@ public class ServerAgentReachableStatus implements Job{
 	public void updateServerCpuDetail(int serverId){
 		ServerCpuDetail serverCpuDetail ;
 		try {
-			CpuInformation cpuInformation = (CpuInformation) AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.CONF_CPU, CpuInformation.class);
+			CpuInformation cpuInformation = (CpuInformation) AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_CPU, CpuInformation.class);
 			serverCpuDetail = new ServerCpuDetailTable().getByServerId(serverId);
 			if(serverCpuDetail == null){
 				serverCpuDetail = new ServerCpuDetail();
@@ -76,7 +76,7 @@ public class ServerAgentReachableStatus implements Job{
 	public void updateServerOsDetail(int serverId){
 		ServerOsDetail serverOsDetail ;
 		try {
-			OsDetail  osDetail = (OsDetail) AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.CONF_OS, OsDetail.class);
+			OsDetail  osDetail = (OsDetail) AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_OS, OsDetail.class);
 			
 			serverOsDetail = new ServerOsDetailTable().getByServerId(serverId);
 			if(serverOsDetail == null){
@@ -117,7 +117,7 @@ public class ServerAgentReachableStatus implements Job{
 	public void updateServerNetworkDetail(int serverId){
 		ServerNetworkDetail serverNetworkDetail ;
 		try {
-			NetworkInfo networkInfo = (NetworkInfo)AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.CONF_NW, NetworkInfo.class);
+			NetworkInfo networkInfo = (NetworkInfo)AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_NW, NetworkInfo.class);
 			serverNetworkDetail = new ServerNetworkDetailTable().getByServerId(serverId);
 			if(serverNetworkDetail == null){
 				serverNetworkDetail = new ServerNetworkDetail();
@@ -159,7 +159,7 @@ public class ServerAgentReachableStatus implements Job{
 	public void updateServerMemoryDetail(int serverId){
 		ServerMemoryDetail serverMemoryDetail ;
 		try {
-			UsageMemory usageMemory = (UsageMemory)AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.USAGE_MEMORY, UsageMemory.class);
+			UsageMemory usageMemory = (UsageMemory)AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.USAGE_MEMORY, UsageMemory.class);
 			serverMemoryDetail = new ServerMemoryDetailTable().getByServerId(serverId);
 			if(serverMemoryDetail == null){
 				serverMemoryDetail = new ServerMemoryDetail();
@@ -198,7 +198,7 @@ public class ServerAgentReachableStatus implements Job{
 			
 			SysInfo sysInfo = null;
 			try {
-				sysInfo = (SysInfo) AgentsConnection.getRestJSONclient(serverId).get(URIReferenceAgent.CONF_SYSTEM, SysInfo.class);
+				sysInfo = (SysInfo) AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_SYSTEM, SysInfo.class);
 			} catch (Exception ex) {
 				if(!ex.getMessage().contains("refused")){
 					_logger.error("Agent Status Error, ", ex);

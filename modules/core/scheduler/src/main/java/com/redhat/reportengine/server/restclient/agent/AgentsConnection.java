@@ -3,10 +3,10 @@ package com.redhat.reportengine.server.restclient.agent;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import com.redhat.reportengine.agent.rest.mapper.URIReferenceAgent;
+import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
+import com.redhat.reportengine.restclient.RestEasyJSONClient;
 import com.redhat.reportengine.server.dbdata.ServerTable;
 import com.redhat.reportengine.server.dbmap.Server;
-import com.redhat.reportengine.server.restclient.RestEasyJSONClient;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -29,7 +29,7 @@ public class AgentsConnection {
 		}else{
 			client = new RestEasyJSONClient();
 			client.setServerUrl(AGENT_URL.replaceAll(SERVER_IP_REPLACEMENT, server.getHostIp()+":"+server.getAgentPort()));
-			client.setRootUrl(URIReferenceAgent.AGENT_ROOT_URI);
+			client.setRootUrl(AgentRestUriMap.AGENT_ROOT_URI);
 			addRestJSONclient(serverId, client);
 			return client;
 		}
