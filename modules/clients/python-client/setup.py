@@ -8,7 +8,7 @@ except ImportError:
 from setuptools import setup
 
 setup(
-    name='report-engine',
+    name='nose-report-engine',
     version='0.1',
     author='Libor Zoubek',
     author_email = 'lzoubek@redhat.com',
