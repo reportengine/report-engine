@@ -296,7 +296,7 @@ class ReportEngineLogHandler(logging.Handler):
             client : :class: `ReportEngineClient`
                 
         """
-        super(ReportEngineLogHandler,self).__init__()
+        logging.Handler.__init__(self)
         self.client = client
         self.reportLevel = 'ALL'
 
