@@ -37,7 +37,9 @@ public class AjaxScheduler {
 	    
 	    if(jobClasses.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_EMAIL_TEST_REPORT)){
 	    	getEmailTestReportList(options);
-	    }else if(jobClasses.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_RESOURCE)){
+	    }else if(jobClasses.getTargetClass().startsWith(JobClassesTable.SERVER_JOBS)){
+	    	getResourcesList(options);
+	    }else if(jobClasses.getTargetClass().startsWith(JobClassesTable.AGENT_JOBS)){
 	    	getResourcesList(options);
 	    }
 	    

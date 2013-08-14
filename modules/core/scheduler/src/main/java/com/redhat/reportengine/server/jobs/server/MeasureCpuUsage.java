@@ -1,4 +1,4 @@
-package com.redhat.reportengine.server.jobs.user;
+package com.redhat.reportengine.server.jobs.server;
 
 import org.apache.log4j.Logger;
 import org.quartz.Job;

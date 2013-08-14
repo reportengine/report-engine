@@ -29,6 +29,7 @@ public class JobScheduler {
 	
 	private String targetClass;
 	private String targetClassDescription;
+	private String classType;
 	
 	/**
 	 * @return the id
@@ -281,6 +282,12 @@ public class JobScheduler {
 	 */
 	public void setJobEnabled(boolean jobEnabled) {
 		this.jobEnabled = jobEnabled;
+	}
+	public String getClassType() {
+		return classType;
+	}
+	public void setClassType(String classType) {
+		this.classType = classType;
 	}
 	
 }

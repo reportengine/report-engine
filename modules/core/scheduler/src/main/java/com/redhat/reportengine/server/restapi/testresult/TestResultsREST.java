@@ -15,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.redhat.reportengine.restapi.urimap.TestResultsRestUriMap;
 import com.redhat.reportengine.server.api.TestResult;
 import com.redhat.reportengine.server.api.TestResultException;
 import com.redhat.reportengine.server.dbmap.TestCase;
@@ -27,77 +28,77 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
  * Dec 18, 2012
  */
 
-@Path(TestResultsRestUrlMap.ROOT)
+@Path(TestResultsRestUriMap.ROOT)
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 
 public class TestResultsREST {	 
 
 	@GET
-	@Path(TestResultsRestUrlMap.GET_SERVER_TIME)
+	@Path(TestResultsRestUriMap.GET_SERVER_TIME)
 	public String getServerTime(){
-		return new SimpleDateFormat(TestResultsRestUrlMap.DATE_FORMAT).format(new TestResult().getServerTime());
+		return new SimpleDateFormat(TestResultsRestUriMap.DATE_FORMAT).format(new TestResult().getServerTime());
 	}	
 	
 	@POST
-	@Path(TestResultsRestUrlMap.INSERT_TESTSUITE)
+	@Path(TestResultsRestUriMap.INSERT_TESTSUITE)
 	public void insertTestSuite(TestSuite testSuite) throws TestResultException{
 		new TestResult().insertTestSuite(testSuite);
 	}	
 	
 	@PUT
-	@Path(TestResultsRestUrlMap.UPDATE_TESTSUITE_NAME)
+	@Path(TestResultsRestUriMap.UPDATE_TESTSUITE_NAME)
 	public void updateTestSuiteName(TestSuite testSuite) throws TestResultException{
 		new TestResult().updateTestSuiteName(testSuite);
 	}
 	
 	@PUT
-	@Path(TestResultsRestUrlMap.UPDATE_TESTSUITE)
+	@Path(TestResultsRestUriMap.UPDATE_TESTSUITE)
 	public void updateTestSuite(TestSuite testSuite) throws TestResultException{
 		new TestResult().updateTestSuite(testSuite);
 	}
 	
 	@GET
-	@Path(TestResultsRestUrlMap.GET_TESTSUITE_NEXT_AVAILABLE_ID)
+	@Path(TestResultsRestUriMap.GET_TESTSUITE_NEXT_AVAILABLE_ID)
 	public String getTestSuiteNextAvailableId() throws TestResultException{
 		return new Integer(new TestResult().getTestSuiteNextAvailableId()).toString();
 	}
 	
 	@GET
-	@Path(TestResultsRestUrlMap.GET_TESTSUITE_BY_ID+"/{id}")
+	@Path(TestResultsRestUriMap.GET_TESTSUITE_BY_ID+"/{id}")
 	public TestSuite getTestSuite(@PathParam("id") int id) throws TestResultException{
 		return new TestResult().getTestSuite(id);
 	}
 
 	
 	@POST
-	@Path(TestResultsRestUrlMap.GET_TESTSUITE_BY_TESTSUITE)
+	@Path(TestResultsRestUriMap.GET_TESTSUITE_BY_TESTSUITE)
 	public TestSuite getTestSuite(TestSuite testSuite) throws TestResultException{
 		//System.out.println("TestSuite:id:"+testSuite.getId()+"TestSuite:REF:"+testSuite.getTestReference());
 		return new TestResult().getTestSuite(testSuite);
 	}
 	
 	@POST
-	@Path(TestResultsRestUrlMap.INSERT_TESTGROUP)
+	@Path(TestResultsRestUriMap.INSERT_TESTGROUP)
 	public TestGroup insertTestGroup(TestGroup testGroup) throws TestResultException{
 		return new TestResult().insertTestGroup(testGroup);
 	}
 	
 	@POST
-	@Path(TestResultsRestUrlMap.INSERT_TESTCASE)
+	@Path(TestResultsRestUriMap.INSERT_TESTCASE)
 	public TestCase insertTestCase(TestCase testCase) throws TestResultException{	
 		testCase.setId(new TestResult().insertTestCase(testCase));
 		return testCase;
 	}
 	
 	@PUT
-	@Path(TestResultsRestUrlMap.UPDATE_TESTCASE)
+	@Path(TestResultsRestUriMap.UPDATE_TESTCASE)
 	public void updateTestCase(TestCase testCase) throws TestResultException, IOException{
 		new TestResult().updateTestCase(testCase);
 	}
 	
 	@POST
-	@Path(TestResultsRestUrlMap.INSERT_TESTLOG)
+	@Path(TestResultsRestUriMap.INSERT_TESTLOG)
 	public void insertTestLog(TestLogs testLogs) throws TestResultException{
 		new TestResult().insertTestLog(testLogs);
 	}	

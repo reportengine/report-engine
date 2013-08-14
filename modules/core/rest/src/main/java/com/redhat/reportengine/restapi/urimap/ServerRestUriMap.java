@@ -8,7 +8,8 @@ public class ServerRestUriMap {
 	public static final String ROOT_URI = "/server";
 	
 	//Actions
-	public static final String REGISTER_ME    	= "/registerme";
-	public static final String GET_JOBS 		= "/get/jobs";
-	public static final String GET_SERVER_INFO	= "/get/serverinfo";
+	public static final String REGISTER_ME    	= "/agent/registerme";
+	public static final String GET_AGENT_JOBS 	= "/agent/get/jobs";
+	public static final String GET_AGENT_INFO	= "/agent/get/myinfo";
+	
 }

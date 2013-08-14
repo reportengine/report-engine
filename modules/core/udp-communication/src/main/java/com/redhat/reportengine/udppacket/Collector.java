@@ -41,7 +41,7 @@ public class Collector implements Runnable{
 		}
 	}
 	
-	public static void shutdown(){
+	public static void stop(){
 		socket.close();
 	}
 

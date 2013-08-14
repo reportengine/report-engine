@@ -82,7 +82,7 @@ if(testLogs.size() > 0){
 %>
 <%if(suiteRunning){%>
 <div id="log_page_ajax"></div>
-<img width="16" height="16"  src='../images/icons/Running.png'  alt='Running'>
+<img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Running.png'  alt='Running'>
 <%}%>
 </pre>
 </div>

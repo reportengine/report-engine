@@ -29,6 +29,7 @@
 			});
 } );			
 </script>
+
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".ajax").colorbox({rel:'ajax', scrolling:"true", width:"70%", height:"90%"});

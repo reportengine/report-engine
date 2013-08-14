@@ -22,7 +22,7 @@ public class TestCaseReport {
 		TestCase testCase = new TestCase();
 		testCase.setTestSuiteId(testSuiteId);
 		testCase.setTestGroupId(testGroupId);
-		ArrayList<TestCase> testCases = new TestCaseTable().get(testCase);
+		ArrayList<TestCase> testCases = new TestCaseTable().getDetailedAllByTestGroupId(testCase);
 		return testCases;
 	}
 	

@@ -1,5 +1,6 @@
 package com.redhat.reportengine.server.gui;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +27,7 @@ public class ChartCpuMemory {
 	    MEMORY, SWAP, MEMORY_AU
 	}
 
-	public String getCpuMemoryChartJson(HttpServletRequest request, HttpServletResponse response) throws ParseException, SQLException{
+	public String getCpuMemoryChartJson(HttpServletRequest request, HttpServletResponse response) throws ParseException, SQLException, IOException{
 		String reportFor = (String) request.getParameter(Keys.REPORT_FOR);
 		int serverId = Integer.parseInt((String) request.getParameter(Keys.SERVER_ID));		
 		
@@ -89,6 +90,9 @@ public class ChartCpuMemory {
 		}
 		chartJson.setLength(chartJson.length()-2);
 		chartJson.append("\n]");
+		if(chartJson.length() < 3){
+			response.sendError(500, "Data not available for this range");
+		}
 		return chartJson.toString();
 		
 	}

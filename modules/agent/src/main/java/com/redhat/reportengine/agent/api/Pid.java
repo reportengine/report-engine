@@ -9,6 +9,7 @@ import org.hyperic.sigar.ProcUtil;
 import org.hyperic.sigar.SigarException;
 
 import com.redhat.reportengine.agent.rest.mapper.PidDetail;
+import com.redhat.reportengine.agent.rest.mapper.PidList;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -19,79 +20,90 @@ public class Pid {
 	public static DecimalFormat df2Digit =new DecimalFormat("0.00");
 	private static final String NO_SUCH_PROCESS = "No such process";
 
-	public static LinkedList<PidDetail> getPidList(){
+	public static PidList getPidList(){
+		PidList pidList = new PidList();
 		LinkedList<PidDetail> pidsDetail = new LinkedList<PidDetail>();
 		try {
 			long[] pids = SigarUtils.getSigar().getProcList();
 			PidDetail pidBasicDetail;
 			for(long pid : pids){
 				pidBasicDetail = new PidDetail();
-				pidBasicDetail.setPid(pid);
-
-				try {
-					pidBasicDetail.setPpid(SigarUtils.getSigar().getProcState(pid).getPpid());
-				}catch (SigarException ex) {
-					_logger.warn("Exception on ppid,", ex);
-					pidBasicDetail.setPpid(-1);
-				}
-
-				try {
-					pidBasicDetail.setTty(SigarUtils.getSigar().getProcState(pid).getTty());
-				}catch (SigarException ex) {
-					_logger.warn("Exception on tty,", ex);
-					pidBasicDetail.setTty(-1);
-				}
-
-				try {
-					pidBasicDetail.setStartTime(SigarUtils.getSigar().getProcTime(pid).getStartTime());
-				}catch (SigarException ex) {
-					_logger.warn("Exception on startTime,", ex);
-					pidBasicDetail.setStartTime(-1);
-				}
-
-				try {
-					pidBasicDetail.setCmd(SigarUtils.getSigar().getProcState(pid).getName());				
-				}catch (SigarException ex) {
-					_logger.warn("Exception on cmd,", ex);
-					pidBasicDetail.setCmd("?");
-				}
-
-				try {
-					pidBasicDetail.setUid(SigarUtils.getSigar().getProcCredName(pid).getUser());
-				}catch (SigarException ex) {
-					_logger.warn("Exception on uid,", ex);
-					pidBasicDetail.setUid("?");
-				}
-
-				try {
-					pidBasicDetail.setCpu(SigarUtils.getSigar().getProcCpu(pid).getPercent());
-				}catch (SigarException ex) {
-					_logger.warn("Exception on cpu usage,", ex);
-					pidBasicDetail.setCpu(-1);
-				}
-
-				try {
-					pidBasicDetail.setMemory(SigarUtils.getSigar().getProcMem(pid).getShare());
-				}catch (SigarException ex) {
-					_logger.warn("Exception on memory usage,", ex);
-					pidBasicDetail.setMemory(-1);
-				}
-
+				setBasicInfo(pidBasicDetail, pid);
 				pidsDetail.addLast(pidBasicDetail);				
 			}
 
 		} catch (SigarException ex) {
 			_logger.warn("Exception on PidsList,", ex);
 		}
-		return pidsDetail;
+		pidList.setPidDetail(pidsDetail);
+		return pidList;
 	}
-
+	
 	public static PidDetail getPidDetail(long pid){
 		PidDetail pidDetail = new PidDetail();
 		pidDetail.setAgentDate(new Date().getTime());
-		pidDetail.setPid(pid);
 		pidDetail.setAvailable(true);
+		
+		setAdvancedInfo(pidDetail, pid);
+		
+		return pidDetail;
+	}
+	
+	private static void setBasicInfo(PidDetail pidBasicDetail, long pid){
+		pidBasicDetail.setPid(pid);
+		try {
+			pidBasicDetail.setPpid(SigarUtils.getSigar().getProcState(pid).getPpid());
+		}catch (SigarException ex) {
+			_logger.warn("Exception on ppid,", ex);
+			pidBasicDetail.setPpid(-1);
+		}
 
+		try {
+			pidBasicDetail.setTty(SigarUtils.getSigar().getProcState(pid).getTty());
+		}catch (SigarException ex) {
+			_logger.warn("Exception on tty,", ex);
+			pidBasicDetail.setTty(-1);
+		}
+
+		try {
+			pidBasicDetail.setStartTime(SigarUtils.getSigar().getProcTime(pid).getStartTime());
+		}catch (SigarException ex) {
+			_logger.warn("Exception on startTime,", ex);
+			pidBasicDetail.setStartTime(-1);
+		}
+
+		try {
+			pidBasicDetail.setCmd(SigarUtils.getSigar().getProcState(pid).getName());				
+		}catch (SigarException ex) {
+			_logger.warn("Exception on cmd,", ex);
+			pidBasicDetail.setCmd("?");
+		}
+
+		try {
+			pidBasicDetail.setUid(SigarUtils.getSigar().getProcCredName(pid).getUser());
+		}catch (SigarException ex) {
+			_logger.warn("Exception on uid,", ex);
+			pidBasicDetail.setUid("?");
+		}
+
+		try {
+			pidBasicDetail.setCpu(SigarUtils.getSigar().getProcCpu(pid).getPercent());
+		}catch (SigarException ex) {
+			_logger.warn("Exception on cpu usage,", ex);
+			pidBasicDetail.setCpu(-1);
+		}
+
+		try {
+			pidBasicDetail.setMemory(SigarUtils.getSigar().getProcMem(pid).getShare());
+		}catch (SigarException ex) {
+			_logger.warn("Exception on memory usage,", ex);
+			pidBasicDetail.setMemory(-1);
+		}
+
+	}
+
+	private static void setAdvancedInfo(PidDetail pidDetail, long pid){
+		pidDetail.setPid(pid);
 		try{
 			pidDetail.setProgArgs(SigarUtils.getSigar().getProcArgs(pid));
 		}catch(Exception ex){
@@ -137,14 +149,14 @@ public class Pid {
 			_logger.warn("Unable to get ProcFd, ", ex);
 		}
 
-		try{
+		/*try{
 			pidDetail.setProcMem(SigarUtils.getSigar().getProcMem(pid));
 		}catch(Exception ex){
 			_logger.warn("Unable to get ProcMem, ", ex);
 			if(ex.getMessage().contains(NO_SUCH_PROCESS)){
 				pidDetail.setAvailable(false);
 			}
-		}
+		}*/
 
 		try{
 			pidDetail.setProcModules(SigarUtils.getSigar().getProcModules(pid));
@@ -169,8 +181,5 @@ public class Pid {
 		}catch(Exception ex){
 			_logger.warn("Unable to get ProcUtil.getDecription, ", ex);
 		}
-		return pidDetail;
 	}
-
-
 }

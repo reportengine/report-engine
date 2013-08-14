@@ -53,6 +53,25 @@ public class RestEasyJSONClient {
 		return response.getEntity();
 	}
 	
+	public <T> Object delete(String uri, Class<T> dataClass) throws Exception{
+		request = new ClientRequest(this.serverUrl+this.rootUrl+uri);
+		request.accept(MediaType.APPLICATION_JSON);
+		ClientResponse<T> response = request.delete(dataClass);
+		this.checkStatus(response.getStatus());
+		return response.getEntity();
+	}
+	
+	public <T> Object delete(String uri, Object data, Class<T> dataClass) throws Exception{
+		request = new ClientRequest(this.serverUrl+this.rootUrl+uri);
+		request.accept(MediaType.APPLICATION_JSON);
+		if(data != null){
+			request.body(MediaType.APPLICATION_JSON_TYPE, data, dataClass);
+		}		
+		ClientResponse<T> response = request.delete(dataClass);
+		this.checkStatus(response.getStatus());
+		return response.getEntity();
+	}
+	
 	public String getRootUrl() {
 		return rootUrl;
 	}

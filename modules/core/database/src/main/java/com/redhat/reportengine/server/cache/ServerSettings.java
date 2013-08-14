@@ -27,7 +27,7 @@ public class ServerSettings {
 	public static final String KEY_EMAIL_SERVER					= "EmailServer";
 	public static final String KEY_SENDER_EMAIL					= "SenderEmail";
 	public static final String KEY_EMAIL_SERVER_PORT			= "EmailServerPort";	
-	public static final String KEY_ENGINE_RMI_PORT				= "EngineRMIPort";
+	public static final String KEY_ENGINE_UDP_PORT				= "EngineUDPPort";
 	public static final String KEY_ENGINE_URL					= "EngineURL";
 	public static final String KEY_ENGINE_CURRENT_WIDGET		= "EngineCurrentWidGet";
 	public static final String KEY_ENGINE_AVAILABLE_WIDGETS		= "EngineAvailableWidGets";
@@ -39,7 +39,7 @@ public class ServerSettings {
 	private static final String log4jLogLocation = "WEB-INF/logs/ReportEngine.log";
 	private static final String serverTempLocation = "WEB-INF/temp";
 	private static String baseLocation = "";
-	private static int serverRmiPort = 9011;
+	private static int serverUdpPort = 9011;
 	
 	private static long testSuiteInactiveTime = 60*60*2; //2 hours
 	
@@ -92,16 +92,16 @@ public class ServerSettings {
 				ServerSettings.baseLocation = baseLocation;
 			}
 			/**
-			 * @return the serverRmiPort
+			 * @return the serverUdpPort
 			 */
-			public static int getServerRmiPort() {
-				return serverRmiPort;
+			public static int getServerUdpPort() {
+				return serverUdpPort;
 			}
 			/**
-			 * @param serverRmiPort the serverRmiPort to set
+			 * @param serverRmiPort the serverUdpPort to set
 			 */
-			public static void setServerRmiPort(int serverRmiPort) {
-				ServerSettings.serverRmiPort = serverRmiPort;
+			public static void setServerUdpPort(int serverUdpPort) {
+				ServerSettings.serverUdpPort = serverUdpPort;
 			}
 			/**
 			 * @return the screenShotFileLocation
@@ -167,7 +167,7 @@ public class ServerSettings {
 				setEmailServer(getDBValue(KEY_EMAIL_SERVER));
 				setEmailFrom(getDBValue(KEY_SENDER_EMAIL));
 				setEmailServerPort(getDBValue(KEY_EMAIL_SERVER_PORT));
-				setServerRmiPort(Integer.parseInt(getDBValue(KEY_ENGINE_RMI_PORT)));
+				setServerUdpPort(Integer.parseInt(getDBValue(KEY_ENGINE_UDP_PORT)));
 				setEngineURL(getDBValue(KEY_ENGINE_URL));
 				updateWidgetsSettingsFromDB();
 			}
@@ -189,7 +189,7 @@ public class ServerSettings {
 			}
 			
 			public static void updateSystemSettings(HttpServletRequest request, HttpSession session) throws SQLException{
-				String[] keys = {KEY_EMAIL_SERVER, KEY_EMAIL_SERVER_PORT, KEY_SENDER_EMAIL, KEY_TEST_SUITE_INACTIVE_TIME, KEY_ENGINE_RMI_PORT, KEY_ENGINE_URL};
+				String[] keys = {KEY_EMAIL_SERVER, KEY_EMAIL_SERVER_PORT, KEY_SENDER_EMAIL, KEY_TEST_SUITE_INACTIVE_TIME, KEY_ENGINE_UDP_PORT, KEY_ENGINE_URL};
 				updateSystemSettingsToDB(request, session, keys);
 				updateSystemSettingsFromDB();
 			}

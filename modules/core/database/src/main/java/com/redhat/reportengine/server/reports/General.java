@@ -6,6 +6,9 @@ package com.redhat.reportengine.server.reports;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -23,6 +26,11 @@ public class General {
 	
 	public static final String HTML_ICONS_LOCATION 		= "../gui/base/icons/";
 	public static final String HTML_IMAGES_LOCATION 	= "../gui/base/images/";
+	
+	//Note: These values will be calculated from KB not from Bytes !!!
+	public static final double teraSize = 1024*1024*1024.0;
+	public static final double gigaSize = 1024*1024.0;
+	public static final double megaSize = 1024.0;
 	
 	public static String getColor(int value, boolean positive){
 		StringBuffer strValue = new StringBuffer("");
@@ -166,5 +174,65 @@ public class General {
 		}else{
 			return true;
 		}
+	}
+	
+	public static String getString(String[] args, String nextLineStr){
+		StringBuilder builder = new StringBuilder();
+		if(args != null){
+			for(String arg: args){
+				builder.append(arg).append(nextLineStr);
+			}
+			return builder.toString();
+		}else{
+			return "-";
+		}
+		
+	}
+	
+	public static String getString(Map map, String nextLineStr){
+		StringBuilder builder = new StringBuilder();
+		if(map != null){
+			Set<String> keys = map.keySet();
+			for(String key: keys){
+				builder.append(key).append("=").append(map.get(key)).append(nextLineStr);
+			}
+			return builder.toString();
+		}else{
+			return "-";
+		}		
+	}
+	
+	public static String getString(List<Object> lists, String nextLineStr){
+		StringBuilder builder = new StringBuilder();
+		if(lists != null){
+			for(Object list: lists){
+				builder.append(list).append(nextLineStr);
+			}
+			return builder.toString();
+		}else{
+			return "-";
+		}		
+	}
+	
+	public static String getFileSize(long fileSize){
+		StringBuilder builder = new StringBuilder();
+		if(fileSize >= 1){
+			if(fileSize > teraSize){
+				builder.append(Math.round((fileSize/teraSize)*100)/100.0);
+				builder.append(" TB");
+			}else if(fileSize > gigaSize){
+				builder.append(Math.round((fileSize/gigaSize)*100)/100.0);
+				builder.append(" GB");
+			}else if(fileSize > megaSize){
+				builder.append(Math.round((fileSize/megaSize)*100)/100.0);
+				builder.append(" MB");
+			}else{
+				builder.append(fileSize);
+				builder.append(" KB");
+			}
+		}else{
+			builder.append(fileSize);
+		}
+		return builder.toString();
 	}
 }

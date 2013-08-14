@@ -1,7 +1,12 @@
 package com.redhat.reportengine.server.rest.mapper;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 
+/**
+ * @author jkandasa@redhat.com (Jeeva Kandasamy)
+ * Jul 31, 2013
+ */
 public class ServerInfo implements Serializable {
 
 	/**
@@ -11,6 +16,7 @@ public class ServerInfo implements Serializable {
 	
 	private int serverId;
 	private String serverName;
+	private InetAddress serverAddress;
 	private int reServerUdpPort;
 	
 	public int getServerId() {
@@ -30,6 +36,12 @@ public class ServerInfo implements Serializable {
 	}
 	public void setReServerUdpPort(int reServerUdpPort) {
 		this.reServerUdpPort = reServerUdpPort;
+	}
+	public InetAddress getServerAddress() {
+		return serverAddress;
+	}
+	public void setServerAddress(InetAddress serverAddress) {
+		this.serverAddress = serverAddress;
 	}
 	
 }

@@ -7,18 +7,17 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.quartz.SchedulerException;
 
-import com.redhat.reportengine.server.dbdata.JobClassesTable;
+import com.redhat.reportengine.server.actions.SchedulerActions;
 import com.redhat.reportengine.server.dbdata.JobSchedulerTable;
-import com.redhat.reportengine.server.dbdata.ServerJobTable;
+import com.redhat.reportengine.server.dbmap.JobClasses;
 import com.redhat.reportengine.server.dbmap.JobScheduler;
-import com.redhat.reportengine.server.dbmap.ServerJob;
 import com.redhat.reportengine.server.reports.Keys;
-import com.redhat.reportengine.server.scheduler.ManageJobs;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -26,13 +25,14 @@ import com.redhat.reportengine.server.scheduler.ManageJobs;
  */
 public class ManageJobSchedulerGui {
 	final static Logger _logger = Logger.getLogger(ManageJobSchedulerGui.class);
+	private SchedulerActions schedulerActions = new SchedulerActions();
 
 	public ArrayList<JobScheduler> getAllJobs() throws SQLException{
 		return new JobSchedulerTable().getAll();
 	}
 
 	public ArrayList<JobScheduler> getAllUserJobs() throws SQLException{
-		return new JobSchedulerTable().getUsersJobAll();
+		return new JobSchedulerTable().getUserJobs();
 	}
 
 	private boolean isCheckBoxEnabled(String status){
@@ -43,7 +43,14 @@ public class ManageJobSchedulerGui {
 		}
 	}
 
-	public void addNewUserJob(HttpServletRequest request, HttpSession session) throws ParseException, SQLException{
+	public void addNewUserJob(HttpServletRequest request, HttpServletResponse response) throws ParseException, SQLException{
+		JobClasses.TYPE type;
+		if(request.getParameter(Keys.TYPE) != null){
+			 type = JobClasses.TYPE.valueOf(request.getParameter(Keys.TYPE));
+		}else{
+			_logger.info("Job type not selected...");
+			return;
+		}
 		JobScheduler jobScheduler = new JobScheduler();
 		jobScheduler.setJobName(request.getParameter(Keys.JOB_NAME).trim());
 		jobScheduler.setJobEnabled(this.isCheckBoxEnabled(request.getParameter(Keys.JOB_ENABLED)));
@@ -88,50 +95,22 @@ public class ManageJobSchedulerGui {
 				}
 			}
 			jobScheduler.setCreationTime(new Date());
-			new JobSchedulerTable().add(jobScheduler);
-			jobScheduler = new JobSchedulerTable().get(jobScheduler.getJobName());
-			//Put Entry on other tables like Server-Job map, etc
-			addJobEntryOnOtherTable(jobScheduler);
-			ManageJobs.addAJobInScheduler(jobScheduler);
+			schedulerActions.addJob(type, jobScheduler);
 		}
 	}
 	
-	private void addJobEntryOnOtherTable(JobScheduler jobScheduler) throws SQLException{
-		if(jobScheduler.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_RESOURCE)){
-			addEntryServerJobMap(jobScheduler);
-		}
-	}
-	private void addEntryServerJobMap(JobScheduler jobScheduler) throws SQLException{
-		ServerJob serverJob = new ServerJob();
-		serverJob.setJobId(jobScheduler.getId());
-		serverJob.setServerId(jobScheduler.getDataReferenceId());
-		new ServerJobTable().add(serverJob);
+	public void deleteScheduledJob(HttpServletRequest request, HttpSession session) throws SQLException, ParseException, SchedulerException{
+		int id = Integer.valueOf(request.getParameter(Keys.JOB_ID));
+		schedulerActions.removeJob(id);
 	}
 	
-	private void removeJobEntryOnOtherTable(JobScheduler jobScheduler) throws SQLException{
-		if(jobScheduler.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_RESOURCE)){
-			removeEntryServerJobMap(jobScheduler);
-		}
+	public void enableScheduledJob(HttpServletRequest request, HttpServletResponse response) throws SQLException{
+		int id = Integer.valueOf(request.getParameter(Keys.JOB_ID));
+		schedulerActions.enableJob(id);		
 	}
 	
-	private void removeEntryServerJobMap(JobScheduler jobScheduler) throws SQLException{
-		new ServerJobTable().removeByJobId(jobScheduler.getId());
-	}
-	
-	public void deleteScheduledJob(int id) throws SQLException, ParseException, SchedulerException{
-		JobScheduler jobScheduler = new JobSchedulerTable().get(id);
-		ManageJobs.removeAJobFromScheduler(jobScheduler);
-		removeJobEntryOnOtherTable(jobScheduler);		
-		new JobSchedulerTable().remove(id);
-	}
-	
-	public void enableScheduledJob(int id) throws SQLException{
-		new JobSchedulerTable().enable(id);
-		ManageJobs.addAJobInScheduler(id);
-	}
-	
-	public void disableScheduledJob(int id) throws SQLException, ParseException, SchedulerException{
-		ManageJobs.removeAJobFromScheduler(id);
-		new JobSchedulerTable().disable(id);
+	public void disableScheduledJob(HttpServletRequest request, HttpServletResponse response) throws SQLException, ParseException, SchedulerException{
+		int id = Integer.valueOf(request.getParameter(Keys.JOB_ID));
+		schedulerActions.disableJob(id);
 	}
 }

@@ -30,7 +30,7 @@ if(exception.toString().contains("The connection attempt failed..")){
 %>
 <div id="parent" style="width:80%; border: 2px solid red; padding: 10px;">
 <font size="2" face="Verdana" color="red">
-<IMG height=17 src="../images/icons/error.png" width=17 align=top border=0>&nbsp;Database connection error!
+<IMG height=17 src="<%=General.HTML_ICONS_LOCATION%>error.png" width=17 align=top border=0>&nbsp;Database connection error!
 <BR>&nbsp;&nbsp;&nbsp;&nbsp;Report Engine database service is not running.
 <BR>&nbsp;&nbsp;&nbsp;&nbsp;Please start the service!
 </font></DIV>
@@ -39,7 +39,7 @@ if(exception.toString().contains("The connection attempt failed..")){
 	%>
 	<div id="parent" style="width:80%; border: 2px solid red; padding: 10px;">
 	<font size="2" face="Verdana" color="red">
-	<IMG height=17 src="../images/icons/error.png" width=17 align=top border=0>&nbsp;Agent or Server might be down!
+	<IMG height=17 src="<%=General.HTML_ICONS_LOCATION%>error.png" width=17 align=top border=0>&nbsp;Agent or Server might be down!
 
 	<BR>&nbsp;&nbsp;&nbsp;&nbsp;Sometimes on network failure...
 	<BR>&nbsp;&nbsp;&nbsp;&nbsp;Please check the agent service on server machine or Is server reachable?
@@ -81,7 +81,7 @@ else{
 %>
 <div id="parent" style="width:80%; border: 2px solid red; padding: 10px; margin-right:auto;margin-left:auto;">
 <font size="2" face="Verdana" color="red">
-<IMG height=17 src="../images/icons/error.png" width=17 align=top border=0>&nbsp;Error: <%= exception.toString().replaceAll("\n", "<BR>") %>
+<IMG height=17 src="<%=General.HTML_ICONS_LOCATION%>error.png" width=17 align=top border=0>&nbsp;Error: <%= exception.toString().replaceAll("\n", "<BR>") %>
 </font></DIV>
 <BR>
 <BR>

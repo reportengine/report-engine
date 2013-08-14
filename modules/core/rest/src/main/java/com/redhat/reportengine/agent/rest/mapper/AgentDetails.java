@@ -23,6 +23,9 @@ public class AgentDetails  extends AgentBaseMap implements Serializable{
 	private String name;
 	private CpuInformation cpu;
 	private SigarDetail sigarDetail;
+	private int restPort;
+	private int serverId;
+	
 	
 
 	/**
@@ -105,6 +108,22 @@ public class AgentDetails  extends AgentBaseMap implements Serializable{
 
 	public void setCpu(CpuInformation cpu) {
 		this.cpu = cpu;
+	}
+
+	public int getRestPort() {
+		return restPort;
+	}
+
+	public void setRestPort(int restPort) {
+		this.restPort = restPort;
+	}
+
+	public int getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(int serverId) {
+		this.serverId = serverId;
 	}
 
 	

@@ -247,6 +247,7 @@ CREATE TABLE re_job_classes
   id integer NOT NULL default nextval('re_job_classes_id_seq'),
   target_class character varying(1000) NOT NULL,
   target_class_description character varying(200) NULL,
+  class_type character varying(200) NOT NULL DEFAULT 'USER',
   unique(id),
   unique(target_class)
 );
@@ -254,15 +255,16 @@ CREATE TABLE re_job_classes
 --------------------------------------------------
 -- Insert JOB classes
 --------------------------------------------------
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.system.TestSuiteAggregationImpl', 'Test Suite Aggregation');
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.system.UpdateJobStatus', 'Update Incomplete Jobs Status');
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.system.ServerAgentReachableStatus', 'Update Server Reachable Status');
-
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.EmailReportGroupJob', 'Email: Test Reports');
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.MeasureCpuUsage', 'Resource: Measure CPU usage');
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.MeasureMemoryUsage', 'Resource: Measure Memory/Swap usage');
-INSERT INTO re_job_classes (target_class, target_class_description) VALUES ('com.redhat.reportengine.server.jobs.user.MeasureCpuMemoryCpusSwap', 'Resource: Measure CPU/CPUs/Memory/Swap usage');
-
+--System Jobs
+INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.server.jobs.system.TestSuiteAggregationImpl', 'Test Suite Aggregation', 'SYSTEM');
+INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.server.jobs.system.UpdateJobStatus', 'Update Incomplete Jobs Status', 'SYSTEM');
+INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.server.jobs.server.ServerAgentReachableStatus', 'Update Server Reachable Status', 'SYSTEM');
+--User Jobs
+INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.server.jobs.user.EmailReportGroupJob', 'Email: Test Reports', 'USER');
+--Server Jobs
+INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.server.jobs.server.MeasureCpuMemoryCpusSwap', 'Resource: Measure CPU/CPUs/Memory/Swap usage', 'SERVER');
+--Agent Jobs
+INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.agent.jobs.SendCpuCpusMemorySwapInfo', 'Agent: Resource - Send CPU/CPUs/Memory/Swap usage', 'AGENT');
 
 --------------------------------------------------
 -- Sequence for Job Scheduler
@@ -327,7 +329,7 @@ CREATE VIEW viewgettestsuites AS SELECT ts.id, ts.test_suite_name, ts.test_statu
 -----------------------------------------------------------------
 -- View - Get Job Scheduler All details
 -----------------------------------------------------------------
-CREATE VIEW viewgetjobschedulerall AS SELECT js.id, js.job_enabled, js.system_job,  js.cron_expression,  js.job_name,  js.target_class_id,  js.data_reference_id,  js.simple_job,  js.repeat_interval,  js.repeat_count,  js.valid_from_time,  js.valid_to_time,  js.job_frequency,  js.job_weekday,  js.job_day_month,  js.job_execution_time,  js.job_description,  js.creation_time,  js.last_edit_time, jc.target_class, jc.target_class_description FROM re_job_scheduler AS js JOIN re_job_classes AS jc ON js.target_class_id=jc.id;
+CREATE VIEW viewgetjobschedulerall AS SELECT js.id, js.job_enabled, js.system_job,  js.cron_expression,  js.job_name,  js.target_class_id,  js.data_reference_id,  js.simple_job,  js.repeat_interval,  js.repeat_count,  js.valid_from_time,  js.valid_to_time,  js.job_frequency,  js.job_weekday,  js.job_day_month,  js.job_execution_time,  js.job_description,  js.creation_time,  js.last_edit_time, jc.target_class, jc.target_class_description, jc.class_type FROM re_job_scheduler AS js JOIN re_job_classes AS jc ON js.target_class_id=jc.id;
 
 -----------------------------------------------------------------
 -- View - Get Test Details
@@ -350,8 +352,8 @@ CREATE TABLE re_settings
 INSERT INTO re_settings (key, key_value) values ('EmailServer','');
 INSERT INTO re_settings (key, key_value) values ('SenderEmail','');
 INSERT INTO re_settings (key, key_value) values ('EmailServerPort','25');
-INSERT INTO re_settings (key, key_value) values ('TestSuiteInactiveTime','7200000');
-INSERT INTO re_settings (key, key_value) values ('EngineRMIPort','9011');
+INSERT INTO re_settings (key, key_value) values ('TestSuiteInactiveTime','7200');
+INSERT INTO re_settings (key, key_value) values ('EngineUdpPort','20500');
 INSERT INTO re_settings (key, key_value) values ('EngineURL','');
 INSERT INTO re_settings (key, key_value) values ('EngineCurrentWidGet','start');
 INSERT INTO re_settings (key, key_value) values ('EngineAvailableWidGets','black-tie,blitzer,cupertino,dark-hive,dot-luv,eggplant,excite-bike,flick,hot-sneaks,humanity,le-frog,mint-choc,overcast,pepper-grinder,redmond,smoothness,south-street,start,sunny,swanky-purse,trontastic,ui-darkness,ui-lightness,vader');

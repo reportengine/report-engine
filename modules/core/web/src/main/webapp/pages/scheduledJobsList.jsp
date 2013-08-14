@@ -1,23 +1,25 @@
-
-
-<%@page import="com.redhat.reportengine.server.dbdata.JobClassesTable"%>
 <%
-String buttonName 	= (String)request.getParameter("SUBMIT");
+String buttonName 	= (String)request.getParameter(Keys.SUBMIT);
+JobClasses.TYPE type;
+if(request.getParameter(Keys.TYPE) != null){
+	 type = JobClasses.TYPE.valueOf(request.getParameter(Keys.TYPE));
+}else{
+	type = JobClasses.TYPE.USER;
+}
 
 if(buttonName != null){
 %>
 <%@ include file="include/re_jsp.jsp"%>
 <%
 	if(buttonName.equalsIgnoreCase("Delete")){
-		new ManageJobSchedulerGui().deleteScheduledJob(Integer.valueOf(request.getParameter(Keys.JOB_ID)));
-		//new PurgeLogs().deleteSuiteLogs(Integer.valueOf(request.getParameter("radio")));
-		response.sendRedirect("scheduledJobsList.jsp");
+		new ManageJobSchedulerGui().deleteScheduledJob(request, session);
+		response.sendRedirect("scheduledJobsList.jsp?"+Keys.TYPE+"="+type);
 	}else if(buttonName.equalsIgnoreCase("Enable")){
-		new ManageJobSchedulerGui().enableScheduledJob(Integer.valueOf(request.getParameter(Keys.JOB_ID)));
-		response.sendRedirect("scheduledJobsList.jsp");
+		new ManageJobSchedulerGui().enableScheduledJob(request, response);
+		response.sendRedirect("scheduledJobsList.jsp?"+Keys.TYPE+"="+type);
 	}else if(buttonName.equalsIgnoreCase("Disable")){
-		new ManageJobSchedulerGui().disableScheduledJob(Integer.valueOf(request.getParameter(Keys.JOB_ID)));
-		response.sendRedirect("scheduledJobsList.jsp");
+		new ManageJobSchedulerGui().disableScheduledJob(request, response);
+		response.sendRedirect("scheduledJobsList.jsp?"+Keys.TYPE+"="+type);
 	}else if(buttonName.equalsIgnoreCase("Add")){
 %>		
 		<%@ include file="index-part1.jsp"%>
@@ -114,7 +116,7 @@ if(buttonName != null){
 		simpleJobChange();
 		endLessJobChange();
 
-      $('.chosen1').chosen();
+      $('.chosen1').chosen({ width: "100%" });
       $('.chosen2').chosen({ width: "100%" });
 
 		
@@ -142,7 +144,7 @@ if(buttonName != null){
 
 		<div id="dt_page">
 		<div id="container">
-		<h1>Add New Schedule:</h1>
+		<h1>Add New <%=type%> Schedule:</h1>
 
 		<form method="post" name="jobDetails" action="scheduledJobsList.jsp"> 
 		<table border="0" cellpadding="3" align="left" id="dt_table">
@@ -159,9 +161,23 @@ if(buttonName != null){
 			<td>:</td>
 			<td colspan="2"><select data-placeholder="Choose a Job Type..."  tabindex="1" class="chosen1" name="<%=Keys.JOB_TYPE%>" id="<%=Keys.JOB_TYPE%>">			<option value=""></option> 
 			<%
- 				ArrayList<JobClasses> jobClasses = new JobClassesTable().getUserJobClass();
+ 				ArrayList<JobClasses> jobClasses= null;
+				switch(type){
+				case USER: jobClasses = new JobClassesTable().getUserJobClass(); break;
+				case SYSTEM: jobClasses = new JobClassesTable().getSystemJobClass(); break;
+				case SERVER: jobClasses = new JobClassesTable().getServerJobClass(); break;
+				case AGENT: jobClasses = new JobClassesTable().getAgentJobClass(); break;
+				}
+				
  			 				for(JobClasses jobClass: jobClasses){
- 			 					out.println("<option value=\""+jobClass.getId()+"\">"+jobClass.getTargetClassDescription()+"</option>");
+ 			 					switch(type){
+ 			 					case SERVER: 
+ 			 						if(!jobClass.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_UPPDATE_SERVER_REACHABLE_STATE)){
+ 			 							out.println("<option value=\""+jobClass.getId()+"\">"+jobClass.getTargetClassDescription()+"</option>"); 			 										 							
+ 			 						}
+ 			 						break;
+ 			 					default: out.println("<option value=\""+jobClass.getId()+"\">"+jobClass.getTargetClassDescription()+"</option>"); break;
+ 			 					}
  			 				}
  			%>	
 			</select></td>	
@@ -337,9 +353,11 @@ if(buttonName != null){
 			</table>
 		</td>
 	</tr>
-				
+		
 		<tr> <td colspan="4" align="right"> <div class="jbutton"><input type="submit" name="SUBMIT" value="Submit" style="width:80px;"></div></td></tr>
 		</table>
+		
+		<input type="hidden" id="<%=Keys.TYPE%>" name="<%=Keys.TYPE%>" value="<%=type%>">
 		</form>
 
 
@@ -348,8 +366,8 @@ if(buttonName != null){
 		<%@ include file="index-part3.jsp"%>
 <%
 	}else if(buttonName.equalsIgnoreCase("Submit")){
-		new ManageJobSchedulerGui().addNewUserJob(request, session);
-		response.sendRedirect("scheduledJobsList.jsp");
+		new ManageJobSchedulerGui().addNewUserJob(request, response);
+		response.sendRedirect("scheduledJobsList.jsp?"+Keys.TYPE+"="+type);
 	}
 }else{
 %>
@@ -456,7 +474,7 @@ if(buttonName != null){
 <div id="dt_page">
 <div id="container">
 
-<h1>Available Schedules:</h1>
+<h1><%=type%> Schedules:</h1>
 <form method="post" id="manage-reports" name="manageReports" action="scheduledJobsList.jsp" >
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="dt_table">
 	<thead>
@@ -479,20 +497,88 @@ if(buttonName != null){
 	<tbody>
 
 	<%
-		ArrayList<JobScheduler> userJobs= null;
-			userJobs = new ManageJobSchedulerGui().getAllUserJobs();		
-			
-			for(int i = 0; i<userJobs.size(); i++){				
-				out.println("<tr><td align=\"center\"><input type=\"radio\" name=\""+Keys.JOB_ID+"\" value=\""+userJobs.get(i).getId()+"\"><td>"+(i+1)+"</td><td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+userJobs.get(i).isJobEnabled()+".png' alt='"+userJobs.get(i).isJobEnabled()+"'></td><td>"+userJobs.get(i).getJobName()+"</td><td>"+userJobs.get(i).getTargetClassDescription()+"</td><td nowrap>"+General.getNotNullString(userJobs.get(i).getCronExpression())+"</td><td>"+General.getJobFrequency(userJobs.get(i).getJobFrequency(), userJobs.get(i).getJobWeekday())+"</td><td>"+General.getHourMinute(userJobs.get(i).getJobExecutionTime())+"</td><td>"+General.getNotNullString(userJobs.get(i).getRepeatCount())+"</td><td>"+General.getNotNullString(userJobs.get(i).getRepeatInterval())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getValidFromTime())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getValidToTime())+"</td><td>"+General.getGuiDateTime(userJobs.get(i).getCreationTime())+"</td></tr>");	
+		ArrayList<JobScheduler> jobs= null;
+		switch(type){
+			case AGENT: jobs = new JobSchedulerTable().getAgentJobs(); break;
+			case SERVER: jobs = new JobSchedulerTable().getServerJobs(); break;
+			case USER: jobs = new JobSchedulerTable().getUserJobs(); break;
+			case SYSTEM: jobs = new JobSchedulerTable().getSystemJobs(); break;
 			}
+				
+		StringBuilder builder = new StringBuilder();
+		int sno=1;
+		for(JobScheduler job : jobs){
+			builder.setLength(0);
+			builder.append("<tr>");
+			
+			//Enable/Disable radio button 
+			builder.append("<td align=\"center\"><input "); 
+			switch(type){
+			case SYSTEM: 
+				builder.append("disabled ");
+				break;
+			case SERVER:
+				if(job.getTargetClassDescription().contains(JobClassesTable.JOB_CLASS_DESCRIPTION_UPPDATE_SERVER_REACHABLE_STATE)){
+					builder.append("disabled ");
+				}				
+			}
+			builder.append("type=\"radio\" name=\"").append(Keys.JOB_ID).append("\" value=\"").append(job.getId()).append("\">");
+			//SNo.
+			builder.append("<td>").append(sno).append("</td>");
+			//Enabled
+			builder.append("<td align=\"center\"><img width=\"16\" height=\"16\"  src='")
+			.append(General.HTML_ICONS_LOCATION).append(job.isJobEnabled())
+			.append(".png' alt='").append(job.isJobEnabled()).append("'></td>");
+			//Name
+			builder.append("<td>").append(job.getJobName()).append("</td>");
+			//Type
+			builder.append("<td>").append(job.getTargetClassDescription()).append("</td>");
+			//Cron
+			builder.append("<td nowrap>").append(General.getNotNullString(job.getCronExpression())).append("</td>");
+			//Frequency
+			builder.append("<td>").append(General.getJobFrequency(job.getJobFrequency(), job.getJobWeekday())).append("</td>");
+			//Time
+			builder.append("<td>").append(General.getHourMinute(job.getJobExecutionTime())).append("</td>");
+			//Repeat Count
+			builder.append("<td>").append(General.getNotNullString(job.getRepeatCount())).append("</td>");
+			//Repeat Interval
+			builder.append("<td>").append(General.getNotNullString(job.getRepeatInterval())).append("</td>");
+			//Valid From
+			builder.append("<td>").append(General.getGuiDateTime(job.getValidFromTime())).append("</td>");
+			//Valid To
+			builder.append("<td>").append(General.getGuiDateTime(job.getValidToTime())).append("</td>");
+			//Creation Time
+			builder.append("<td>").append(General.getGuiDateTime(job.getCreationTime())).append("</td>");
+			
+			builder.append("</tr>");
+			sno++;
+			out.println(builder.toString()); 
+		}
 	%>
     </tbody>
 </table>
 
-<BR>
-<div class="jbutton">
-	<input type="submit" name="SUBMIT" value="Add" style="width:80px;"> <input type="submit" name="SUBMIT" value="Edit" style="width:80px;"> <input type="submit" name="SUBMIT" value="Delete" style="width:80px;"> <input type="submit" name="SUBMIT" value="Enable" style="width:80px;"> <input type="submit" name="SUBMIT" value="Disable" style="width:80px;">
-</div>
+<input type="hidden" id="<%=Keys.TYPE%>" name="<%=Keys.TYPE%>" value="<%=type%>">
+<%
+if(!type.equals(JobClasses.TYPE.SYSTEM)){
+	%>
+	<BR>
+	<div class="jbutton">
+	<%
+	if(!type.equals(JobClasses.TYPE.AGENT)){
+		%>
+		<input type="submit" name="SUBMIT" value="Add" style="width:80px;"> 
+		<%
+	}%>
+		<input type="submit" name="SUBMIT" value="Delete" style="width:80px;"> <input type="submit" name="SUBMIT" value="Enable" style="width:80px;"> <input type="submit" name="SUBMIT" value="Disable" style="width:80px;">
+	
+	</div>
+	
+<%
+}
+%>
+
+
 </form>
 <BR>
 <BR>

@@ -15,6 +15,7 @@ public class AgentBaseMap implements Serializable{
 	 */
 	private static final long serialVersionUID = -7965432223121329449L;
 	private String agentReference;
+	private long time;
 	
 
 	public String getAgentReference() {
@@ -23,5 +24,13 @@ public class AgentBaseMap implements Serializable{
 
 	public void setAgentReference(String agentReference) {
 		this.agentReference = agentReference;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
 	}
 }

@@ -57,7 +57,7 @@ if(buttonName == null)
 }else  if(buttonName.equalsIgnoreCase("Create")){
 	new AuthUserInternal().addUser(request, response);
 	%>
-	alert('New Account Created successfully!!');
+	$.alert('New Account Created successfully!!', 'New Account');
 	<%	
 	response.sendRedirect("login.jsp");	
 }else  if(buttonName.equalsIgnoreCase("ResetPassword")){
@@ -66,7 +66,7 @@ if(buttonName == null)
 }else  if(buttonName.equalsIgnoreCase("Request")){
 	new AuthenticationForgetPassword().setForgetPassword(request, response);
 	%>
-	alert('[Password Sent to you email address...');
+	$.alert('[Password Sent to you email address...', 'Forget password');
 	<%	
 	response.sendRedirect("login.jsp");	
 }else{

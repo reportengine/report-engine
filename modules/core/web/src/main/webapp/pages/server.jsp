@@ -251,7 +251,7 @@ if(buttonName != null){
 			out.println("<tr>"
 			+"<td align=\"center\"><input type=\"radio\" name=\""+Keys.SERVER_ID+"\" value=\""+servers.get(i).getId()+"\"></td>"
 			+"<td align=\"left\">"+(i+1)+"</td>"
-			+"<td align=\"left\">"+servers.get(i).getName()+"</td>"
+			+"<td align=\"left\"><a class=\"alink\" href=\"serverJobs.jsp?"+Keys.SERVER_ID+"="+servers.get(i).getId()+"\">"+servers.get(i).getName()+"</a></td>"
 			+"<td align=\"left\">"+servers.get(i).getHostIp()+"</td>"
 			+"<td align=\"center\"><a href=\"popUpServerBasicData.jsp?"+Keys.SERVER_ID+"="+servers.get(i).getId()+"\" class='ajax'><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).getPlatform()+".png' alt='"+servers.get(i).getPlatform()+"'></td>"
 			+"<td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).isReachable()+".png' alt='"+servers.get(i).isReachable()+"'></td>"

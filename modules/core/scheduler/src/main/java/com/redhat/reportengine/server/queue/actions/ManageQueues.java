@@ -17,6 +17,7 @@ public class ManageQueues {
 	private static LinkedList<Thread> threads = new LinkedList<Thread>();
 	public static void startAllQueueManagers(){
 		threads.addLast(new Thread(new InsertUpdateTestLogs()));
+		threads.addLast(new Thread(new InsertUdpPackets()));
 		
 		for(Thread thread : threads){
 			thread.start();

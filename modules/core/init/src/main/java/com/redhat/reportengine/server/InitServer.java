@@ -14,6 +14,7 @@ import com.redhat.reportengine.server.jobs.system.UpdateJobStatus;
 import com.redhat.reportengine.server.queue.actions.ManageQueues;
 import com.redhat.reportengine.server.scheduler.ManageJobs;
 import com.redhat.reportengine.server.sql.SqlMap;
+import com.redhat.reportengine.udppacket.Collector;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -40,6 +41,9 @@ public class InitServer extends HttpServlet {
 			//Load Engine Settings
 			ServerSettings.updateSystemSettingsFromDB();
 			_logger.info("Engine Settings are loaded successfully!!");
+			
+			//Start UDP Listener (to capture packets from Agent). Setting 5KB as UDP packet Size
+			new Thread(new Collector(ServerSettings.getServerUdpPort(), 5120)).start();
 			
 			//Start Quartz Scheduler..
 			new Thread(new ManageScheduler()).start();
@@ -70,9 +74,11 @@ public class InitServer extends HttpServlet {
 	
 	 public void destroy(){
 		 _logger.info("Shutdown application command has been issued! Shutting down services (Threads)...");
-		 
+		
 		 //Stop Quartz Scheduler...
 		 ManageScheduler.shutdown();
+		 //Stop UDP packet collector
+		 Collector.stop();
 		 //Stopping Queue Managers
 		 ManageQueues.stopAllQueueManagers();
 		 //Closing SQL Map active session

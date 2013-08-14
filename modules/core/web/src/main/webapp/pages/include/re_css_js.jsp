@@ -52,32 +52,7 @@
 	
 	<!-- Report Engine JS files-->
 	<script type='text/javascript' src='../gui/base/js/re.js'></script>
-	
-	
-	<!--Date Picker-->
-	<script type='text/javascript'>
-	$(function() {
-		$( "#datepickerFrom" ).datepicker({
-			changeMonth: true,
-			changeYear: true,
-			showAnim:"clip",
-			dateFormat: 'dd-mm-yy' });
-			
-		$( "#datepickerTo" ).datepicker({ 
-			changeMonth: true,
-			changeYear: true,
-			showAnim:"clip",
-			dateFormat: 'dd-mm-yy' });
-			
-		$( "#datepickerOneTime" ).datepicker({ 
-			changeMonth: true,
-			changeYear: true,
-			showAnim:"clip",
-			dateFormat: 'dd-mm-yy' });
 		
-	});
-	</script>
-	
 	<script type="text/javascript">
 	Highcharts.setOptions({
 		global: {

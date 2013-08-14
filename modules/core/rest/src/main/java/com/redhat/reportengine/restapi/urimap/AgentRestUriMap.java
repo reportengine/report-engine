@@ -6,7 +6,6 @@ package com.redhat.reportengine.restapi.urimap;
  */
 public class AgentRestUriMap {
 	public static final String AGENT_ROOT_URI = "/agent";
-	public static final String AGENT_JOB_ROOT_URI = "/jobs";
 	
 	//Resources
 	public static final String CONF_CPU    = "/conf/cpu";
@@ -34,7 +33,9 @@ public class AgentRestUriMap {
 	public static final String USAGE_DIR   = "/usage/dir";
 	
 	//Jobs
-	public static final String ADD_JOB = "/add";
-	public static final String DELETE_JOB = "/delete";
+	public static final String LOAD_JOB 		= "/jobs/loadjob";
+	public static final String LOAD_JOBS 		= "/jobs/loadmultiplejobs";
+	public static final String UNLOAD_JOB 		= "/jobs/unloadjob";
+	public static final String UNLOAD_ALL_JOBS 	= "/jobs/unloadalljobs";
 
 }

@@ -16,6 +16,7 @@ public class ServerTable {
 	public static final String GET_SERVER_DETAIL_ALL 			= "getServerDetailAll";
 	public static final String GET_SERVER_DETAILS_BY_ID			= "getServerDetailById";
 	public static final String GET_SERVER_DETAILS_BY_NAME		= "getServerDetailByName";
+	public static final String GET_SERVER_DETAILS_BY_HOST_IP	= "getServerDetailByHostId";
 	public static final String DELETE_SERVER_DETAILS_BY_ID		= "deleteServerDetailById";
 
 	
@@ -39,6 +40,10 @@ public class ServerTable {
 	
 	public Server getByName(String serverName) throws SQLException{
 		return (Server) SqlMap.getSqlMapClient().queryForObject(GET_SERVER_DETAILS_BY_NAME, serverName);
+	}
+	
+	public Server getByHostIp(String serverHostIp) throws SQLException{
+		return (Server) SqlMap.getSqlMapClient().queryForObject(GET_SERVER_DETAILS_BY_HOST_IP, serverHostIp);
 	}
 	
 	public void remove(Integer id) throws SQLException{

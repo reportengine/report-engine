@@ -1,6 +1,6 @@
 <%@ include file="index-part1.jsp"%>
 <%
-	String buttonName = (String) request.getParameter("SUBMIT");
+	String buttonName = (String) request.getParameter(Keys.SUBMIT);
 
 		if (buttonName == null) {
 %>
@@ -153,14 +153,15 @@
 
 <script type="text/javascript">
 $(function() {
+	$('#error-info').hide();
 	var seriesOptions = [],
 		yAxisOptions = [],
 		seriesCounter = 0,
 		names = [<%=selectedResources.toString()%>],
 		colors = Highcharts.getOptions().colors;
-
+	var err ;
 	$.each(names, function(i, name) {
-		$.getJSON($(location).attr('href').replace('chartCpuMemory.jsp','')+'ajaxChartCpuMemory.jsp?'+'<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.REPORT_FOR%>=<%=reportFor%>&<%=Keys.REPORT_DATE_FROM%>=<%=URLEncoder.encode(fromStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.REPORT_DATE_TO%>=<%=URLEncoder.encode(toStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.RESOURCE_TYPE%>='+ name,	function(data) {
+		$.getJSON($(location).attr('href').replace('chartCpuMemory.jsp','')+'ajaxChartCpuMemory.jsp?'+'<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.REPORT_FOR%>=<%=reportFor%>&<%=Keys.REPORT_DATE_FROM%>=<%=URLEncoder.encode(fromStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.REPORT_DATE_TO%>=<%=URLEncoder.encode(toStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.RESOURCE_TYPE%>='+ name).done(function(data) {
 		
 			seriesOptions[i] = {
 				name: name,
@@ -172,12 +173,16 @@ $(function() {
 			seriesCounter++;
 
 			if (seriesCounter == names.length) {
-				createChart();
+				if(err == null){
+					createChart();
+				}
 			}
+		}).fail(function(jqxhr, textStatus, error){
+			err = textStatus + ', ' + error;
+			//$('#error-info-msg').html(err);
+			$('#error-info').show();
 		});
 	});
-
-
 
 	// create the chart when all data is loaded
 	function createChart() {
@@ -237,7 +242,6 @@ $(function() {
 		    series: seriesOptions
 		});
 	}
-
 });
 
 </script>
@@ -252,6 +256,14 @@ $(function() {
 			</font>
 		</h1>
 		<div id="chartContainer" style="min-width: 90%;"></div>
+		<div id="error-info" class="ui-widget">
+		<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
+			<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
+			<div id="error-info-msg">Data not available for this date/time range...</div></p>
+		</div>
+
+
+	</div>
 	</div>
 </div>
 <%

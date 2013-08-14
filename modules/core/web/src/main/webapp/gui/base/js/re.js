@@ -219,3 +219,15 @@ jQuery.fn.dataTableExt.oSort['test-total-desc'] = function(x,y){
  y = parseFloat( y );
  return ((x < y) ?  1 : ((x > y) ? -1 : 0));
 };
+
+<!-- Alt alert box -->
+jQuery.extend({ alert: function (message, title) {
+		$("<div></div>").dialog( {
+	buttons: { "Ok": function () { $(this).dialog("close"); } },
+		close: function (event, ui) { $(this).remove(); },
+		resizable: false,
+		title: title,
+		modal: true
+		}).text(message);
+}
+});

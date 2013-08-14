@@ -4,6 +4,8 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.hyperic.sigar.SigarException;
 
+import com.redhat.reportengine.agent.AgentProperties;
+import com.redhat.reportengine.agent.ServerProperties;
 import com.redhat.reportengine.agent.rest.mapper.AgentDetails;
 
 /**
@@ -25,6 +27,8 @@ public class AgentInfo {
 		agent.setName(Network.getNetworkInfo().getNetInfo().getHostName());
 		agent.setCpu(Cpu.getCpuInfo());
 		agent.setSigarDetail(SigarUtils.getSigarDetail());
+		agent.setRestPort(AgentProperties.getAgentPort());
+		agent.setServerId(ServerProperties.getServerId());
 		return agent;
 	}
 }

@@ -8,7 +8,18 @@ public class JobClasses {
 	private Integer id;
 	private String targetClass;
 	private String targetClassDescription;
+
+	private String classType;
+	public enum TYPE{
+		SYSTEM,AGENT,USER,SERVER
+	}
 	
+	public String getClassType() {
+		return classType;
+	}
+	public void setClassType(String classType) {
+		this.classType = classType;
+	}
 	public Integer getId() {
 		return id;
 	}

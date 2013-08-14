@@ -1,4 +1,4 @@
-package com.redhat.reportengine.server.jobs.system;
+package com.redhat.reportengine.server.jobs.server;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -2,20 +2,15 @@ package com.redhat.reportengine.agent;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
+import java.net.InetAddress;
+import java.net.URI;
+
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.PropertyConfigurator;
 import org.hyperic.sigar.Sigar;
-import org.jboss.resteasy.plugins.server.netty.NettyJaxrsServer;
-import org.jboss.resteasy.spi.ResteasyDeployment;
 
-import com.redhat.reportengine.agent.rest.AgentResource;
-import com.redhat.reportengine.agent.scheduler.ManageJobs;
-import com.redhat.reportengine.scheduler.JobDetails;
 import com.redhat.reportengine.scheduler.ManageScheduler;
-
+import com.redhat.reportengine.server.rest.mapper.ServerInfo;
 
 
 /**
@@ -27,13 +22,40 @@ public class AgentMain {
 	
 	private static Logger _logger = Logger.getLogger(AgentMain.class);
 	private static String AGENT_PROPERTIES_FILE = "conf/re-agent.properties";
+
+	
+	public static void main( String[] args ) throws FileNotFoundException, IOException {
+		loadProperties();
+		initializeLog4j();
+		startServices();
+
+		_logger.info(getSigarDetails());
+		
+		loadAgentInfoFromServer();
+		//addJob();		
+	}	
+	
 	//Logger Configuration
-	static
-	{
-	    Logger rootLogger = Logger.getRootLogger();
-	    rootLogger.setLevel(Level.DEBUG);
-	    rootLogger.addAppender(new ConsoleAppender(
-	               new PatternLayout("[%d{ISO8601}]%5p %6.6r[%t]%x [%M(%F:%L)] %n%m%n")));
+	public static void initializeLog4j(){
+		PropertyConfigurator.configureAndWatch(System.getProperty(AgentProperties.LOG4J_PROPERTY_FILE));
+		_logger.debug("log4j Property File: "+System.getProperty(AgentProperties.LOG4J_PROPERTY_FILE));
+		_logger.debug("log4j Log File: "+System.getProperty(AgentProperties.LOG4J_LOG_FILE));
+	}
+	
+	public static void loadProperties() throws FileNotFoundException, IOException{
+		AgentProperties.loadProperties(AgentProperties.getHomeLocation()+AGENT_PROPERTIES_FILE);
+	}
+	
+	public static void startServices(){
+		//Start Netty Server
+		NettyServer.start();
+		//Start Scheduler
+		ManageScheduler.start();
+	}
+	
+	public static void stopServices(){
+		//Stop Netty Server
+		NettyServer.stop();
 	}
 	
 	public static String getSigarDetails(){
@@ -51,46 +73,32 @@ public class AgentMain {
 		return sigarInfo.toString();
 	}
 	
-	public static void main( String[] args ) {
-		//RESTEasy deployment
-		ResteasyDeployment deployment = new ResteasyDeployment();
-		deployment.setResourceClasses(Collections.singletonList(AgentResource.class.getName()));
-		
-		//Netty Server instance for REST API
-		final NettyJaxrsServer server = new NettyJaxrsServer();
-
-		//Deploy RestEasy with Netty
-		server.setDeployment(deployment);
-		
-		try {
-			AgentProperties.loadProperties(AgentProperties.getHomeLocation()+AGENT_PROPERTIES_FILE);
-		} catch (FileNotFoundException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		
-		//Set communication port for agent
-		server.setPort(AgentProperties.getAgentPort());
-		// Start Netty server
-		server.start();
-		
-		_logger.info("RE-Agent is listening on port "+AgentProperties.getAgentPort());
-		_logger.info(getSigarDetails());
-		
-		ManageScheduler.start();
-		_logger.info("RE-Agent Scheduler started successfully...");
-		
-		JobDetails details = new  JobDetails();
-		details.setName("Agent Job");
-		details.setGroup("RE- Group");
-		details.setJobTargetClass("com.redhat.reportengine.agent.jobs.SendCpuMemorySwapInfo");
-		details.setRepeatCount(new Integer(-1));
-		details.setRepeatInterval(new Long(1000*10));
-		
-		ManageJobs.addJob(details);
+	public static void loadAgentInfoFromServer(){
+		ServerConnection connection = new ServerConnection();
+		boolean serverInfoNotSet = true;
+		do{
+			try {
+				connection.registerAgent();
+				ServerInfo serverInfo = connection.getServerInfo();
+				ServerProperties.setServerUdpPort(serverInfo.getReServerUdpPort());
+				ServerProperties.setServerAddress(InetAddress.getByName(new URI(AgentProperties.getServerRestUrl()).getHost()));
+				//ServerProperties.setServerAddress(serverInfo.getServerAddress());
+				ServerProperties.setServerId(serverInfo.getServerId());
+				ServerProperties.setServerName(serverInfo.getServerName());
+				ServerProperties.setEnabled(true);
+				serverInfoNotSet = false;
+				_logger.info("Agent Info loaded successfully! Agent Id on server: "+ServerProperties.getServerId()+", Server Address: "+ServerProperties.getServerAddress().getHostAddress());
+			} catch (Exception ex) {
+				_logger.error("Exception on loading server/agent information", ex);
+				try {
+					long threadSleep = 1000*60;
+					_logger.info("Agent info failed to load, will retry in another "+(threadSleep/1000)+" second(s)");
+					Thread.sleep(threadSleep);
+				} catch (InterruptedException te) {
+					_logger.error("Thread interruptred...", te);
+				}
+			}
+		}while(serverInfoNotSet);		
 	}
 
 }

@@ -45,6 +45,10 @@ public class ManageScheduler implements Runnable{
 		return isJobAvailable(new JobKey(jobName, groupName));
 	}
 
+	public static boolean removeJob(JobDetails job) throws SchedulerException{
+		return removeJob(new JobKey(job.getName(), job.getGroup()));
+	}
+	
 	public static boolean removeJob(String jobName, String jobGroup) throws SchedulerException{
 		return removeJob(new JobKey(jobName, jobGroup));
 	}
@@ -205,6 +209,15 @@ public class ManageScheduler implements Runnable{
 			}
 		} catch (SchedulerException ex) {
 			_logger.error("unable to start Quartz Scheduler!", ex);
+		}
+	}
+
+	public static synchronized void clear(){
+		try {
+			scheduler.clear();
+			_logger.info("Unloaded all the jobs...");
+		} catch (SchedulerException ex) {
+			_logger.error("unable to clear scheduler..", ex);
 		}
 	}
 

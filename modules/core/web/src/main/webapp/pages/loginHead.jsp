@@ -22,8 +22,8 @@ $(function() {
 });
 
 function checkFields(){ 
-if (document.getElementById('<%=Keys.USER_ID%>').value == ""){ alert("Enter User Name!"); return false;}
-if (document.getElementById('<%=Keys.USER_PASSWORD%>').value == ""){ alert("Enter Password!"); return false;}
+if (document.getElementById('<%=Keys.USER_ID%>').value == ""){ $.alert("Enter User Name!", 'Login'); return false;}
+if (document.getElementById('<%=Keys.USER_PASSWORD%>').value == ""){ $.alert("Enter Password!", 'Login'); return false;}
 } 
 
 function checkCreateAccountFields(){ 

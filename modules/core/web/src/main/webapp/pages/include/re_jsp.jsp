@@ -4,6 +4,12 @@
 <%@ page import="com.redhat.reportengine.server.reports.*"%>
 <%@page import="com.redhat.reportengine.server.dbdata.*"%>
 
+<%@page import="com.redhat.reportengine.restapi.urimap.*"%>
+<%@page import="org.hyperic.sigar.*"%>
+<%@page import="org.hyperic.sigar.SysInfo"%>
+<%@page import="com.redhat.reportengine.agent.rest.mapper.*"%>
+<%@page import="com.redhat.reportengine.server.restclient.agent.*"%>
+
 
 <%@ page import="java.util.*"%>
 <%@ page import="java.util.HashMap"%>

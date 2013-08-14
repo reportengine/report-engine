@@ -1,8 +1,6 @@
 package com.redhat.reportengine.agent.rest;
 
 import java.util.Date;
-import java.util.LinkedList;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,23 +9,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.hyperic.sigar.DirUsage;
-import org.hyperic.sigar.FileSystem;
-import org.hyperic.sigar.FileSystemUsage;
 import org.hyperic.sigar.OperatingSystem;
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.SysInfo;
 
 import com.redhat.reportengine.agent.api.AgentInfo;
 import com.redhat.reportengine.agent.api.Cpu;
+import com.redhat.reportengine.agent.api.Disk;
 import com.redhat.reportengine.agent.api.Memory;
 import com.redhat.reportengine.agent.api.Network;
 import com.redhat.reportengine.agent.api.Pid;
 import com.redhat.reportengine.agent.api.SigarUtils;
 import com.redhat.reportengine.agent.rest.mapper.AgentDetails;
 import com.redhat.reportengine.agent.rest.mapper.CpuInformation;
+import com.redhat.reportengine.agent.rest.mapper.DiskInfo;
 import com.redhat.reportengine.agent.rest.mapper.NetworkInfo;
 import com.redhat.reportengine.agent.rest.mapper.OsDetail;
 import com.redhat.reportengine.agent.rest.mapper.PidDetail;
+import com.redhat.reportengine.agent.rest.mapper.PidList;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpu;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpuMemory;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpus;
@@ -77,7 +76,7 @@ public class AgentResource {
 	
 	@GET
 	@Path(AgentRestUriMap.LIST_PIDS)
-	public static LinkedList<PidDetail> getPids(){
+	public static PidList getPids(){
 		return Pid.getPidList();
 	}
 	
@@ -132,14 +131,20 @@ public class AgentResource {
 	
 	@GET
 	@Path(AgentRestUriMap.LIST_FS)
-	public static FileSystem[] getListFs() throws SigarException{
-		return SigarUtils.getSigar().getFileSystemList();
+	public static DiskInfo getListFs() throws SigarException{
+		return Disk.getFileSystem();
 	}
 	
 	@GET
 	@Path(AgentRestUriMap.USAGE_FS+"/{fs}")
-	public static FileSystemUsage getUsageFs(@PathParam("fs") String fsName) throws SigarException{
-		return SigarUtils.getSigar().getFileSystemUsage(fsName);
+	public static DiskInfo getUsageFs(@PathParam("fs") String fsName) throws SigarException{
+		return Disk.getFileSystemUsage(fsName);
+	}
+	
+	@GET
+	@Path(AgentRestUriMap.USAGE_FS)
+	public static DiskInfo getUsageFs() throws SigarException{
+		return Disk.getFileSystemUsage();
 	}
 	
 	@GET

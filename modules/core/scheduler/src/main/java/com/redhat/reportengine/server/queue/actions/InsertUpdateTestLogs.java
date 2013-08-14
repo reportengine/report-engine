@@ -15,20 +15,18 @@ import com.redhat.reportengine.server.queue.TestLogsQueue;
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Apr 2, 2012
  */
-public class InsertUpdateTestLogs implements Runnable{
+public class InsertUpdateTestLogs extends InsertParent implements Runnable{
 	private static Logger _logger = Logger.getLogger(InsertUpdateTestLogs.class);
 
-	private static boolean stopMe = false;
-	private static boolean stopMeImmeditate = false;
 	private TestLogs testLogs = null;
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
 	public void run() {
 		_logger.info("Started Test Logs Queue Manager...");
-		while(!stopMeImmeditate){
+		while(!isStopMeImmeditate()){
 			if(TestLogsQueue.getTestLogSize() > 0){
 				insertTestLogs();
 			}else{
@@ -38,15 +36,15 @@ public class InsertUpdateTestLogs implements Runnable{
 					_logger.error("Thread sleep exception,", ex);
 				}
 			}
-			if(stopMe && TestLogsQueue.getTestLogSize() == 0){
+			if(isStopMe() && TestLogsQueue.getTestLogSize() == 0){
 				_logger.info("Stopping Test Logs Queue Manager...");
 				break;
 			}
 		}
 		_logger.info("Stopped Test Logs Queue Manager..");
-		
+
 	}
-	
+
 	private void insertTestLogs(){
 		try {
 			testLogs = TestLogsQueue.getFirstTestLog();
@@ -61,37 +59,9 @@ public class InsertUpdateTestLogs implements Runnable{
 				testLogs.setMessage(testLogs.getMessage().substring(0, 9999));
 			}			
 			new TestLogsTable().add(testLogs);
-			
+
 		} catch (SQLException ex) {
 			_logger.error("Error on Test Log insertion,", ex);
 		}
-	}
-
-	/**
-	 * @return the stopMe
-	 */
-	public static boolean isStopMeEnabled() {
-		return stopMe;
-	}
-
-	/**
-	 * @param stopMe the stopMe to set
-	 */
-	public static void setStopMe(boolean stopMe) {
-		InsertUpdateTestLogs.stopMe = stopMe;
-	}
-
-	/**
-	 * @return the stopMeImmeditate
-	 */
-	public static boolean isStopMeImmeditate() {
-		return stopMeImmeditate;
-	}
-
-	/**
-	 * @param stopMeImmeditate the stopMeImmeditate to set
-	 */
-	public static void setStopMeImmeditate(boolean stopMeImmeditate) {
-		InsertUpdateTestLogs.stopMeImmeditate = stopMeImmeditate;
 	}
 }

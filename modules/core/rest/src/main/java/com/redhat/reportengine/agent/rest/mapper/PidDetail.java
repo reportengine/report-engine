@@ -42,7 +42,7 @@ public class PidDetail extends AgentBaseMap implements Serializable{
 	private java.util.List procModules;
 	private  ProcState  procState;
 	private  ProcTime procTime;
-	//Try to determina classname for java programs
+	//Try to determine classname for java programs
 	private String description;
 	
 	//Basic Details

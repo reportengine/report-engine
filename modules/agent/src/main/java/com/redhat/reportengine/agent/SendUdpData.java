@@ -15,23 +15,11 @@ import com.redhat.reportengine.udppacket.Sender;
  */
 public class SendUdpData {
 	
-	private static REUdpPacket udpPacket;
-	
-	public static void sendToServer(Object object, MSG_TYPE msgType) throws JsonGenerationException, JsonMappingException, IOException{
+	public static void sendToServer(String objectString, MSG_TYPE msgType) throws JsonGenerationException, JsonMappingException, IOException{
 		REUdpPacket udpPacket = new REUdpPacket();
 		udpPacket.setMsgType(msgType);
-		udpPacket.setObject(object);
+		udpPacket.setObjectString(objectString);
+		udpPacket.setServerId(ServerProperties.getServerId());
 		Sender.sendMessage(Formatter.getJsonString(udpPacket), ServerProperties.getServerAddress(), ServerProperties.getServerUdpPort());		
-	}
-	
-	public static REUdpPacket getREUdpPacket(){
-		if(udpPacket == null){
-			udpPacket = new REUdpPacket();
-			udpPacket.setServerId(ServerProperties.getServerId());
-		}
-		return udpPacket;
-	}
-	
- 
-		   
+	}		   
 }

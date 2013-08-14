@@ -709,7 +709,9 @@ DELETE FROM re_report_group_reference WHERE report_group_id=$reportGroupId$
 <result property="lastEditTime" column="last_edit_time"/>
 <result property="targetClass" column="target_class"/>
 <result property="targetClassDescription" column="target_class_description"/>
+<result property="classType" column="class_type"/>
 </resultMap>
+
 
 <select id="getJobSchedulerNextId" resultClass="java.lang.Integer">
 select id from nextval('re_job_scheduler_id_seq') as id
@@ -739,12 +741,32 @@ SELECT * FROM viewgetjobschedulerall
 SELECT * FROM viewgetjobschedulerall WHERE system_job=false
 </select>
 
+<select id="getJobSchedulerByServerId" parameterClass="java.lang.Integer" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE id IN(SELECT job_id FROM re_server_job WHERE server_id=$serverId$)
+</select>
+
+<select id="getJobSchedulerByClassLike" parameterClass="java.lang.String" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE target_class LIKE '$target_class$%'
+</select>
+
+<select id="getJobSchedulerByClassLikeAndDataReference" parameterClass="com.redhat.reportengine.server.dbmap.JobScheduler" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE target_class LIKE '$targetClass$%' AND data_reference_id=$dataReferenceId$
+</select>
+
 <select id="getJobSchedulerById" parameterClass="java.lang.Integer" resultMap="JobSchedulerResultMap">
 SELECT * FROM viewgetjobschedulerall WHERE id=$id$
 </select>
 
 <select id="getJobSchedulerByJobName" parameterClass="java.lang.String" resultMap="JobSchedulerResultMap">
 SELECT * FROM viewgetjobschedulerall WHERE job_name='$jobName$'
+</select>
+
+<select id="getJobSchedulerByClassType" parameterClass="java.lang.String" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE class_type='$classType$'
+</select>
+
+<select id="getJobSchedulerByClassTypeAndDataReference" parameterClass="com.redhat.reportengine.server.dbmap.JobScheduler" resultMap="JobSchedulerResultMap">
+SELECT * FROM viewgetjobschedulerall WHERE class_type='$classType$' AND data_reference_id=$dataReferenceId$
 </select>
 
 <select id="getJobSchedulerByTargetClassIdAndReferenceId" parameterClass="com.redhat.reportengine.server.dbmap.JobScheduler" resultMap="JobSchedulerResultMap">
@@ -759,6 +781,7 @@ SELECT * FROM viewgetjobschedulerall WHERE target_class_id=$targetClassId$ AND d
 <result property="id" column="id"/>
 <result property="targetClass" column="target_class"/>
 <result property="targetClassDescription" column="target_class_description"/>
+<result property="classType" column="class_type"/>
 </resultMap>
 
 <select id="getJobClassesById" parameterClass="java.lang.Integer" resultMap="JobClassesResultMap">
@@ -775,6 +798,10 @@ SELECT * FROM re_job_classes WHERE target_class LIKE '$target_class$%'
 
 <select id="getJobClasses" resultMap="JobClassesResultMap">
 SELECT * FROM re_job_classes
+</select>
+
+<select id="getJobClassesByClassType" parameterClass="java.lang.String" resultMap="JobClassesResultMap">
+SELECT * FROM re_job_classes WHERE class_type='$classType$'
 </select>
 
 <!-- Job Classes - END -->
@@ -1300,6 +1327,10 @@ SELECT * FROM re_view_getserverdetailwithstatus WHERE id=$id$
 
 <select id="getServerDetailByName" parameterClass="java.lang.String" resultMap="serverResultMap">
 SELECT * FROM re_view_getserverdetailwithstatus WHERE name='$name$' 
+</select>
+
+<select id="getServerDetailByHostId" parameterClass="java.lang.String" resultMap="serverResultMap">
+SELECT * FROM re_view_getserverdetailwithstatus WHERE host_ip='$hostIp$' 
 </select>
 
 <delete id="deleteServerDetailById" parameterClass="java.lang.Integer">

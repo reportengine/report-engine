@@ -9,8 +9,10 @@ public class REUdpPacket implements Serializable{
 	 */
 	private static final long serialVersionUID = 5898718474196133337L;
 	
+	public static final String RESOURCE_TYPE = "RESOURCE_TYPE";
+	
 	private MSG_TYPE msgType;
-	private Object object;
+	private String objectString;
 	private int serverId;
 	private long time;
 	
@@ -21,12 +23,6 @@ public class REUdpPacket implements Serializable{
 		this.msgType = msgType;
 	}
 	
-	public Object getObject() {
-		return object;
-	}
-	public void setObject(Object object) {
-		this.object = object;
-	}
 	public int getServerId() {
 		return serverId;
 	}
@@ -38,5 +34,11 @@ public class REUdpPacket implements Serializable{
 	}
 	public void setTime(long time) {
 		this.time = time;
+	}
+	public String getObjectString() {
+		return objectString;
+	}
+	public void setObjectString(String objectString) {
+		this.objectString = objectString;
 	}
 }

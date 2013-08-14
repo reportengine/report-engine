@@ -9,19 +9,22 @@
 
 					<li><a href="#">Servers</a>
 						<ul>
-							<li><a href="server.jsp">List All</a></li>
+							<li><a href="server.jsp">Available Servers</a></li>
 						</ul></li>
 
 					<li><a href="#">Graphical Reports</a>
 						<ul>
-							<li><a href="server.jsp">Server Availability</a></li>
+							<li><a href="#">Server Availability (yet to implement)</a></li>
 							<li><a href="chartCpuMemory.jsp">CPU/Memory</a></li>
 						</ul></li>
 
-					<!-- <li><a href="#">Groups</a>
+					<li><a href="#">Live Data</a>
 						<ul>
-							<li><a href="server.jsp">Server Groups</a></li>
-						</ul></li> -->
+							<li><a href="serverLiveBasicData.jsp">Basic Info</a></li>
+							<li><a href="serverLiveNetworkData.jsp">Network Info</a></li>
+							<li><a href="serverLivePidData.jsp">Running Process</a></li>
+							<li><a href="serverLiveDiskData.jsp">Disk Info</a></li>
+						</ul></li>
 
 				</ul></li>
 			<li><a href="#">Test Suites</a>
@@ -52,7 +55,10 @@
 				<ul>
 					<li><a href="#">Schedules</a>
 						<ul>
-							<li><a href="scheduledJobsList.jsp">List All</a></li>
+							<li><a href="scheduledJobsList.jsp?<%=Keys.TYPE%>=<%=JobClasses.TYPE.USER%>">User</a></li>
+							<li><a href="scheduledJobsList.jsp?<%=Keys.TYPE%>=<%=JobClasses.TYPE.AGENT%>">Agent</a></li>
+							<li><a href="scheduledJobsList.jsp?<%=Keys.TYPE%>=<%=JobClasses.TYPE.SERVER%>">Server</a></li>
+							<li><a href="scheduledJobsList.jsp?<%=Keys.TYPE%>=<%=JobClasses.TYPE.SYSTEM%>">System</a></li>
 						</ul></li>
 				</ul></li>
 

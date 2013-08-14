@@ -113,6 +113,7 @@ public class Keys {
 	public static final String JOB_CRON_EXPRESSION_ENABLED		= "cronExpressionEnabled";
 	public static final String JOB_CRON_EXPRESSION_TR			= "cronExpressionTr";
 	public static final String JOB_CRON_EXPRESSION				= "cronExpression";
+	public static final String TYPE								= "TYPE";
 	
 	
 	//Group Report
@@ -150,6 +151,18 @@ public class Keys {
 	//URL Encoding Decoding
 	public static final String URL_ENCODE_UTF_8						= "UTF-8";
 	
+	//PID data
+	public static final String PID									= "pid";
+	
+	//Interfaces
+	public static final String INTERFACE_NAME						= "interfaceName";
+	public static final String NETWORK_INFO							= "networkInfo";
+	
+	//Disk Data
+	public static final String DISK_QUERY_TYPE						= "diskQueryType";
+	public static final String DISK_FILE_SYSTEM						= "diskFileSystem";
+	public static final String DISK_USAGE							= "diskUsage";
+
 
 	
 }
