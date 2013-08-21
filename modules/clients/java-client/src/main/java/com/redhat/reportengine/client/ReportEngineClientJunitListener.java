@@ -18,11 +18,10 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
  */
 public class ReportEngineClientJunitListener extends RunListener{
 	protected static Logger _logger = Logger.getLogger(ReportEngineClientJunitListener.class.getName());
-	private static RemoteAPI reportEngineClientAPI = new RemoteAPI();
 
 	public ReportEngineClientJunitListener() {
 		try {
-			reportEngineClientAPI.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
+			getRemoteApi().initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
 		} catch (Exception ex) {
 			_logger.log(Level.SEVERE, "Report Engine Client Failed to start!!", ex);
 		}
@@ -32,16 +31,16 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 * Will be called before any tests have been run. 
 	 * */
 	public void testRunStarted(Description description){
-		if(RemoteAPI.isClientLoadedSuccess()){
-			reportEngineClientAPI.runLogHandler();
+		if(getRemoteApi().isClientLoadedSuccess()){
+			getRemoteApi().runLogHandler();
 			try {
 				if(description != null){
 					if(description.getDisplayName() != null){
-						reportEngineClientAPI.updateTestSuiteName(description.getDisplayName());
+						getRemoteApi().updateTestSuiteName(description.getDisplayName());
 						return;
 					}
 				}
-				reportEngineClientAPI.insertTestGroup("Junit - No groups");
+				getRemoteApi().insertTestGroup("Junit - No groups");
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on testRunStarted,", ex);
 			}
@@ -49,12 +48,19 @@ public class ReportEngineClientJunitListener extends RunListener{
 	}
 
 	/**
+	 * @return
+	 */
+	private RemoteAPI getRemoteApi() {
+		return RemoteAPI.getRemoteApi();
+	}
+
+	/**
 	 *  Will be called when all tests have finished 
 	 * */
 	public void testRunFinished(Result result) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngineClientAPI.updateTestSuite(TestSuite.COMPLETED, System.getProperty(reportEngineClientAPI.getBuildVersionReference()));
+				getRemoteApi().updateTestSuite(TestSuite.COMPLETED, System.getProperty(getRemoteApi().getBuildVersionReference()));
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on testRunFinished,", ex);
 			}	
@@ -65,9 +71,9 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when an atomic test is about to be started. 
 	 * */
 	public void testStarted(Description description) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngineClientAPI.insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.RUNNING);
+				getRemoteApi().insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.RUNNING);
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on testStarted,", ex);
 			}
@@ -78,9 +84,9 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when an atomic test has finished, whether the test succeeds or fails. 
 	 * */
 	public void testFinished(Description description) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngineClientAPI.updateTestCase(TestCase.PASSED);
+				getRemoteApi().updateTestCase(TestCase.PASSED);
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on testFinished,", ex);
 			}
@@ -91,10 +97,10 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when an atomic test fails. 
 	 * */
 	public void testFailure(Failure failure) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngineClientAPI.takeScreenShot();
-				reportEngineClientAPI.updateTestCase(TestCase.FAILED, ClientCommon.toString(failure.getException()));
+				getRemoteApi().takeScreenShot();
+				getRemoteApi().updateTestCase(TestCase.FAILED, ClientCommon.toString(failure.getException()));
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on testFailure,", ex);
 			}
@@ -105,12 +111,12 @@ public class ReportEngineClientJunitListener extends RunListener{
 	 *  Will be called when a test will not be run, generally because a test method is annotated with Ignore. 
 	 * */
 	public void testIgnored(Description description) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				if(reportEngineClientAPI.isLastTestStateRunning()){
-					reportEngineClientAPI.updateTestCase(TestCase.SKIPPED);
+				if(getRemoteApi().isLastTestStateRunning()){
+					getRemoteApi().updateTestCase(TestCase.SKIPPED);
 				}else{
-					reportEngineClientAPI.insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.SKIPPED);
+					getRemoteApi().insertTestCase(description.getMethodName(), description.getClassName()+"."+description.getMethodName(), TestCase.SKIPPED);
 				}
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on testIgnored,", ex);

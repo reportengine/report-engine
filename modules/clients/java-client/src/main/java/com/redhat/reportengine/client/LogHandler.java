@@ -3,8 +3,12 @@
  */
 package com.redhat.reportengine.client;
 
+import java.util.Enumeration;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.log4j.Appender;
 
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
@@ -31,6 +35,45 @@ public class LogHandler {
 	public static final String LOGGER_JUL 		= "JUL";
 	public static final String LOGGER_LOG4J 	= "LOG4J";
 	
+	public static void teardown(){
+		log4jTeardown();
+		julTeardown();
+		remoteApi = null;
+		isLoadedHandler = false;
+		reportEngineJulHandler = null;
+		reportEngineLog4jHandler = null;
+	}
+
+	private static void log4jTeardown(){
+		org.apache.log4j.Logger log4jLogger = getLog4jLogger();
+		log4jLogger.removeAppender(reportEngineLog4jHandler);
+		Enumeration appenders = log4jLogger.getAllAppenders();
+		while(appenders.hasMoreElements()){
+			Object appender = appenders.nextElement();
+			if(appender.getClass().equals(Log4jReportEngineLogHandler.class));
+				log4jLogger.removeAppender((Appender)appender);
+		}
+		
+	}
+
+	/**
+	 * @return
+	 */
+	private static org.apache.log4j.Logger getLog4jLogger() {
+		return org.apache.log4j.Logger.getRootLogger();
+	}
+	
+	private static void julTeardown(){
+
+		Logger julLogger = Logger.getLogger("");
+		julLogger.removeHandler(reportEngineJulHandler);
+		for(Handler handler: julLogger.getHandlers()){
+			if(handler.getClass().equals(JulReportEngineLogHandler.class))
+				julLogger.removeHandler(handler);
+			
+		}
+		
+	}
 	
 	public static void julLoggerSetup() {
 		// Create JUL Logger
@@ -41,7 +84,6 @@ public class LogHandler {
 		}
 		
 		if(isLoadedHandler){
-			julLogger.removeHandler(reportEngineJulHandler);
 			julLogger.addHandler(reportEngineJulHandler);	
 			remoteApi.setJulLoggers(RemoteAPI.loggersToWarn, Level.WARNING);
 			_logger.log(Level.INFO, "Report Engine Client: JUL Handler reloaded...");
@@ -57,7 +99,7 @@ public class LogHandler {
 	
 	public static void log4jLoggerSetup() {
 		// Create LOG4J Logger
-		org.apache.log4j.Logger log4jLogger = org.apache.log4j.Logger.getRootLogger();
+		org.apache.log4j.Logger log4jLogger = getLog4jLogger();
 		
 		if(!remoteApi.getLogLevel().equalsIgnoreCase(LOG_LEVEL_DEFAULT)){
 			log4jLogger.setLevel(org.apache.log4j.Level.toLevel(remoteApi.getLogLevel(), org.apache.log4j.Level.INFO));

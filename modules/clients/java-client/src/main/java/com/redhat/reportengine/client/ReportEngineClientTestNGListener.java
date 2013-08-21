@@ -23,14 +23,22 @@ import com.redhat.reportengine.server.dbmap.TestSuite;
  */
 public class ReportEngineClientTestNGListener implements IResultListener, ISuiteListener {
 	protected static Logger _logger = Logger.getLogger(ReportEngineClientTestNGListener.class.getName());
-	private static RemoteAPI reportEngine = new RemoteAPI();
+
+	public ReportEngineClientTestNGListener(boolean donothing){
+		//donothing
+
+	}
 
 	public ReportEngineClientTestNGListener(){
 		try {
-			reportEngine.initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
+			RemoteAPI.getRemoteApi().initClient(InetAddress.getLocalHost().getHostName()+" ["+InetAddress.getLocalHost().getHostAddress()+"]");
 		} catch (Exception ex) {
 			_logger.log(Level.SEVERE, "Report Engine Client Failed to start!!", ex);
 		}
+	}
+
+	protected RemoteAPI getRemoteApi(){
+		return RemoteAPI.getRemoteApi();
 	}
 	
 	public String getParametersString(Object[] parameters) {
@@ -46,7 +54,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onFinish(ITestContext context) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			
 		}
 		
@@ -58,9 +66,9 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	@Override
 	public void onStart(ITestContext context) {
 		// Test Group
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngine.insertTestGroup(context.getName());
+				getRemoteApi().insertTestGroup(context.getName());
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on onStart,", ex);
 			}
@@ -80,10 +88,10 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngine.takeScreenShot();
-				reportEngine.updateTestCase(TestCase.FAILED, ClientCommon.toString(result.getThrowable()));
+				getRemoteApi().takeScreenShot();
+				getRemoteApi().updateTestCase(TestCase.FAILED, ClientCommon.toString(result.getThrowable()));
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on onTestFailure,", ex);
 			}
@@ -95,12 +103,12 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestSkipped(ITestResult result) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				if(reportEngine.isLastTestStateRunning()){
-					reportEngine.updateTestCase(TestCase.SKIPPED);
+				if(getRemoteApi().isLastTestStateRunning()){
+					getRemoteApi().updateTestCase(TestCase.SKIPPED);
 				}else{
-					reportEngine.insertTestCase(result.getName(), result.getName()+"("+getParametersString(result.getParameters())+")", TestCase.SKIPPED);
+					getRemoteApi().insertTestCase(result.getName(), result.getName()+"("+getParametersString(result.getParameters())+")", TestCase.SKIPPED);
 				}
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on onTestSkipped,", ex);
@@ -114,9 +122,9 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestStart(ITestResult test) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngine.insertTestCase(test.getName(), test.getName()+"("+getParametersString(test.getParameters())+")", TestCase.RUNNING);
+				getRemoteApi().insertTestCase(test.getName(), test.getName()+"("+getParametersString(test.getParameters())+")", TestCase.RUNNING);
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on onTestStart,", ex);
 			}
@@ -128,9 +136,9 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngine.updateTestCase(TestCase.PASSED);
+				getRemoteApi().updateTestCase(TestCase.PASSED);
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on onTestSuccess,", ex);
 			}
@@ -142,7 +150,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onConfigurationFailure(ITestResult testResult) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			if(testResult.getThrowable() == null){
 				_logger.log(Level.WARNING, "Configuration Failed!!");
 			}else{
@@ -156,7 +164,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onConfigurationSkip(ITestResult testResult) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			if(testResult.getThrowable() == null){
 				_logger.log(Level.WARNING, "Configuration Skipped!!");
 			}else{
@@ -170,7 +178,7 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onConfigurationSuccess(ITestResult testResult) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			_logger.log(Level.FINE, "Configuration loadded Successfully!!");
 		}		
 	}
@@ -180,12 +188,13 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onFinish(ISuite suite) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngine.updateTestSuite(TestSuite.COMPLETED, System.getProperty(reportEngine.getBuildVersionReference()));
+				getRemoteApi().updateTestSuite(TestSuite.COMPLETED, System.getProperty(getRemoteApi().getBuildVersionReference()));
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on onFinish,", ex);
 			}	
+			getRemoteApi().removeHandlers();
 		}	
 	}
 
@@ -194,10 +203,10 @@ public class ReportEngineClientTestNGListener implements IResultListener, ISuite
 	 */
 	@Override
 	public void onStart(ISuite suite) {
-		if(RemoteAPI.isClientLoadedSuccess()){
+		if(getRemoteApi().isClientLoadedSuccess()){
 			try {
-				reportEngine.runLogHandler();
-				reportEngine.updateTestSuiteName(suite.getName());				
+				getRemoteApi().runLogHandler();
+				getRemoteApi().updateTestSuiteName(suite.getName());				
 			} catch (Exception ex) {
 				_logger.log(Level.SEVERE, "Error on onStart,", ex);
 			}	
