@@ -11,13 +11,13 @@ String caseId 	= request.getParameter("caseId");
 boolean singleLog = false;
 ArrayList<TestLogs> testLogs = null;
 if(caseId != null){
-	testLogs = new TestLogsReport().getLogsByCaseIdAjax(Integer.valueOf(caseId), Integer.valueOf(""+session.getAttribute(Keys.TEST_LOG_AJAX_REF)));
+	testLogs = new TestLogsReport().getLogsByCaseIdAjax(Integer.valueOf(caseId), Long.valueOf(""+session.getAttribute(Keys.TEST_LOG_AJAX_REF)));
 }else if(groupId != null){
-	testLogs = new TestLogsReport().getLogsByGroupIdAjax(Integer.valueOf(groupId), Integer.valueOf(""+session.getAttribute(Keys.TEST_LOG_AJAX_REF)));
+	testLogs = new TestLogsReport().getLogsByGroupIdAjax(Integer.valueOf(groupId), Long.valueOf(""+session.getAttribute(Keys.TEST_LOG_AJAX_REF)));
 }else if(suiteId != null){
-	testLogs = new TestLogsReport().getLogsBySuiteIdAjax(Integer.valueOf(suiteId), Integer.valueOf(""+session.getAttribute(Keys.TEST_LOG_AJAX_REF)));
+	testLogs = new TestLogsReport().getLogsBySuiteIdAjax(Integer.valueOf(suiteId), Long.valueOf(""+session.getAttribute(Keys.TEST_LOG_AJAX_REF)));
 }else{
-	TestLogs testLog = new TestLogsReport().getLogsById(Integer.valueOf(logId));
+	TestLogs testLog = new TestLogsReport().getLogsById(Long.valueOf(logId));
 	singleLog = true;
 %>
 <html>
@@ -76,7 +76,7 @@ if(caseId != null){
 <%
 }
 if(!singleLog){
-	int id = 0;
+	long id = 0;
 	//out.println("Session Status: "+session.getAttribute(Keys.SESSION_STATUS));
 	//out.println("Session User: "+session.getAttribute(Keys.SESSION_USER_NAME));
 	//out.println("Session ID: "+session.getId());

@@ -1,4 +1,5 @@
 <%@ page import="com.redhat.reportengine.server.gui.*"%>
+<%@ page import="com.redhat.reportengine.server.gui.mapper.*"%>
 <%@ page import="com.redhat.reportengine.server.cache.*"%>
 <%@ page import="com.redhat.reportengine.server.dbmap.*"%>
 <%@ page import="com.redhat.reportengine.server.reports.*"%>

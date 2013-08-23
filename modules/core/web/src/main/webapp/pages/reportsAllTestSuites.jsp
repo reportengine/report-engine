@@ -167,13 +167,15 @@ if(buttonName != null){
 		}else{
 			testSuites = new TestSuiteTable().getTopNByRefIds();
 		}
-		StringBuffer passedStr 	= new StringBuffer();
-		StringBuffer failedStr 	= new StringBuffer();
-		StringBuffer skippedStr = new StringBuffer();
+		StringBuilder passedStr 	= new StringBuilder();
+		StringBuilder failedStr 	= new StringBuilder();
+		StringBuilder skippedStr = new StringBuilder();
+		StringBuilder content = new StringBuilder();
 		for(int i = 0; i<testSuites.size(); i++){
-			passedStr 		= new StringBuffer();
-			failedStr 		= new StringBuffer();
-			skippedStr 		= new StringBuffer();
+			passedStr.setLength(0);
+			failedStr.setLength(0);
+			skippedStr.setLength(0);
+			content.setLength(0);
 			if(testSuites.get(i).getPassedCases()!=0){
 				passedStr.append("<a href=\"reportsTestCases.jsp?suiteid=").append(testSuites.get(i).getId()).append("&teststatus=").append(TestCase.PASSED).append("\"><font color=\"green\"><b>").append(testSuites.get(i).getPassedCases()).append("</b></font></a>");
 			}else{
@@ -192,7 +194,29 @@ if(buttonName != null){
 				skippedStr.append("<font color=\"brown\"><b>").append(testSuites.get(i).getSkippedCases()).append("</b></font>");
 			}
 			
-			out.println("<tr><td align=\"center\"><input type=\"checkbox\" name=\""+Keys.DELETE_REPORTS+"\" value=\""+testSuites.get(i).getId()+"\"></td><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsTestGroups.jsp?id="+testSuites.get(i).getId()+"\">"+testSuites.get(i).getTestSuiteName()+"</a></td><td align=\"center\"><a href=\"ajaxReportTestSuite.jsp?id="+testSuites.get(i).getId()+"\" class='ajax'><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+testSuites.get(i).getTestStatus()+".png' alt='"+testSuites.get(i).getTestStatus()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?suiteId="+testSuites.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td><td><b>"+testSuites.get(i).getTotalCases()+"</b>"+General.getColor(testSuites.get(i).getTotalChanges(), true)+"</td><td>"+passedStr.toString()+General.getColor(testSuites.get(i).getPassedChanges(), true)+"</td><td>"+failedStr.toString()+General.getColor(testSuites.get(i).getFailedChanges(), false)+"</td><td>"+skippedStr.toString()+General.getColor(testSuites.get(i).getSkippedChanges(), false)+"</td><td align=\"center\">"+General.getBuildDetails(testSuites.get(i).getTestBuild())+"</td><td align=\"center\">"+General.getGuiDateTime(testSuites.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testSuites.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testSuites.get(i).getTestDuration())+"</td></tr>");	
+			content.append("<tr>");
+			content.append("<td align=\"center\"><input type=\"checkbox\" name=\"").append(Keys.DELETE_REPORTS).append("\" value=\"").append(testSuites.get(i).getId()).append("\"></td>");
+			content.append("<td>").append(i+1).append("</td><td><a class=\"alink\" href=\"reportsTestGroups.jsp?id=").append(testSuites.get(i).getId()).append("\">").append(testSuites.get(i).getTestSuiteName()).append("</a></td>");
+			
+			content.append("<td align=\"center\">")
+				.append("<a href=\"ajaxReportTestSuite.jsp?id=").append(testSuites.get(i).getId()).append("\" class='ajax'><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append(testSuites.get(i).getTestStatus()).append(".png' alt='").append(testSuites.get(i).getTestStatus()).append("'></a>")
+				.append("&nbsp;<a href=\"reportsTestLogs.jsp?suiteId=").append(testSuites.get(i).getId()).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("debug.png'  alt='Debug'></a>")
+				.append("&nbsp;<a href=\"chartCpuMemory.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("&").append(Keys.SUBMIT).append("=").append(Keys.TEST_SUITE).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("bar-chart-icon-16x16.png'  alt='Resource Usage'></a>")
+				.append("</td>");
+
+			content.append("<td><b>").append(testSuites.get(i).getTotalCases()).append("</b>").append(General.getColor(testSuites.get(i).getTotalChanges(), true)).append("</td>");
+			content.append("<td>").append(passedStr.toString()+General.getColor(testSuites.get(i).getPassedChanges(), true)).append("</td>");
+			content.append("<td>").append(failedStr.toString()+General.getColor(testSuites.get(i).getFailedChanges(), false)).append("</td>");
+			content.append("<td>").append(skippedStr.toString()+General.getColor(testSuites.get(i).getSkippedChanges(), false)).append("</td>");
+			content.append("<td align=\"center\">").append(General.getBuildDetails(testSuites.get(i).getTestBuild())).append("</td>");
+			content.append("<td align=\"center\">").append(General.getGuiDateTime(testSuites.get(i).getLocalStartTime())).append("</td>");
+			content.append("<td align=\"center\">").append(General.getGuiDateTime(testSuites.get(i).getLocalEndTime())).append("</td>");
+			content.append("<td align=\"center\">").append(General.getGuiDuration(testSuites.get(i).getTestDuration())).append("</td>");
+			content.append("</tr>");
+			
+			out.println(content.toString());
+			
+			//out.println("<tr><td align=\"center\"><input type=\"checkbox\" name=\""+Keys.DELETE_REPORTS+"\" value=\""+testSuites.get(i).getId()+"\"></td><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsTestGroups.jsp?id="+testSuites.get(i).getId()+"\">"+testSuites.get(i).getTestSuiteName()+"</a></td><td align=\"center\"><a href=\"ajaxReportTestSuite.jsp?id="+testSuites.get(i).getId()+"\" class='ajax'><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+testSuites.get(i).getTestStatus()+".png' alt='"+testSuites.get(i).getTestStatus()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?suiteId="+testSuites.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td><td><b>"+testSuites.get(i).getTotalCases()+"</b>"+General.getColor(testSuites.get(i).getTotalChanges(), true)+"</td><td>"+passedStr.toString()+General.getColor(testSuites.get(i).getPassedChanges(), true)+"</td><td>"+failedStr.toString()+General.getColor(testSuites.get(i).getFailedChanges(), false)+"</td><td>"+skippedStr.toString()+General.getColor(testSuites.get(i).getSkippedChanges(), false)+"</td><td align=\"center\">"+General.getBuildDetails(testSuites.get(i).getTestBuild())+"</td><td align=\"center\">"+General.getGuiDateTime(testSuites.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testSuites.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testSuites.get(i).getTestDuration())+"</td></tr>");	
 		}
 
 	%>
@@ -212,7 +236,8 @@ if(buttonName != null){
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Completed.png' alt='Completed'></td><td valign="top">- Completed&nbsp;</td> 
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Failed.png'  alt='Failed'></td><td valign="top">- Failed&nbsp;</td>
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>NoStatus.png'  alt='Status N/A'></td><td valign="top">- Status Not Available&nbsp;</td>
-<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug N/A'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>bar-chart-icon-16x16.png'  alt='Resource Utilization'></td><td valign="top">- Resource Utilization&nbsp;</td>
 <tr>
 </table>
 

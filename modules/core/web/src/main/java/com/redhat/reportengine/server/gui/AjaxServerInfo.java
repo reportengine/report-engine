@@ -2,6 +2,7 @@ package com.redhat.reportengine.server.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.ProcCpu;
 import org.hyperic.sigar.ProcCred;
 import org.hyperic.sigar.ProcCredName;
@@ -34,12 +34,16 @@ import com.redhat.reportengine.server.dbdata.ServerCpuDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerMemoryDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerNetworkDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerOsDetailTable;
-import com.redhat.reportengine.server.dbdata.ServerTable;
-import com.redhat.reportengine.server.dbmap.Server;
+import com.redhat.reportengine.server.dbdata.TestReferenceServerMapTable;
+import com.redhat.reportengine.server.dbdata.TestReferenceTable;
+import com.redhat.reportengine.server.dbdata.TestSuiteTable;
 import com.redhat.reportengine.server.dbmap.ServerCpuDetail;
 import com.redhat.reportengine.server.dbmap.ServerMemoryDetail;
 import com.redhat.reportengine.server.dbmap.ServerNetworkDetail;
 import com.redhat.reportengine.server.dbmap.ServerOsDetail;
+import com.redhat.reportengine.server.dbmap.TestReference;
+import com.redhat.reportengine.server.dbmap.TestReferenceServerMap;
+import com.redhat.reportengine.server.dbmap.TestSuite;
 import com.redhat.reportengine.server.reports.General;
 import com.redhat.reportengine.server.reports.Keys;
 import com.redhat.reportengine.server.restclient.agent.AgentsConnection;
@@ -70,14 +74,14 @@ public class AjaxServerInfo {
 		stringBuilder.append("\n</TR>\n");
 	}
 
-	private void setKeyValueTabsHeading(StringBuilder tabHeader, String heading){
+	public void setKeyValueTabsHeading(StringBuilder tabHeader, String heading){
 		setKeyValueTabsHeading(tabHeader, heading, null);
 	}
 
-	private void setKeyValueTabsHeading(StringBuilder tabHeader, String heading, String url){
+	public void setKeyValueTabsHeading(StringBuilder tabHeader, String heading, String url){
 		tabHeader.append("\n<li><a href=\"");
 		if(url == null){
-			tabHeader.append("#").append(heading.toLowerCase().replaceAll("\\s+", "-"));
+			tabHeader.append("#").append(heading.toLowerCase().replaceAll("\\s+", "-").replaceAll("\\.", "-"));
 		}else{
 			tabHeader.append(url);
 		}
@@ -87,7 +91,7 @@ public class AjaxServerInfo {
 
 	private void setKeyValueTabs(StringBuilder tabHeader, StringBuilder tabContent, String heading, Object value){
 		setKeyValueTabsHeading(tabHeader, heading);
-		tabContent.append("\n<div id=\"").append(heading.toLowerCase().replaceAll("\\s+", "-")).append("\">");
+		tabContent.append("\n<div id=\"").append(heading.toLowerCase().replaceAll("\\s+", "-").replaceAll("\\.", "-")).append("\">");
 		tabContent.append(value);
 		tabContent.append("</div>");
 	}
@@ -486,5 +490,24 @@ public class AjaxServerInfo {
 		}else{
 			return "-";
 		}
+	}
+	
+	public String getServerDetailsForTestSuite(HttpServletRequest request, HttpServletResponse response){
+		try{
+			int testSuiteId = Integer.valueOf(request.getParameter(Keys.TEST_SUITE_ID));
+			TestSuite testSuite = new TestSuiteTable().get(testSuiteId);
+			ArrayList<TestReferenceServerMap> serverMaps = new TestReferenceServerMapTable().getDetailByTestRefId(testSuite.getTestReferenceId());
+			
+			StringBuilder tabHeader = new StringBuilder("<ul>\n");			
+			for(TestReferenceServerMap server : serverMaps){
+				setKeyValueTabsHeading(tabHeader, server.getServerName(), "ajaxChartCpuMemoryFull.jsp?"+Keys.SUBMIT+"="+"TestSuite&"+Keys.SERVER_ID+"="+server.getServerId()+"&"+Keys.TEST_SUITE_ID+"="+testSuiteId);
+			}			
+			tabHeader.append("\n</ul>");
+			return tabHeader.toString();
+
+		}catch(Exception ex){
+			_logger.error("exception,", ex);
+		}
+		return null;		
 	}
 }

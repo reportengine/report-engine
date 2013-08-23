@@ -7,7 +7,7 @@ import java.util.Date;
  * Jul 11, 2013
  */
 public class ResourceMemory {
-	private Integer id;
+	private Long id;
 	private Date localTime;
 	private Date remoteTime;
 	private long total;
@@ -23,10 +23,10 @@ public class ResourceMemory {
 	private Date toTime;
 	
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public Date getLocalTime() {

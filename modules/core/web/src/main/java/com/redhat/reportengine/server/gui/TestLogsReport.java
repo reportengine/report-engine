@@ -14,21 +14,21 @@ import com.redhat.reportengine.server.dbmap.TestLogs;
  */
 public class TestLogsReport {
 	
-	public ArrayList<TestLogs> getLogsBySuiteIdAjax(Integer suiteId, Integer ajaxRef) throws SQLException{
+	public ArrayList<TestLogs> getLogsBySuiteIdAjax(Integer suiteId, Long ajaxRef) throws SQLException{
 		TestLogs testLog = new TestLogs();
 		testLog.setId(ajaxRef);
 		testLog.setTestSuiteId(suiteId);
 		return new TestLogsTable().getByTestSuiteIdAjax(testLog);
 	}
 	
-	public ArrayList<TestLogs> getLogsByGroupIdAjax(Integer groupId, Integer ajaxRef) throws SQLException{
+	public ArrayList<TestLogs> getLogsByGroupIdAjax(Integer groupId, Long ajaxRef) throws SQLException{
 		TestLogs testLog = new TestLogs();
 		testLog.setId(ajaxRef);
 		testLog.setTestGroupId(groupId);
 		return new TestLogsTable().getByTestGroupIdAjax(testLog);
 	}
 	
-	public ArrayList<TestLogs> getLogsByCaseIdAjax(Integer caseId, Integer ajaxRef) throws SQLException{
+	public ArrayList<TestLogs> getLogsByCaseIdAjax(Integer caseId, Long ajaxRef) throws SQLException{
 		TestLogs testLog = new TestLogs();
 		testLog.setId(ajaxRef);
 		testLog.setTestCaseId(caseId);
@@ -47,7 +47,7 @@ public class TestLogsReport {
 		return new TestLogsTable().getByTestCaseId(id);
 	}
 	
-	public TestLogs getLogsById(Integer id) throws SQLException{
+	public TestLogs getLogsById(Long id) throws SQLException{
 		return new TestLogsTable().get(id);
 	}
 }

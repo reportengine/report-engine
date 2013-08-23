@@ -1,8 +1,7 @@
 <%@ include file="index-part1.jsp"%>
 <%
-	String buttonName = (String) request.getParameter(Keys.SUBMIT);
-
-		if (buttonName == null) {
+String buttonName = (String) request.getParameter(Keys.SUBMIT);
+if (buttonName == null) {
 %>
 <%@ include file="index-part2.jsp"%>
 
@@ -123,7 +122,196 @@
 </div>
 
 <%
-	} else if (buttonName.equalsIgnoreCase("Get")) {
+}else if(buttonName.equalsIgnoreCase(Keys.TEST_SUITE) || buttonName.equalsIgnoreCase(Keys.TEST_CASE)){
+	TestSuite testSuite = null;
+		ChartData data = new ChartData();
+	if(buttonName.equalsIgnoreCase(Keys.TEST_SUITE)){
+		testSuite = new TestSuiteTable().get(Integer.valueOf(request.getParameter(Keys.TEST_SUITE_ID)));
+		data.setReportDateFrom(testSuite.getLocalStartTime());
+		data.setReportDateTo(testSuite.getLocalEndTime());
+	}else if(buttonName.equalsIgnoreCase(Keys.TEST_CASE)){
+		TestCase testCase = new TestCaseTable().getDetailed(Integer.valueOf(request.getParameter(Keys.TEST_CASE_ID)));
+		data.setReportDateFrom(testCase.getLocalStartTime());
+		data.setReportDateTo(testCase.getLocalEndTime());
+		testSuite = new TestSuiteTable().get(testCase.getTestSuiteId());
+	}
+	%>
+<script type="text/javascript">
+$(function() {
+  $( "#test-suite-resource-usage-tabs" ).tabs();
+});
+</script>
+	<%@ include file="index-part2.jsp"%>
+	<div id="dt_page">
+		<div id="container">
+		<h1>Resource Utilization: <font size="2">[<b>Test Suite: </b><I><%=testSuite.getTestSuiteName()%>,</I> <b>Build:</b> <I><%=testSuite.getTestBuild()%></I>]</font></h1>
+		<%
+		ArrayList<TestReferenceServerMap> serverMaps = new TestReferenceServerMapTable().getDetailByTestRefId(testSuite.getTestReferenceId());
+		if(serverMaps.size() == 0){
+			%>
+			<div class="ui-widget">
+  				<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
+  				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
+  				<div>There is no server mapped with this test suite...</div></p>
+  				</div>
+  			</div>
+			<%
+		}else{		
+		%>
+		<div id="test-suite-resource-usage-tabs" style="overflow:hidden;">
+  			<%
+  			StringBuilder tabHeader = new StringBuilder("<ul>\n");			
+			for(TestReferenceServerMap server : serverMaps){
+				new AjaxServerInfo().setKeyValueTabsHeading(tabHeader, server.getServerName());
+			}			
+			tabHeader.append("\n</ul>");
+  			out.println(tabHeader.toString());
+  			String type = request.getParameter(Keys.SUBMIT);
+				
+				data.setReportDateFrom(testSuite.getLocalStartTime());
+				if(data.getReportDateTo() == null){
+					data.setReportDateTo(new Date());
+				}
+
+				//data.setServerId(Integer.valueOf(request.getParameter(Keys.SERVER_ID)));
+				data.setSelectedResources("'"+Keys.RESOURCE_CPU+"','"+Keys.RESOURCE_MEMORY_AU+"'");
+				data.setReportFor(Keys.REPORT_FOR_CUSTOM);
+				Server server = null;
+  			for(TestReferenceServerMap serverMap : serverMaps){
+  				data.setServerId(serverMap.getServerId());
+  				%>
+  				<div id="<%=serverMap.getServerName().toLowerCase().replaceAll("\\s+", "-").replaceAll("\\.", "-")%>">
+  				<%
+  				if(new ChartCpuMemory().isDataAvailable(data, RESOURCE_TYPE.CPU)){
+  					server = new ServerTable().getById(data.getServerId());
+  		  			%>  			  			
+  		  			
+  					<script type="text/javascript">
+  					$(function() {
+  						$('#error-info<%=data.getServerId()%>').hide();
+  						var seriesOptions = [],
+  						yAxisOptions = [],
+  						seriesCounter = 0,
+  						names = [<%=data.getSelectedResources()%>],
+  						colors = Highcharts.getOptions().colors;
+  						var err ;
+  					$.each(names, function(i, name) {
+  						$.getJSON($(location).attr('href').replace(new RegExp("chartCpuMemory.jsp.*"), '')+'ajaxChartCpuMemory.jsp?'+'<%=Keys.SERVER_ID%>=<%=data.getServerId()%>&<%=Keys.REPORT_FOR%>=<%=data.getReportFor()%>&<%=Keys.REPORT_DATE_FROM%>=<%=URLEncoder.encode(new SimpleDateFormat(General.guiInputDateTimeFormat).format(data.getReportDateFrom()), Keys.URL_ENCODE_UTF_8)%>&<%=Keys.REPORT_DATE_TO%>=<%=URLEncoder.encode(new SimpleDateFormat(General.guiInputDateTimeFormat).format(data.getReportDateTo()), Keys.URL_ENCODE_UTF_8)%>&<%=Keys.RESOURCE_TYPE%>='+ name).done(function(data) {
+  				
+  						seriesOptions[i] = {
+  							name: name,
+  							data: data
+  						};
+
+  						// As we're loading the data asynchronously, we don't know what order it will arrive. So
+  						// we keep a counter and create the chart when all the data is loaded.
+  						seriesCounter++;
+
+  						if (seriesCounter == names.length) {
+  							if(err == null){
+  								createChart();
+  							}
+  						}
+  					}).fail(function(jqxhr, textStatus, error){
+  						err = textStatus + ', ' + error;
+  						$('#error-info<%=data.getServerId()%>').show();
+  					});
+  				});
+
+  				// create the chart when all data is loaded
+  				function createChart() {
+					$('#chartContainer<%=data.getServerId()%>').highcharts('StockChart', {
+  				    	chart: {
+  				    	},
+
+  				    	title: {
+  					    	text: 'CPU/Memory Report'
+  						},
+  						subtitle: {
+  					    	text: 'Server: <%=server.getName()%> [<%=server.getHostIp()%>]'
+  						},
+  						credits: {
+  			    			enabled: false
+  					    },	
+  						navigator:{
+  							adaptToUpdatedData: false
+  					    },
+  						legend: {
+  							enabled:true,
+  			            	align: 'right',
+  			            	x: -100,
+  			            	verticalAlign: 'top',
+  			            	y: 0,
+  			            	floating: true,
+  			            	backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+  			            	borderColor: '#CCC',
+  			            	borderWidth: 1,
+  			            	shadow: false
+  			        	},
+  						rangeSelector: {
+	  						enabled: false
+  						},
+	
+  					    yAxis: {
+  					        title: {
+  					            text: 'Used %'
+  					        },
+  				    	    min: 0,
+  				        	max: 100
+	  				    },
+  					    
+  					    plotOptions: {
+  					    	series: {
+  					    		//compare: 'percent'
+  				    		}
+  				    	},
+  				    
+	  				    tooltip: {
+  			        		xDateFormat: '%b %e, %H:%M:%S <%=new SimpleDateFormat("z").format(new Date())%> %Y',
+  					    	pointFormat: '<span style="color:{series.color}">{series.name}</span>: {point.y}%<br/>',
+  					    	valueDecimals: 2
+  					    },
+  				    	
+	  				    series: seriesOptions
+  					});
+  				}
+  			});
+			</script>
+
+  			<div id="chartContainer<%=data.getServerId()%>" style="min-width: 90%;"></div>
+	  		
+	  		<div id="error-info<%=data.getServerId()%>" class="ui-widget">
+  				<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
+  					<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
+  					<div id="error-info-msg<%=data.getServerId()%>">Data not available for this date/time range...</div></p>
+  				</div>
+  			</div>
+  		</div>
+  		  			<%
+  				}else{
+  					%>
+  					<div id="error-info<%=data.getServerId()%>" class="ui-widget">
+  						<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
+  						<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
+  						<div id="error-info-msg<%=data.getServerId()%>">Data not available for this date/time range...</div></p>
+  						</div>
+  					</div>
+  					</div>
+  					<%
+  				}
+  				
+    		}
+		}
+  			%>
+  			</div>
+  			</div>
+			</div>
+
+
+	<%
+	
+	
+}else if (buttonName.equalsIgnoreCase("Get")) {
 			int serverId = Integer.parseInt((String) request.getParameter(Keys.SERVER_ID));	
 			Server server = new ServerTable().getById(serverId);
 			String fromStrDate = request.getParameter(Keys.REPORT_DATE_FROM)+" "+request.getParameter(Keys.REPORT_HOUR_FROM)+":"+request.getParameter(Keys.REPORT_MINUTE_FROM)+":00";
@@ -134,14 +322,14 @@
 			
 			StringBuilder selectedResources = new StringBuilder();
 			selectedResources.append("'").append(Keys.RESOURCE_CPU).append("'");
-			selectedResources.append(",'").append(Keys.RESOURCE_MEMORY).append("'");
+			selectedResources.append(",'").append(Keys.RESOURCE_MEMORY_AU).append("'");
 			
 			
 			if(General.isCheckBoxEnabled((String)request.getParameter(Keys.RESOURCE_SWAP))){
 				selectedResources.append(",'").append(Keys.RESOURCE_SWAP).append("'");
 			}
-			if(General.isCheckBoxEnabled((String)request.getParameter(Keys.RESOURCE_MEMORY_AU))){
-				selectedResources.append(",'").append(Keys.RESOURCE_MEMORY_AU).append("'");
+			if(General.isCheckBoxEnabled((String)request.getParameter(Keys.RESOURCE_MEMORY))){
+				selectedResources.append(",'").append(Keys.RESOURCE_MEMORY).append("'");
 			}
 			if(General.isCheckBoxEnabled((String)request.getParameter(Keys.RESOURCE_CPUS))){
 				int cpuNos = new ServerCpuDetailTable().getByServerId(serverId).getTotalCores();

@@ -186,6 +186,7 @@
 <result property="localEndTime" column="local_end_time"/>
 <result property="remoteEndTime" column="remote_end_time"/>
 <result property="testDuration" column="test_duration"/>
+<result property="testSuiteId" column="test_suite_id"/>
 <result property="testGroup" column="test_group"/>
 <result property="testSuiteName" column="test_suite_name"/>
 <result property="testBuild" column="test_build"/>
@@ -274,8 +275,8 @@
 </resultMap>
 
 
-<select id="getTestSuiteById" resultMap="TestSuiteResultMapFull">
-select * from viewgettestsuitesdetailed where id=#id#
+<select id="getTestSuiteById" parameterClass="java.lang.Integer" resultMap="TestSuiteResultMapFull">
+select * from viewgettestsuitesdetailed where id=$id$
 </select>
 
 <select id="getTestSuiteByNameRef" parameterClass="com.redhat.reportengine.server.dbmap.TestSuite" resultMap="TestSuiteResultMap">
@@ -388,7 +389,7 @@ SELECT * FROM re_test_case WHERE test_suite_id=? AND test_group_id=? AND test_na
 </select>
 
 <select id="getTestCaseDetailById" parameterClass="java.lang.Integer" resultMap="TestCaseDetailResultMap">
-SELECT tc.id, tc.test_name, tc.test_arguments, tc.test_result, tc.test_comments, tc.test_files, tc.test_gui_files, tc.local_start_time, tc.local_end_time, tc.remote_start_time, tc.remote_end_time, COALESCE(((EXTRACT(EPOCH FROM tc.local_end_time)*1000) - EXTRACT(EPOCH FROM tc.local_start_time)*1000),0) as test_duration, tg.test_group, ts.test_suite_name, ts.test_build from re_test_case tc, re_test_group tg, re_test_suite ts where tc.id=$id$ AND tc.test_group_id=tg.id AND tc.test_suite_id=ts.id
+SELECT tc.id, tc.test_name, tc.test_arguments, tc.test_result, tc.test_comments, tc.test_files, tc.test_gui_files, tc.local_start_time, tc.local_end_time, tc.remote_start_time, tc.remote_end_time, COALESCE(((EXTRACT(EPOCH FROM tc.local_end_time)*1000) - EXTRACT(EPOCH FROM tc.local_start_time)*1000),0) as test_duration, tc.test_suite_id, tg.test_group, ts.test_suite_name, ts.test_build from re_test_case tc, re_test_group tg, re_test_suite ts where tc.id=$id$ AND tc.test_group_id=tg.id AND tc.test_suite_id=ts.id
 </select>
 
 <select id="getTestCases" parameterClass="com.redhat.reportengine.server.dbmap.TestCase" resultMap="TestCaseResultMap">
@@ -1160,7 +1161,7 @@ CREATE SEQUENCE re_resource_cpu_id_seq_$sub_name$
 <insert id="createCpuTable" parameterClass="java.lang.String">
 CREATE TABLE re_resource_cpu_$sub_name$
 (
-  id integer NOT NULL default nextval('re_resource_cpu_id_seq_$sub_name$'),
+  id bigint NOT NULL default nextval('re_resource_cpu_id_seq_$sub_name$'),
   local_time timestamp NOT NULL DEFAULT statement_timestamp(),
   remote_time timestamp NOT NULL,
   "user" real NULL,
@@ -1189,7 +1190,7 @@ CREATE SEQUENCE re_resource_cpus_id_seq_$sub_name$
 <insert id="createCpusTable" parameterClass="java.lang.String">
 CREATE TABLE re_resource_cpus_$sub_name$
 (
-  id integer NOT NULL default nextval('re_resource_cpus_id_seq_$sub_name$'),
+  id bigint NOT NULL default nextval('re_resource_cpus_id_seq_$sub_name$'),
   local_time timestamp NOT NULL DEFAULT statement_timestamp(),
   remote_time timestamp NOT NULL,
   "user" real[] NULL,
@@ -1245,6 +1246,9 @@ SELECT * FROM re_resource_cpu_$tableSubName$ ORDER BY id ASC
 SELECT * FROM re_resource_cpu_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$' ORDER BY id ASC
 </select>
 
+<select id="getCpuUsageCountByTimeRange" parameterClass="com.redhat.reportengine.server.dbmap.ResourceCpu" resultClass="java.lang.Long">
+SELECT count(id) FROM re_resource_cpu_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$'
+</select>
 
 <!-- CPU - Usage - END -->
 
@@ -1274,6 +1278,10 @@ SELECT * FROM re_resource_cpu_$tableSubName$ ORDER BY id ASC
 SELECT * FROM re_resource_cpus_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$' ORDER BY id ASC
 </select>
 
+<select id="getCpusUsageCountByTimeRange" parameterClass="com.redhat.reportengine.server.dbmap.ResourceCpus" resultClass="java.lang.Long">
+SELECT count(id) FROM re_resource_cpus_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$'
+</select>
+
 <!-- CPUs - Usage - END -->
 
 
@@ -1281,6 +1289,7 @@ SELECT * FROM re_resource_cpus_$tableSubName$ WHERE local_time &gt;='$fromTime$'
 <parameterMap id="serverInsertParameterMap" class="com.redhat.reportengine.server.dbmap.Server">
 <parameter property="name"/>
 <parameter property="hostIp"/>
+<parameter property="macAddr"/>
 <parameter property="agentPort"/>
 <parameter property="updateInterval"/>
 </parameterMap>
@@ -1288,6 +1297,7 @@ SELECT * FROM re_resource_cpus_$tableSubName$ WHERE local_time &gt;='$fromTime$'
 <parameterMap id="serverUpdateParameterMap" class="com.redhat.reportengine.server.dbmap.Server">
 <parameter property="name"/>
 <parameter property="hostIp"/>
+<parameter property="macAddr"/>
 <parameter property="agentPort"/>
 <parameter property="updateInterval"/>
 <parameter property="platform"/>
@@ -1298,6 +1308,7 @@ SELECT * FROM re_resource_cpus_$tableSubName$ WHERE local_time &gt;='$fromTime$'
 <result property="id" column="id"/>
 <result property="name" column="name"/>
 <result property="hostIp" column="host_ip"/>
+<result property="macAddr" column="mac_addr"/>
 <result property="platform" column="platform"/>
 <result property="agentPort" column="agent_port"/>
 <result property="referenceKey" column="reference_key"/>
@@ -1310,11 +1321,11 @@ SELECT * FROM re_resource_cpus_$tableSubName$ WHERE local_time &gt;='$fromTime$'
 </resultMap>
 
 <insert id="insertServerDetail" parameterMap="serverInsertParameterMap">
-INSERT INTO re_server (name, host_ip, agent_port, update_interval) values (?,?,?,?)
+INSERT INTO re_server (name, host_ip, mac_addr, agent_port, update_interval) values (?,?,?,?,?)
 </insert>
 
 <update id="updateServerDetail" parameterMap="serverUpdateParameterMap">
-UPDATE re_server SET name=?, host_ip=?, agent_port=?, update_interval=?, platform=? WHERE id=?
+UPDATE re_server SET name=?, host_ip=?, mac_addr=?, agent_port=?, update_interval=?, platform=? WHERE id=?
 </update>
 
 <select id="getServerDetailAll" resultMap="serverResultMap">
@@ -1327,6 +1338,10 @@ SELECT * FROM re_view_getserverdetailwithstatus WHERE id=$id$
 
 <select id="getServerDetailByName" parameterClass="java.lang.String" resultMap="serverResultMap">
 SELECT * FROM re_view_getserverdetailwithstatus WHERE name='$name$' 
+</select>
+
+<select id="getServerDetailByMacAddr" parameterClass="java.lang.String" resultMap="serverResultMap">
+SELECT * FROM re_view_getserverdetailwithstatus WHERE mac_addr='$macAddr$'
 </select>
 
 <select id="getServerDetailByHostId" parameterClass="java.lang.String" resultMap="serverResultMap">
@@ -1430,7 +1445,7 @@ CREATE SEQUENCE re_resource_memory_id_seq_$tableSubName$
 <insert id="createMemoryTable" parameterClass="java.lang.String">
 CREATE TABLE re_resource_memory_$tableSubName$
 (
-  id integer NOT NULL default nextval('re_resource_memory_id_seq_$tableSubName$'),
+  id bigint NOT NULL default nextval('re_resource_memory_id_seq_$tableSubName$'),
   local_time timestamp NOT NULL DEFAULT statement_timestamp(),
   remote_time timestamp NOT NULL,
   total bigint NOT NULL,
@@ -1478,6 +1493,10 @@ SELECT * FROM re_resource_memory_$tableSubName$  ORDER BY id ASC
 
 <select id="getMemoryUsageByTimeRange" parameterClass="com.redhat.reportengine.server.dbmap.ResourceMemory" resultMap="resourceMemoryResultMap">
 SELECT * FROM re_resource_memory_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$' ORDER BY id ASC
+</select>
+
+<select id="getMemoryUsageCountByTimeRange" parameterClass="com.redhat.reportengine.server.dbmap.ResourceMemory" resultClass="java.lang.Long">
+SELECT count(id) FROM re_resource_memory_$tableSubName$ WHERE local_time &gt;='$fromTime$' AND local_time &lt;='$toTime$'
 </select>
 
 <!-- Resource measurement - Memory - END-->
@@ -1706,5 +1725,66 @@ DROP TABLE IF EXISTS re_resource_memory_$tableName$ CASCADE
 
 <!-- Drop Resource Tables - END-->
 
+<!-- Test Reference : Server Map - START -->
+
+<parameterMap id="TestReferenceServerMapParameterMap" class="com.redhat.reportengine.server.dbmap.TestReferenceServerMap">
+<parameter property="testSuiteReferenceId"/>
+<parameter property="serverId"/>
+</parameterMap>
+
+<resultMap id="TestReferenceServerMapResultMap" class="com.redhat.reportengine.server.dbmap.TestReferenceServerMap">
+<result property="testSuiteReferenceId" column="test_reference_id"/>
+<result property="serverId" column="server_id"/>
+</resultMap>
+
+<resultMap id="TestReferenceServerMapTestSuitesResultMap" class="com.redhat.reportengine.server.dbmap.TestReferenceServerMap">
+<result property="testSuiteReferenceId" column="test_reference_id"/>
+<result property="testSuiteReferenceName" column="test_reference_name"/>
+</resultMap>
+
+<resultMap id="TestReferenceServerFullMapResultMap" class="com.redhat.reportengine.server.dbmap.TestReferenceServerMap">
+<result property="testSuiteReferenceId" column="test_reference_id"/>
+<result property="serverId" column="server_id"/>
+<result property="serverName" column="server_name"/>
+</resultMap>
+
+
+<insert id="insertTestServerMapReference" parameterMap="TestReferenceServerMapParameterMap">
+INSERT INTO re_test_reference_server_map (test_reference_id, server_id) values (?,?)
+</insert>
+
+<select id="getTestServerMapReferenceAll" resultMap="TestReferenceServerMapResultMap">
+SELECT * FROM re_test_reference_server_map ORDER BY test_reference_id ASC
+</select>
+
+<select id="getTestServerMap-TestSuites" resultMap="TestReferenceServerMapTestSuitesResultMap">
+SELECT id AS test_reference_id, test_reference AS test_reference_name FROM re_test_reference WHERE id IN (SELECT DISTINCT test_reference_id FROM re_test_reference_server_map)
+</select>
+
+<select id="getTestServerMap-ServersByTestSuiteId" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+SELECT array_to_string(array(SELECT name || ' ['||host_ip||']' AS server_name from re_server WHERE id IN (SELECT server_id FROM re_test_reference_server_map WHERE test_reference_id=$testSuiteReferenceId$)), ', ') AS server_name
+</select>
+
+<select id="getTestServerMapReferenceByTestReferenceId" parameterClass="java.lang.Integer" resultMap="TestReferenceServerMapResultMap">
+SELECT * FROM re_test_reference_server_map WHERE test_reference_id=$testReferenceId$
+</select>
+
+<select id="getTestServerMapReferenceDetailByTestReferenceId" parameterClass="java.lang.Integer" resultMap="TestReferenceServerFullMapResultMap">
+SELECT rsm.test_reference_id, rsm.server_id, sr.name AS server_name from re_test_reference_server_map AS rsm, re_server as sr WHERE sr.id=rsm.server_id AND test_reference_id=$testReferenceId$
+</select>
+
+<select id="getTestServerMapReferenceByServerId" parameterClass="java.lang.Integer" resultMap="TestReferenceServerMapResultMap">
+SELECT * FROM re_test_reference_server_map WHERE server_id=$serverId$
+</select>
+
+<delete id="deleteTestServerMapReferenceByTestId" parameterClass="java.lang.Integer">
+DELETE FROM re_test_reference_server_map WHERE test_reference_id=$testReferenceId$
+</delete>
+
+<delete id="deleteTestServerMapReferenceByServerId" parameterClass="java.lang.Integer">
+DELETE FROM re_test_reference_server_map WHERE server_id=$serverId$
+</delete>
+
+<!-- Test Reference : Server Map - END -->
 
 </sqlMap>

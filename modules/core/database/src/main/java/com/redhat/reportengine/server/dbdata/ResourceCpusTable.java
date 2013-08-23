@@ -16,6 +16,7 @@ public class ResourceCpusTable {
 	public static final String INSERT_CPUS_USAGE 			= "insertCpusUsage";
 	public static final String GET_CPUS_USAGE 				= "getCpusUsage";
 	public static final String GET_CPUS_USAGE_BY_TIME_RANGE 	= "getCpusUsageByTimeRange";
+	public static final String GET_CPUS_USAGE_ROW_COUNT_BY_TIME_RANGE 	= "getCpusUsageCountByTimeRange";
 	
 	public static final String CORE_TABLE_SUB_NAME 	= "core_cpus";
 		
@@ -37,6 +38,10 @@ public class ResourceCpusTable {
 	@SuppressWarnings("unchecked")
 	public ArrayList<ResourceCpus> getByTimeRange(ResourceCpus resourceCpus) throws SQLException{
 		return (ArrayList<ResourceCpus>)SqlMap.getSqlMapClient().queryForList(GET_CPUS_USAGE_BY_TIME_RANGE, resourceCpus);
+	}
+	
+	public Long getRowCount(ResourceCpus cpus) throws SQLException{
+		return (Long) SqlMap.getSqlMapClient().queryForObject(GET_CPUS_USAGE_ROW_COUNT_BY_TIME_RANGE, cpus);
 	}
 
 }

@@ -56,7 +56,7 @@ if(buttonName == null){
 <%
 }else if(buttonName.equalsIgnoreCase("Get")){	
 %>
-  <script type="text/javascript">
+<script type="text/javascript">
 $(function() {
   $( "#network-info-tabs" ).tabs({
     beforeLoad: function( event, ui ) {

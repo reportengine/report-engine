@@ -133,6 +133,7 @@ public class Keys {
 	public static final String SERVER_ID							= "serverId";
 	public static final String SERVER_NAME							= "serverName";
 	public static final String SERVER_HOSTIP						= "serverHostIp";
+	public static final String SERVER_MAC_ADDR						= "serverMacAddr";
 	public static final String SERVER_AGENT_PORT					= "serverAgentPort";
 	public static final String SERVER_UPDATE_INTERVAL				= "serverUpdateInterval";
 	
@@ -145,8 +146,11 @@ public class Keys {
 	public static final String RESOURCE_MEMORY_AU					= "Memory Actual";
 	public static final String RESOURCE_SWAP						= "Swap";
 	public static final String RESOURCE_TYPE						= "resourceType";
+	public static final String SELECTED_RESOURCES					= "selectedResources";
 	public static final String RESOURCE_NETWORK						= "Network";
 	public static final String RESOURCE_OS							= "OS";
+	public static final String CHART_DATA							= "chartData";
+	
 	
 	//URL Encoding Decoding
 	public static final String URL_ENCODE_UTF_8						= "UTF-8";
@@ -163,6 +167,16 @@ public class Keys {
 	public static final String DISK_FILE_SYSTEM						= "diskFileSystem";
 	public static final String DISK_USAGE							= "diskUsage";
 
+	//Test Reference, Server Map
+	public static final String TEST_REFERENCE_ID					= "testReferenceId";
+	
+	//Test Suite
+	public static final String TEST_SUITE_ID						= "testSuiteId";
+	public static final String TEST_SUITE							= "testSuite";
+	public static final String TEST_CASE							= "testCase";
+	public static final String TEST_CASE_ID							= "testCaseId";
+
+	
 
 	
 }

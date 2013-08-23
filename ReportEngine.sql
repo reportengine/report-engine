@@ -160,7 +160,7 @@ CREATE TABLE re_test_case
 --------------------------------------------------
 CREATE TABLE re_test_logs
 (
-  id integer NOT NULL default nextval('re_test_logs_id_seq'),
+  id bigint NOT NULL default nextval('re_test_logs_id_seq'),
   test_suite_id integer NOT NULL,
   test_group_id integer NULL,
   test_case_id integer NULL,
@@ -598,11 +598,13 @@ CREATE TABLE re_server
   platform character varying(100) NULL,
   agent_port integer NOT NULL,
   reference_key character varying(100) NULL,
+  mac_addr character varying(25) NOT NULL,
   discovery_status character varying(100) NULL,
   update_interval integer NOT NULL DEFAULT 300,  
   creation_time timestamp NOT NULL DEFAULT statement_timestamp(),
   unique(id),
   unique(name),
+  unique(mac_addr),
   unique(reference_key)
 );
 
@@ -658,7 +660,7 @@ CREATE TABLE re_server_status
 -----------------------------------------------------------------
 -- View - Get Server Details with status
 -----------------------------------------------------------------
-CREATE VIEW re_view_getserverdetailwithstatus AS SELECT sr.id, sr.name, sr.host_ip, sr.platform, sr.agent_port, sr.reference_key, sr.discovery_status, sr.update_interval, sr.creation_time, COALESCE(srs1.reachable, false) AS reachable,  COALESCE(srs1.agent_status,false) AS agent_status, srs1.local_time FROM re_server AS sr LEFT JOIN re_server_status AS srs1 ON (sr.id=srs1.server_id) LEFT OUTER JOIN re_server_status AS srs2 ON (sr.id = srs2.server_id AND srs1.id < srs2.id) WHERE srs2.id IS NULL;
+CREATE VIEW re_view_getserverdetailwithstatus AS SELECT sr.id, sr.name, sr.host_ip, sr.mac_addr, sr.platform, sr.agent_port, sr.reference_key, sr.discovery_status, sr.update_interval, sr.creation_time, COALESCE(srs1.reachable, false) AS reachable,  COALESCE(srs1.agent_status,false) AS agent_status, srs1.local_time FROM re_server AS sr LEFT JOIN re_server_status AS srs1 ON (sr.id=srs1.server_id) LEFT OUTER JOIN re_server_status AS srs2 ON (sr.id = srs2.server_id AND srs1.id < srs2.id) WHERE srs2.id IS NULL;
 
 
 
@@ -794,4 +796,17 @@ CREATE TABLE re_server_memory_detail
   unique(id),
   unique(server_id),
   FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
+);
+
+
+----------------------------------------------------------
+-- This table is used to store 'test references' and 'server' MAP
+----------------------------------------------------------
+CREATE TABLE re_test_reference_server_map
+(
+  test_reference_id integer NOT NULL,
+  server_id integer NOT NULL,
+  unique(test_reference_id, server_id),
+  FOREIGN KEY (test_reference_id) references re_test_reference (id) ON DELETE CASCADE,
+  FOREIGN KEY (server_id) references re_server (id) ON DELETE CASCADE
 );

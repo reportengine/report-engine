@@ -7,21 +7,21 @@ String groupId 	= request.getParameter("groupId");
 String caseId 	= request.getParameter("caseId");
 boolean suiteRunning = false;
 
-ArrayList<TestLogs> testLogs = null;
+ArrayList<TestLogs> testLogsArray = null;
 
 if(caseId != null){
-	testLogs = new TestLogsReport().getLogsByCaseId(Integer.valueOf(caseId));
+	testLogsArray = new TestLogsReport().getLogsByCaseId(Integer.valueOf(caseId));
 	idData = "caseId="+caseId;
 }else if(groupId != null){
-	testLogs = new TestLogsReport().getLogsByGroupId(Integer.valueOf(groupId));
+	testLogsArray = new TestLogsReport().getLogsByGroupId(Integer.valueOf(groupId));
 	idData = "groupId="+groupId;
 }else{
-	testLogs = new TestLogsReport().getLogsBySuiteId(Integer.valueOf(suiteId));
+	testLogsArray = new TestLogsReport().getLogsBySuiteId(Integer.valueOf(suiteId));
 	idData = "suiteId="+suiteId;
 }
 
-if(testLogs.size() > 0){
-	TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(testLogs.get(0).getTestSuiteId());
+if(testLogsArray.size() > 0){
+	TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(testLogsArray.get(0).getTestSuiteId());
 	if(testSuite.getTestStatus().equalsIgnoreCase(TestSuite.RUNNING)){
 		suiteRunning = true;
 	}
@@ -73,12 +73,19 @@ if(testLogs.size() > 0){
 <h1>Test Logs Report:</h1>
 <div id="log_page"><pre>
 <%
-		int id = 0;
-		for(int i = 0; i<testLogs.size(); i++){
-			out.print("\n<div id=\"LEVEL_"+testLogs.get(i).getLogLevel()+"\">["+General.getLogLevelStr(testLogs.get(i).getLogLevel())+"] "+General.getGuiLogDateTime(testLogs.get(i).getLogTime())+" ["+General.getNotNullString(testLogs.get(i).getSequenceNumber())+"] "+testLogs.get(i).getClassName()+"."+testLogs.get(i).getMethodName()+"\n"+General.getThrowableString(testLogs.get(i).getMessage())+"\n"+General.getThrowableString(testLogs.get(i).getThrowable())+"</div>");
-		id = testLogs.get(i).getId();
+		StringBuilder content = new StringBuilder();
+		for(TestLogs testLogs : testLogsArray){
+			content.append("\n<div id=\"LEVEL_").append(testLogs.getLogLevel()).append("\">[")
+				   .append(General.getLogLevelStr(testLogs.getLogLevel())).append("] ").append(General.getGuiLogDateTime(testLogs.getLogTime()))
+				   .append(" [").append(General.getNotNullString(testLogs.getSequenceNumber())).append("] ").append(testLogs.getClassName())
+				   .append(".").append(testLogs.getMethodName()).append("\n").append(General.getThrowableString(testLogs.getMessage()))
+				   .append("\n").append(General.getThrowableString(testLogs.getThrowable())).append("</div>");
+			
+			out.print(content.toString());
+			//out.print("\n<div id=\"LEVEL_"+testLogs.get(i).getLogLevel()+"\">["+General.getLogLevelStr(testLogs.get(i).getLogLevel())+"] "+General.getGuiLogDateTime(testLogs.get(i).getLogTime())+" ["+General.getNotNullString(testLogs.get(i).getSequenceNumber())+"] "+testLogs.get(i).getClassName()+"."+testLogs.get(i).getMethodName()+"\n"+General.getThrowableString(testLogs.get(i).getMessage())+"\n"+General.getThrowableString(testLogs.get(i).getThrowable())+"</div>");
 		}
-		session.setAttribute(Keys.TEST_LOG_AJAX_REF, id);
+		session.setAttribute(Keys.TEST_LOG_AJAX_REF, testLogsArray.get(testLogsArray.size()-1).getId());
+		
 %>
 <%if(suiteRunning){%>
 <div id="log_page_ajax"></div>

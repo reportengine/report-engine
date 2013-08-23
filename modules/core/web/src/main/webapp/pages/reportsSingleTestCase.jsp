@@ -71,6 +71,11 @@ if(screenShot != null){
 		<td><a href="reportsTestLogs.jsp?caseId=<%=testCase.getId()%>"><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></a></td>
 	</tr>
 	<TR>
+		<td align="left">Resource Utilization</td>
+		<TD>:</TD>
+		<td><a href="chartCpuMemory.jsp?<%=Keys.TEST_CASE_ID%>=<%=testCase.getId()%>&<%=Keys.SUBMIT%>=<%=Keys.TEST_CASE%>"><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>bar-chart-icon-16x16.png'  alt='Resource Usage'></a></td>
+	</tr>
+	<TR>
 		<td align="left">Local Start Time</td>
 		<TD>:</TD>
 		<td><%=General.getGuiDateTime(testCase.getLocalStartTime())%></td>		
@@ -115,7 +120,9 @@ if(screenShot != null){
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Completed.png' alt='Passed'></td><td valign="top">- Passed&nbsp;</td> 
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Failed.png'  alt='Failed'></td><td valign="top">- Failed&nbsp;</td>
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Skipped.png'  alt='Skipped'></td><td valign="top">- Skipped&nbsp;</td>
-<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug N/A'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>bar-chart-icon-16x16.png'  alt='Resource Utilization'></td><td valign="top">- Resource Utilization&nbsp;</td>
+
 <tr>
 </table>
 

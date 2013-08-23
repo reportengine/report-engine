@@ -16,13 +16,16 @@ public class ResourceCpuTable {
 	public static final String INSERT_CPU_USAGE 			= "insertCpuUsage";
 	public static final String GET_CPU_USAGE 				= "getCpuUsage";
 	public static final String GET_CPU_USAGE_BY_TIME_RANGE 	= "getCpuUsageByTimeRange";
-	
+	public static final String GET_CPU_USAGE_ROW_COUNT_BY_TIME_RANGE 	= "getCpuUsageCountByTimeRange";
+
 	public static final String DROP_CPU_TABLE_SEQUENCE 	= "dropCpuTableSequence";
 	public static final String DROP_CPU_TABLE 			= "dropCpuTable";
 	
 		
 	public static final String CORE_CPU_TABLE_SUB_NAME 	= "core_cpu";
 	public static final String MULTI_CPU_TABLE_SUB_NAME = "multi_cpu";
+	
+	
 	
 	public static String getMultiCpuSubName(int serverId, int cpuNo){
 		return MULTI_CPU_TABLE_SUB_NAME+"_"+serverId+"_"+cpuNo;
@@ -54,6 +57,10 @@ public class ResourceCpuTable {
 	public void dropTable(String subName) throws SQLException{
 		SqlMap.getSqlMapClient().delete(DROP_CPU_TABLE, subName);
 		SqlMap.getSqlMapClient().delete(DROP_CPU_TABLE_SEQUENCE, subName);
+	}
+	
+	public Long getRowCount(ResourceCpu cpu) throws SQLException{
+		return (Long) SqlMap.getSqlMapClient().queryForObject(GET_CPU_USAGE_ROW_COUNT_BY_TIME_RANGE, cpu);
 	}
 
 }

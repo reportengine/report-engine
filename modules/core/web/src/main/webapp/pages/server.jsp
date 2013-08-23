@@ -43,6 +43,12 @@ if(buttonName != null){
 		</tr>
 		
 		<tr>
+			<td align="left">MAC Address</td>
+			<td style="width: 2px; overflow-x: hidden;">:</td>
+			<td colspan="2"><input type="text" name="<%=Keys.SERVER_MAC_ADDR%>" size="8" value="<%=server.getMacAddr()%>"  style="width:320px;"></td>
+		</tr>
+		
+		<tr>
 			<td align="left">Agent Port</td>
 			<td style="width: 2px; overflow-x: hidden;">:</td>
 			<td colspan="2"><input type="text" name="<%=Keys.SERVER_AGENT_PORT%>" size="8" value="<%=server.getAgentPort()%>"  style="width:120px;"></td>
@@ -95,6 +101,12 @@ if(buttonName != null){
 			<td align="left">Host/IP</td>
 			<td style="width: 2px; overflow-x: hidden;">:</td>
 			<td colspan="2"><input type="text" name="<%=Keys.SERVER_HOSTIP%>" size="8" value=""  style="width:320px;"></td>
+		</tr>
+		
+		<tr>
+			<td align="left">MAC Address</td>
+			<td style="width: 2px; overflow-x: hidden;">:</td>
+			<td colspan="2"><input type="text" name="<%=Keys.SERVER_MAC_ADDR%>" size="8" value=""  style="width:320px;"></td>
 		</tr>
 		
 		<tr>
@@ -206,6 +218,7 @@ if(buttonName != null){
 			null,
 			null,
 			null,
+			null,
 			null
 			],
 			"iDisplayLength":15
@@ -234,6 +247,7 @@ if(buttonName != null){
 			<th>S.No</th>
 			<th>Name</th>
 			<th>Host/IP</th>
+			<th>MAC Addr</th>
 			<th>Platform</th>
             <th>Reachable</th>		
 			<th>Agent</th>
@@ -253,6 +267,7 @@ if(buttonName != null){
 			+"<td align=\"left\">"+(i+1)+"</td>"
 			+"<td align=\"left\"><a class=\"alink\" href=\"serverJobs.jsp?"+Keys.SERVER_ID+"="+servers.get(i).getId()+"\">"+servers.get(i).getName()+"</a></td>"
 			+"<td align=\"left\">"+servers.get(i).getHostIp()+"</td>"
+			+"<td align=\"left\">"+servers.get(i).getMacAddr()+"</td>"
 			+"<td align=\"center\"><a href=\"popUpServerBasicData.jsp?"+Keys.SERVER_ID+"="+servers.get(i).getId()+"\" class='ajax'><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).getPlatform()+".png' alt='"+servers.get(i).getPlatform()+"'></td>"
 			+"<td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).isReachable()+".png' alt='"+servers.get(i).isReachable()+"'></td>"
 			+"<td align=\"center\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+servers.get(i).isAgentStatus()+".png' alt='"+servers.get(i).isAgentStatus()+"'></td>"

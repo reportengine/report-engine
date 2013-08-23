@@ -88,9 +88,22 @@ if(groupid != null){
 		}else{
 			testCases = new TestCaseReport().getCases(Integer.valueOf(suiteid), Integer.valueOf(groupid));
 		}
-		
+		StringBuilder content = new StringBuilder();
 		for(int i = 0; i<testCases.size(); i++){	
-			out.println("<tr><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsSingleTestCase.jsp?caseId="+testCases.get(i).getId()+"\">"+testCases.get(i).getTestName()+"</a></td><td>"+testCases.get(i).getTestArguments()+"</td><td align=\"center\"><a href=\"ajaxReportTestCaseDetail.jsp?caseId="+testCases.get(i).getId()+"\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+testCases.get(i).getTestResult()+".png' alt='"+testCases.get(i).getTestResult()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?caseId="+testCases.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testCases.get(i).getTestDuration())+"</td></tr>");		
+			content.append("<tr>");
+			content.append("<td>").append(i+1).append("</td><td><a class=\"alink\" href=\"reportsSingleTestCase.jsp?caseId=").append(testCases.get(i).getId()).append("\">").append(testCases.get(i).getTestName()).append("</a></td>");
+			content.append("<td>").append(testCases.get(i).getTestArguments()).append("</td>");
+			content.append("<td align=\"center\">")
+				.append("<a href=\"ajaxReportTestCaseDetail.jsp?caseId=").append(testCases.get(i).getId()).append("\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION+testCases.get(i).getTestResult()).append(".png' alt='").append(testCases.get(i).getTestResult()).append("'></a>")
+				.append("&nbsp;<a href=\"reportsTestLogs.jsp?caseId=").append(testCases.get(i).getId()).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("debug.png'  alt='Debug'></a>")
+				.append("&nbsp;<a href=\"chartCpuMemory.jsp?").append(Keys.TEST_CASE_ID).append("=").append(testCases.get(i).getId()).append("&").append(Keys.SUBMIT).append("=").append(Keys.TEST_CASE).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("bar-chart-icon-16x16.png'  alt='Resource Usage'></a>")
+				.append("</td>");
+			content.append("<td align=\"center\">").append(General.getGuiDateTime(testCases.get(i).getLocalStartTime())).append("</td>");
+			content.append("<td align=\"center\">").append(General.getGuiDateTime(testCases.get(i).getLocalEndTime())).append("</td>");
+			content.append("<td align=\"center\">").append(General.getGuiDuration(testCases.get(i).getTestDuration())).append("</td>");
+			content.append("</tr>");
+			out.println(content.toString());
+			//out.println("<tr><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsSingleTestCase.jsp?caseId="+testCases.get(i).getId()+"\">"+testCases.get(i).getTestName()+"</a></td><td>"+testCases.get(i).getTestArguments()+"</td><td align=\"center\"><a href=\"ajaxReportTestCaseDetail.jsp?caseId="+testCases.get(i).getId()+"\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+testCases.get(i).getTestResult()+".png' alt='"+testCases.get(i).getTestResult()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?caseId="+testCases.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testCases.get(i).getTestDuration())+"</td></tr>");		
 		}
 %>
 
@@ -104,7 +117,8 @@ if(groupid != null){
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Completed.png' alt='Passed'></td><td valign="top">- Passed&nbsp;</td> 
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Failed.png'  alt='Failed'></td><td valign="top">- Failed&nbsp;</td>
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>Skipped.png'  alt='Skipped'></td><td valign="top">- Skipped&nbsp;</td>
-<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug N/A'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></td><td valign="top">- Debug Logs&nbsp;</td>
+<td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>bar-chart-icon-16x16.png'  alt='Resource Utilization'></td><td valign="top">- Resource Utilization&nbsp;</td>
 <tr>
 </table>
 

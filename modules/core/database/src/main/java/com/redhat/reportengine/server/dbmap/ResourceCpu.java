@@ -7,7 +7,7 @@ import java.util.Date;
  * Jul 05, 2013
  */
 public class ResourceCpu {
-	private Integer id;
+	private Long id;
 	private Date localTime;
 	private Date remoteTime;
 	private Float user;
@@ -24,10 +24,10 @@ public class ResourceCpu {
 	private Date fromTime;
 	private Date toTime;
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public Date getLocalTime() {

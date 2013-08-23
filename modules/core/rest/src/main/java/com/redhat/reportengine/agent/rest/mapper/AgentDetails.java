@@ -25,6 +25,7 @@ public class AgentDetails  extends AgentBaseMap implements Serializable{
 	private SigarDetail sigarDetail;
 	private int restPort;
 	private int serverId;
+	private String macAddr;
 	
 	
 
@@ -124,6 +125,14 @@ public class AgentDetails  extends AgentBaseMap implements Serializable{
 
 	public void setServerId(int serverId) {
 		this.serverId = serverId;
+	}
+
+	public String getMacAddr() {
+		return macAddr;
+	}
+
+	public void setMacAddr(String macAddr) {
+		this.macAddr = macAddr;
 	}
 
 	

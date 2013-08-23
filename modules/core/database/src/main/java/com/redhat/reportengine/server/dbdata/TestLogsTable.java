@@ -41,7 +41,7 @@ public class TestLogsTable {
 		return (ArrayList<TestLogs>) SqlMap.getSqlMapClient().queryForList(GET_TEST_LOGS_BY_TEST_CASE_ID, id);
 	}
 
-	public TestLogs get(Integer id) throws SQLException{
+	public TestLogs get(Long id) throws SQLException{
 		return (TestLogs) SqlMap.getSqlMapClient().queryForObject(GET_TEST_LOGS_BY_ID, id);
 	}
 	

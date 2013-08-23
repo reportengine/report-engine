@@ -67,10 +67,11 @@ public class ManageServer {
 	private void addUpdate(HttpServletRequest request, HttpServletResponse response, boolean add) throws SQLException, ParseException, SchedulerException{
 		String name 			= request.getParameter(Keys.SERVER_NAME);
 		String hostIp 			= request.getParameter(Keys.SERVER_HOSTIP);
+		String macAddr 			= request.getParameter(Keys.SERVER_MAC_ADDR);
 		Integer agentPort 		= Integer.valueOf((String)request.getParameter(Keys.SERVER_AGENT_PORT));
 		Integer updateInterval 	= Integer.valueOf((String)request.getParameter(Keys.SERVER_UPDATE_INTERVAL));
 
-		if(!(name != null) && (hostIp != null)){
+		if(!(name != null) && (hostIp != null) && (macAddr != null)){
 			return;						
 		}
 		
@@ -83,6 +84,7 @@ public class ManageServer {
 		}		
 		server.setName(name.trim());
 		server.setHostIp(hostIp.trim());
+		server.setMacAddr(macAddr.trim());
 		server.setAgentPort(agentPort);
 		server.setUpdateInterval(updateInterval*60);
 		if(add){

@@ -14,6 +14,8 @@ import com.redhat.reportengine.server.dbdata.ResourceCpuTable;
 import com.redhat.reportengine.server.dbdata.ResourceMemoryTable;
 import com.redhat.reportengine.server.dbmap.ResourceCpu;
 import com.redhat.reportengine.server.dbmap.ResourceMemory;
+import com.redhat.reportengine.server.gui.mapper.ChartData;
+import com.redhat.reportengine.server.gui.mapper.RESOURCE_TYPE;
 import com.redhat.reportengine.server.reports.General;
 import com.redhat.reportengine.server.reports.Keys;
 
@@ -26,16 +28,9 @@ public class ChartCpuMemory {
 	private enum MEMORY {
 	    MEMORY, SWAP, MEMORY_AU
 	}
-
-	public String getCpuMemoryChartJson(HttpServletRequest request, HttpServletResponse response) throws ParseException, SQLException, IOException{
+	
+	private void setReportForCalendar(Calendar fromDate, Calendar toDate, HttpServletRequest request) throws ParseException{
 		String reportFor = (String) request.getParameter(Keys.REPORT_FOR);
-		int serverId = Integer.parseInt((String) request.getParameter(Keys.SERVER_ID));		
-		
-		Calendar fromDate = Calendar.getInstance();
-		Calendar toDate = (Calendar) fromDate.clone();
-		
-		String resourceType = (String)request.getParameter(Keys.RESOURCE_TYPE);
-		
 		if(reportFor.equalsIgnoreCase(Keys.REPORT_FOR_LAST_30_MINS)){
 			fromDate.add(Calendar.MINUTE, -30);
 		}else if(reportFor.equalsIgnoreCase(Keys.REPORT_FOR_LAST_60_MINS)){
@@ -54,6 +49,19 @@ public class ChartCpuMemory {
 			fromDate.setTime(new SimpleDateFormat(General.guiInputDateTimeFormat).parse(fromStrDate));
 			toDate.setTime(new SimpleDateFormat(General.guiInputDateTimeFormat).parse(toStrDate));
 		}
+	}
+
+	public String getCpuMemoryChartJson(HttpServletRequest request, HttpServletResponse response) throws ParseException, SQLException, IOException{
+		
+		int serverId = Integer.parseInt((String) request.getParameter(Keys.SERVER_ID));		
+		
+		Calendar fromDate = Calendar.getInstance();
+		Calendar toDate = (Calendar) fromDate.clone();
+		
+		setReportForCalendar(fromDate, toDate, request);
+		
+		String resourceType = (String)request.getParameter(Keys.RESOURCE_TYPE);
+		
 		StringBuilder chartJson = new StringBuilder("[\n");
 		
 		if(resourceType.equalsIgnoreCase(Keys.RESOURCE_CPU)){
@@ -113,6 +121,38 @@ public class ChartCpuMemory {
 		for(ResourceCpu tmpCpu : resourceCpus){
 			chartJson.append("[").append((tmpCpu.getLocalTime().getTime()/1000)*1000).append(",").append(General.decimalDigit2.format(100.0 - (tmpCpu.getIdle()*100.0))).append("],\n");
 		}
+	}
+	
+	public boolean isDataAvailable(ChartData data, RESOURCE_TYPE resourceType) throws ParseException, SQLException{
+		try{
+			switch(resourceType){
+			case CPU: 
+				ResourceCpu resourceCpu = new ResourceCpu();
+				resourceCpu.setTableSubName(ResourceCpuTable.getCoreCpuSubName(data.getServerId()));
+				resourceCpu.setFromTime(data.getReportDateFrom());
+				resourceCpu.setToTime(data.getReportDateTo());
+				if(new ResourceCpuTable().getRowCount(resourceCpu) > 0){
+					return true;
+				}
+				break;
+			case MEMORY: 
+				ResourceMemory resourceMemory = new ResourceMemory();
+				resourceMemory.setTableSubName(ResourceMemoryTable.getTableSubName(data.getServerId()));
+				resourceMemory.setFromTime(data.getReportDateFrom());
+				resourceMemory.setToTime(data.getReportDateTo());
+				if(new ResourceMemoryTable().getRowCount(resourceMemory) > 0){
+					return true;
+				}
+				break;
+			}
+		}catch (SQLException sex){
+			if(sex.getMessage().contains("does not exist")){
+				return false;
+			}else{
+				throw sex;
+			}
+		}
+		return false;
 	}
 	
 }

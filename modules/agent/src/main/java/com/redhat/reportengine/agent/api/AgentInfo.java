@@ -19,6 +19,7 @@ public class AgentInfo {
 		AgentDetails agent = new AgentDetails();
 		agent.setDate(new Date());
 		agent.setIp(Network.getNetworkInfo().getNetInterfaceConfig().getAddress());
+		agent.setMacAddr(Network.getNetworkInfo().getNetInterfaceConfig().getHwaddr());
 		try {
 			agent.setHostName(SigarUtils.getSigar().getNetInfo().getHostName());
 		} catch (SigarException ex) {

@@ -19,6 +19,7 @@ public class Server {
 	private Integer updateInterval;
 	private Date 	creationTime;
 	private Date 	localTime;
+	private String  macAddr;
 
 	
 	public Integer getId() {
@@ -92,6 +93,12 @@ public class Server {
 	}
 	public void setLocalTime(Date localTime) {
 		this.localTime = localTime;
+	}
+	public String getMacAddr() {
+		return macAddr;
+	}
+	public void setMacAddr(String macAddr) {
+		this.macAddr = macAddr;
 	} 
 	
 }

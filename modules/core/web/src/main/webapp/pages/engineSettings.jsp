@@ -1,7 +1,7 @@
 
 <%@ include file="index-part1.jsp"%>
 <%
-String buttonName 	= (String)request.getParameter("SUBMIT");
+String buttonName 	= (String)request.getParameter(Keys.SUBMIT);
 String updateStatus	= (String)request.getParameter("updateStatus");
 
 if(buttonName == null){
@@ -16,7 +16,7 @@ if(buttonName == null){
 		<div class="ui-widget">
 			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
 				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
-				Settings updated Successfully! Note: Server restart is required for some of the settings</p>
+				Settings are updated Successfully! Note: Server restart is required for some of the settings</p>
 			</div>
 		</div>
 		<%}%>
@@ -34,10 +34,10 @@ if(buttonName == null){
 		</tr>
 		
 		<tr>
-			<td align="left">Engine RMI Port</td>
+			<td align="left">Engine UDP Port</td>
 			<td>:</td>
 			<td colspan="2">
-				<input type="text" name="<%=ServerSettings.KEY_ENGINE_RMI_PORT%>" id="<%=ServerSettings.KEY_ENGINE_RMI_PORT%>" size="8" value="<%=ServerSettings.getServerRmiPort()%>"  style="width:320px;">
+				<input type="text" name="<%=ServerSettings.KEY_ENGINE_UDP_PORT%>" id="<%=ServerSettings.KEY_ENGINE_UDP_PORT%>" size="8" value="<%=ServerSettings.getServerUdpPort()%>"  style="width:320px;">
 			</td>	
 		</tr>
 		

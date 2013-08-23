@@ -48,6 +48,7 @@
 					<li><a href="#">Groups</a>
 						<ul>
 							<li><a href="emailReport.jsp">Email Groups</a></li>
+							<li><a href="testReferenceServerMap.jsp">Test Suite Reference | Server Map</a></li>
 						</ul></li>
 				</ul></li>
 
@@ -70,12 +71,20 @@
 							<li><a href="engineSettings.jsp">Common Settings</a></li>
 						</ul></li>
 				</ul></li>
-			<li><a href="#">Help</a>
+			<li><a href="#">Downloads/Docs</a>
 				<ul>
-					<li><a href="#">Implementation</a>
+					<li><a href="#">Downloads</a>
 						<ul>
-							<li><a href="helpTestNGImplememtation.jsp">TestNG</a></li>
+							<li><a href="http://sourceforge.net/projects/reserver/files/agent/" target="_blank">Agent</a></li>
+							<li><a href="http://sourceforge.net/projects/reserver/files/server/" target="_blank">Server</a></li>
+							<li><a href="https://github.com/jkandasa/report-engine" target="_blank">Source Code</a></li>
 						</ul>
+					<li><a href="#">Documents</a>
+						<ul>
+							<li><a href="https://github.com/jkandasa/report-engine/wiki" target="_blank">Wiki</a></li>
+							<li><a href="https://github.com/jkandasa/report-engine/issues" target="_blank">Issues</a></li>
+		
+						</ul>						
 				</ul></li>
 			<li><a href="logout.jsp">Logout</a></li>
 		</ul>

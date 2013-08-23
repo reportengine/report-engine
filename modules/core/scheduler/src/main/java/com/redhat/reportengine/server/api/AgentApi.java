@@ -40,6 +40,7 @@ public class AgentApi {
 			server = new Server();
 			server.setAgentPort(agentDetails.getRestPort());
 			server.setHostIp(agentDetails.getIp());
+			server.setMacAddr(agentDetails.getMacAddr());
 			server.setName(agentDetails.getName());
 			server.setUpdateInterval(30*60);
 			new ServerActions().add(server);
@@ -55,13 +56,10 @@ public class AgentApi {
 	}
 	
 	public Server getServer(AgentDetails agentDetails) throws SQLException{
-		Server server = new ServerTable().getByName(agentDetails.getName());
-		if(server == null){
+		Server server = new ServerTable().getByMacAddr(agentDetails.getMacAddr());
+		/*if(server == null){
 			server = new ServerTable().getByHostIp(agentDetails.getIp());
-			if(server == null){
-				server = new ServerTable().getByHostIp(agentDetails.getHostName());
-			}
-		}
+		}*/
 		return server;
 	}
 }
