@@ -353,7 +353,7 @@ INSERT INTO re_settings (key, key_value) values ('EmailServer','');
 INSERT INTO re_settings (key, key_value) values ('SenderEmail','');
 INSERT INTO re_settings (key, key_value) values ('EmailServerPort','25');
 INSERT INTO re_settings (key, key_value) values ('TestSuiteInactiveTime','7200');
-INSERT INTO re_settings (key, key_value) values ('EngineUdpPort','20500');
+INSERT INTO re_settings (key, key_value) values ('EngineUDPPort','20500');
 INSERT INTO re_settings (key, key_value) values ('EngineURL','');
 INSERT INTO re_settings (key, key_value) values ('EngineCurrentWidGet','start');
 INSERT INTO re_settings (key, key_value) values ('EngineAvailableWidGets','black-tie,blitzer,cupertino,dark-hive,dot-luv,eggplant,excite-bike,flick,hot-sneaks,humanity,le-frog,mint-choc,overcast,pepper-grinder,redmond,smoothness,south-street,start,sunny,swanky-purse,trontastic,ui-darkness,ui-lightness,vader');
