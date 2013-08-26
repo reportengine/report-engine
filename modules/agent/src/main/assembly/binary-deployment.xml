@@ -74,7 +74,7 @@
 				<include>io.netty:netty:jar:3.6.6.Final</include>
 				<include>org.jboss.resteasy:resteasy-netty:jar:2.3.6.Final</include>
 				<include>org.jboss.resteasy:jaxrs-api:jar:2.3.6.Final</include>
-				<include>log4j:log4j:jar:1.2.9</include>
+				<include>log4j:log4j:jar:1.2.17</include>
 				<include>org.hyperic:sigar:jar:1.6.5.132-5</include>
 				<include>org.jboss.resteasy:resteasy-jackson-provider:jar:2.3.6.Final</include>
 				<include>org.jboss.resteasy:resteasy-jaxb-provider:jar:2.3.6.Final</include>

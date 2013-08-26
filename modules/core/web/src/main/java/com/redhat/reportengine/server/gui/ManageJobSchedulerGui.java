@@ -57,6 +57,7 @@ public class ManageJobSchedulerGui {
 		jobScheduler.setSystemJob(false);
 		jobScheduler.setTargetClassId(Integer.parseInt(request.getParameter(Keys.JOB_TYPE)));
 		jobScheduler.setDataReferenceId(Integer.parseInt(request.getParameter(Keys.JOB_REFERENCE)));
+		jobScheduler.setJobName(jobScheduler.getJobName()+"["+type.toString()+"-"+jobScheduler.getDataReferenceId()+"]");//Changing Job Name
 		jobScheduler.setSimpleJob(this.isCheckBoxEnabled(request.getParameter(Keys.JOB_SIMPLE_JOB_ENABLE)));
 		if(new JobSchedulerTable().get(jobScheduler.getJobName()) != null){
 			_logger.info("Job already available: "+jobScheduler.getJobName());

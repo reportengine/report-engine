@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.hyperic.sigar.Sigar;
 
+import com.redhat.reportengine.scheduler.JobDetails;
 import com.redhat.reportengine.scheduler.ManageScheduler;
 import com.redhat.reportengine.server.rest.mapper.ServerInfo;
 
@@ -22,6 +23,7 @@ public class AgentMain {
 	
 	private static Logger _logger = Logger.getLogger(AgentMain.class);
 	private static String AGENT_PROPERTIES_FILE = "conf/re-agent.properties";
+	static ServerConnection connection = new ServerConnection();
 
 	
 	public static void main( String[] args ) throws FileNotFoundException, IOException {
@@ -73,8 +75,19 @@ public class AgentMain {
 		return sigarInfo.toString();
 	}
 	
+	//Load this agent jobs from report engine server
+	private static void loadAgentJobs() throws Exception{
+		try{
+			for(JobDetails jobDetail : connection.getAgentJobs()){
+				ManageScheduler.addJob(jobDetail);
+			}
+			_logger.info("Jobs are loaded successfully from server!!");	
+		}catch(Exception ex){
+			_logger.error("Error while loading jobs, ", ex);
+		}
+	}
+	
 	public static void loadAgentInfoFromServer(){
-		ServerConnection connection = new ServerConnection();
 		boolean serverInfoNotSet = true;
 		do{
 			try {
@@ -86,6 +99,7 @@ public class AgentMain {
 				ServerProperties.setServerId(serverInfo.getServerId());
 				ServerProperties.setServerName(serverInfo.getServerName());
 				ServerProperties.setEnabled(true);
+				loadAgentJobs();
 				serverInfoNotSet = false;
 				_logger.info("Agent Info loaded successfully! Agent Id on server: "+ServerProperties.getServerId()+", Server Address: "+ServerProperties.getServerAddress().getHostAddress());
 			} catch (Exception ex) {

@@ -14,6 +14,7 @@ import org.quartz.SchedulerException;
 
 import com.redhat.reportengine.agent.rest.mapper.AgentDetails;
 import com.redhat.reportengine.restapi.urimap.ServerRestUriMap;
+import com.redhat.reportengine.scheduler.JobDetails;
 import com.redhat.reportengine.server.api.AgentApi;
 import com.redhat.reportengine.server.rest.mapper.ServerInfo;
 
@@ -40,7 +41,7 @@ public class AgentREST {
 	
 	@POST
 	@Path(ServerRestUriMap.GET_AGENT_JOBS)
-	public void getAgentJobs(AgentDetails agentDetails) throws SQLException {
-		new AgentApi().getAgentJobs(agentDetails);
+	public JobDetails[] getAgentJobs(AgentDetails agentDetails) throws SQLException {
+		return new AgentApi().getAgentJobs(agentDetails);
 	}
 }

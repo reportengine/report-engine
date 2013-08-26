@@ -175,7 +175,6 @@ if(buttonName != null){
 			passedStr.setLength(0);
 			failedStr.setLength(0);
 			skippedStr.setLength(0);
-			content.setLength(0);
 			if(testSuites.get(i).getPassedCases()!=0){
 				passedStr.append("<a href=\"reportsTestCases.jsp?suiteid=").append(testSuites.get(i).getId()).append("&teststatus=").append(TestCase.PASSED).append("\"><font color=\"green\"><b>").append(testSuites.get(i).getPassedCases()).append("</b></font></a>");
 			}else{
@@ -214,10 +213,11 @@ if(buttonName != null){
 			content.append("<td align=\"center\">").append(General.getGuiDuration(testSuites.get(i).getTestDuration())).append("</td>");
 			content.append("</tr>");
 			
-			out.println(content.toString());
+			
 			
 			//out.println("<tr><td align=\"center\"><input type=\"checkbox\" name=\""+Keys.DELETE_REPORTS+"\" value=\""+testSuites.get(i).getId()+"\"></td><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsTestGroups.jsp?id="+testSuites.get(i).getId()+"\">"+testSuites.get(i).getTestSuiteName()+"</a></td><td align=\"center\"><a href=\"ajaxReportTestSuite.jsp?id="+testSuites.get(i).getId()+"\" class='ajax'><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+testSuites.get(i).getTestStatus()+".png' alt='"+testSuites.get(i).getTestStatus()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?suiteId="+testSuites.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td><td><b>"+testSuites.get(i).getTotalCases()+"</b>"+General.getColor(testSuites.get(i).getTotalChanges(), true)+"</td><td>"+passedStr.toString()+General.getColor(testSuites.get(i).getPassedChanges(), true)+"</td><td>"+failedStr.toString()+General.getColor(testSuites.get(i).getFailedChanges(), false)+"</td><td>"+skippedStr.toString()+General.getColor(testSuites.get(i).getSkippedChanges(), false)+"</td><td align=\"center\">"+General.getBuildDetails(testSuites.get(i).getTestBuild())+"</td><td align=\"center\">"+General.getGuiDateTime(testSuites.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testSuites.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testSuites.get(i).getTestDuration())+"</td></tr>");	
 		}
+		out.println(content.toString());
 
 	%>
     </tbody>

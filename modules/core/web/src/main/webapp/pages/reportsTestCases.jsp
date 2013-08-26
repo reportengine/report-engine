@@ -101,10 +101,9 @@ if(groupid != null){
 			content.append("<td align=\"center\">").append(General.getGuiDateTime(testCases.get(i).getLocalStartTime())).append("</td>");
 			content.append("<td align=\"center\">").append(General.getGuiDateTime(testCases.get(i).getLocalEndTime())).append("</td>");
 			content.append("<td align=\"center\">").append(General.getGuiDuration(testCases.get(i).getTestDuration())).append("</td>");
-			content.append("</tr>");
-			out.println(content.toString());
-			//out.println("<tr><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsSingleTestCase.jsp?caseId="+testCases.get(i).getId()+"\">"+testCases.get(i).getTestName()+"</a></td><td>"+testCases.get(i).getTestArguments()+"</td><td align=\"center\"><a href=\"ajaxReportTestCaseDetail.jsp?caseId="+testCases.get(i).getId()+"\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+testCases.get(i).getTestResult()+".png' alt='"+testCases.get(i).getTestResult()+"'></a>&nbsp;<a href=\"reportsTestLogs.jsp?caseId="+testCases.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalStartTime())+"</td><td align=\"center\">"+General.getGuiDateTime(testCases.get(i).getLocalEndTime())+"</td><td align=\"center\">"+General.getGuiDuration(testCases.get(i).getTestDuration())+"</td></tr>");		
+			content.append("</tr>");		
 		}
+		out.println(content.toString());
 %>
 
     </tbody>

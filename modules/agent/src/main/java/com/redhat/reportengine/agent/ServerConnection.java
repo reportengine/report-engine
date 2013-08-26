@@ -4,6 +4,7 @@ import com.redhat.reportengine.agent.api.AgentInfo;
 import com.redhat.reportengine.agent.rest.mapper.AgentDetails;
 import com.redhat.reportengine.restapi.urimap.ServerRestUriMap;
 import com.redhat.reportengine.restclient.RestEasyJSONClient;
+import com.redhat.reportengine.scheduler.JobDetails;
 import com.redhat.reportengine.server.rest.mapper.ServerInfo;
 
 /**
@@ -24,6 +25,10 @@ public class ServerConnection {
 	
 	public ServerInfo getServerInfo() throws Exception{
 		return (ServerInfo) getRestClient().post(ServerRestUriMap.GET_AGENT_INFO, AgentInfo.getAgentDetails(), ServerInfo.class);
+	}
+	
+	public JobDetails[] getAgentJobs() throws Exception{
+		return (JobDetails[]) getRestClient().post(ServerRestUriMap.GET_AGENT_JOBS, AgentInfo.getAgentDetails(), JobDetails[].class);
 	}
 	
 }

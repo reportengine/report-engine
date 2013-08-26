@@ -75,17 +75,17 @@ if(queryType.equalsIgnoreCase(Keys.DISK_FILE_SYSTEM)){
 			"aoColumns": [
 			null,
 			null,
+			{ "sType": "file-size" },
+			{ "sType": "file-size" },
+			{ "sType": "file-size" },
+			null,
+			{ "sType": "file-size" },
 			null,
 			null,
 			null,
 			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
+			{ "sType": "file-size" },
+			{ "sType": "file-size" },
 			null,
 			null
 			],
@@ -102,7 +102,8 @@ if(queryType.equalsIgnoreCase(Keys.DISK_FILE_SYSTEM)){
 			<th>Dir</th>
 			<th>Total</th>
 			<th>Free</th>
-			<th>used</th>
+			<th>Used</th>
+			<th>Used %</th>
 			<th>Available</th>
 			<th>Files</th>
 			<th>Free Files</th>
@@ -112,8 +113,6 @@ if(queryType.equalsIgnoreCase(Keys.DISK_FILE_SYSTEM)){
 			<th>Disk Write Bytes</th>
 			<th>Disk Queue</th>
 			<th>Disk Service Time</th>
-			<th>Used %</th>
-
 		</tr>
 	</thead>
 	<tbody>
@@ -129,6 +128,7 @@ if(queryType.equalsIgnoreCase(Keys.DISK_FILE_SYSTEM)){
 			builder.append("<td nowrap align=\"right\">").append(General.getFileSize(disk.getFileSystemUsage().getTotal())).append("</td>");
 			builder.append("<td nowrap align=\"right\">").append(General.getFileSize(disk.getFileSystemUsage().getFree())).append("</td>");
 			builder.append("<td nowrap align=\"right\">").append(General.getFileSize(disk.getFileSystemUsage().getUsed())).append("</td>");
+			builder.append("<td align=\"right\">").append(Math.round(disk.getFileSystemUsage().getUsePercent()*10000.0)/100.0).append("</td>");
 			builder.append("<td nowrap align=\"right\">").append(General.getFileSize(disk.getFileSystemUsage().getAvail())).append("</td>");
 			builder.append("<td align=\"right\">").append(disk.getFileSystemUsage().getFiles()).append("</td>");
 			builder.append("<td align=\"right\">").append(disk.getFileSystemUsage().getFreeFiles()).append("</td>");
@@ -138,7 +138,6 @@ if(queryType.equalsIgnoreCase(Keys.DISK_FILE_SYSTEM)){
 			builder.append("<td nowrap align=\"right\">").append(General.getFileSize(disk.getFileSystemUsage().getDiskWriteBytes())).append("</td>");
 			builder.append("<td align=\"right\">").append(Math.round(disk.getFileSystemUsage().getDiskQueue()*10000.0)/10000.0).append("</td>");
 			builder.append("<td align=\"right\">").append(Math.round(disk.getFileSystemUsage().getDiskServiceTime()*10000.0)/10000.0).append("</td>");
-			builder.append("<td align=\"right\">").append(Math.round(disk.getFileSystemUsage().getUsePercent()*10000.0)/100.0).append("</td>");
 			builder.append("</tr>\n");	
 		}
 	}

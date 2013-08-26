@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.quartz.SchedulerException;
 
 import com.redhat.reportengine.agent.rest.mapper.AgentDetails;
+import com.redhat.reportengine.scheduler.JobDetails;
 import com.redhat.reportengine.server.actions.ServerActions;
 import com.redhat.reportengine.server.cache.ServerSettings;
 import com.redhat.reportengine.server.dbdata.JobSchedulerTable;
@@ -16,6 +17,7 @@ import com.redhat.reportengine.server.dbdata.ServerTable;
 import com.redhat.reportengine.server.dbmap.JobScheduler;
 import com.redhat.reportengine.server.dbmap.Server;
 import com.redhat.reportengine.server.rest.mapper.ServerInfo;
+import com.redhat.reportengine.server.scheduler.ManageJobs;
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Aug 03, 2013
@@ -50,9 +52,15 @@ public class AgentApi {
 		}
 	}
 	
-	public ArrayList<JobScheduler> getAgentJobs(AgentDetails agentDetails) throws SQLException{
+	public JobDetails[] getAgentJobs(AgentDetails agentDetails) throws SQLException{
 		ArrayList<JobScheduler> jobs = new JobSchedulerTable().getAgentJobs(agentDetails.getServerId());
-		return jobs;
+		JobDetails[] jobDetails = new JobDetails[jobs.size()];
+		int index=0;
+		for(JobScheduler js : jobs){
+			jobDetails[index] = ManageJobs.getJobDetails(js);
+			index++;
+		}
+		return jobDetails;
 	}
 	
 	public Server getServer(AgentDetails agentDetails) throws SQLException{
