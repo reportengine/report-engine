@@ -81,9 +81,10 @@ if(testLogsArray.size() > 0){
 				   .append(".").append(testLogs.getMethodName()).append("\n").append(General.getThrowableString(testLogs.getMessage()))
 				   .append("\n").append(General.getThrowableString(testLogs.getThrowable())).append("</div>");
 			
-			out.print(content.toString());
+			
 			//out.print("\n<div id=\"LEVEL_"+testLogs.get(i).getLogLevel()+"\">["+General.getLogLevelStr(testLogs.get(i).getLogLevel())+"] "+General.getGuiLogDateTime(testLogs.get(i).getLogTime())+" ["+General.getNotNullString(testLogs.get(i).getSequenceNumber())+"] "+testLogs.get(i).getClassName()+"."+testLogs.get(i).getMethodName()+"\n"+General.getThrowableString(testLogs.get(i).getMessage())+"\n"+General.getThrowableString(testLogs.get(i).getThrowable())+"</div>");
 		}
+		out.print(content.toString());
 		session.setAttribute(Keys.TEST_LOG_AJAX_REF, testLogsArray.get(testLogsArray.size()-1).getId());
 		
 %>

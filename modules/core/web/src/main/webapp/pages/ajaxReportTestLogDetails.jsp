@@ -83,7 +83,7 @@ if(!singleLog){
 	//out.println("REF ID: "+session.getAttribute(Keys.TEST_LOG_AJAX_REF));
 	for(int i = 0; i<testLogs.size(); i++){
 		out.println("<div id=\"LEVEL_"+testLogs.get(i).getLogLevel()+"\">["+General.getLogLevelStr(testLogs.get(i).getLogLevel())+"] "+General.getGuiLogDateTime(testLogs.get(i).getLogTime())+" ["+General.getNotNullString(testLogs.get(i).getSequenceNumber())+"] "+testLogs.get(i).getClassName()+"."+testLogs.get(i).getMethodName()+"\n"+General.getThrowableString(testLogs.get(i).getMessage())+"\n"+General.getThrowableString(testLogs.get(i).getThrowable())+"</div>");
-	id = testLogs.get(i).getId();
+		id = testLogs.get(i).getId();
 		}
 	if(id != 0){
 		session.setAttribute(Keys.TEST_LOG_AJAX_REF, id);
