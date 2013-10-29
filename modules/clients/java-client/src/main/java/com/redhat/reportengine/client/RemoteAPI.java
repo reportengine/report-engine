@@ -37,11 +37,21 @@ import com.redhat.reportengine.restapi.urimap.TestResultsRestUriMap;
  * Mar 16, 2012
  */
 public class RemoteAPI {
+	
+	static RemoteAPI INSTANCE;
+	
+	public static synchronized RemoteAPI getRemoteApi(){
+		if(INSTANCE == null){
+			INSTANCE = new RemoteAPI();
+		}
+		return INSTANCE;
+		
+	}
 	protected static final Logger _logger = Logger.getLogger(RemoteAPI.class.getName());
 	ClientCommon test = new ClientCommon();
-	protected static boolean initialized = false;
-	private static boolean clientConfigurationSuccess = false;
-	private static boolean clientLoadedSuccess = false;
+	protected boolean initialized = false;
+	private boolean clientConfigurationSuccess = false;
+	private boolean clientLoadedSuccess = false;
 
 	private static final String rePropertyFile 		= "REPORT_ENGINE_PROPERTY_FILE";	
 	private static final String originalFile 		= "ORIGINAL.FILE";
@@ -61,7 +71,7 @@ public class RemoteAPI {
 			"com.sun.jersey," +
 			"org.jboss.resteasy";
 
-	private RESTClientRestEasy restClient = null;
+	protected RESTClientRestEasy restClient = null;
 
 	public RemoteAPI() {
 		super();
@@ -227,7 +237,7 @@ public class RemoteAPI {
 			_logger.log(Level.INFO, "Report Engine Server Time: "+getServerTime());
 			this.insertTestSuite(testSuiteName, comments);
 			_logger.log(Level.INFO, "Report Engine Client Loaded successfully...");		
-			RemoteAPI.setClientLoadedSuccess(true);
+			setClientLoadedSuccess(true);
 		}else{
 			_logger.log(Level.WARNING, "Report Engine Client Failed to Load..");
 		}		
@@ -274,6 +284,8 @@ public class RemoteAPI {
 	public void updateTestSuite(String status, String build) throws Exception{
 		updateTestSuite(status, build, null);
 	}
+	
+	
 	public void updateTestSuite(String status, String build, String comments) throws Exception{
 		TestSuite testSuite = new TestSuite();
 		testSuite.setId(test.getTestSuiteId());
@@ -387,6 +399,10 @@ public class RemoteAPI {
 	public String getLogLevel(){
 		return test.getLogLevel();
 	}
+	public void removeHandlers(){
+		LogHandler.teardown();
+		
+	}
 
 	/**
 	 * @return the clientConfigurationSuccess
@@ -399,20 +415,20 @@ public class RemoteAPI {
 	 * @param clientConfigurationSuccess the clientConfigurationSuccess to set
 	 */
 	public void setClientConfigurationSuccess(boolean clientConfigurationSuccess) {
-		RemoteAPI.clientConfigurationSuccess = clientConfigurationSuccess;
+		this.clientConfigurationSuccess = clientConfigurationSuccess;
 	}
 
 	/**
 	 * @return the clientLoadedSuccess
 	 */
-	public static boolean isClientLoadedSuccess() {
+	public boolean isClientLoadedSuccess() {
 		return clientLoadedSuccess;
 	}
 
 	/**
 	 * @param clientLoadedSuccess the clientLoadedSuccess to set
 	 */
-	public static void setClientLoadedSuccess(boolean clientLoadedSuccess) {
-		RemoteAPI.clientLoadedSuccess = clientLoadedSuccess;
+	public void setClientLoadedSuccess(boolean clientLoadedSuccess) {
+		this.clientLoadedSuccess = clientLoadedSuccess;
 	}
 }

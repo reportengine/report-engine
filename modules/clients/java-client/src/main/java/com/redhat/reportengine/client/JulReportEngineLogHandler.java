@@ -37,6 +37,8 @@ public class JulReportEngineLogHandler extends Handler {
 		try {
 			remoteApi.insertLogMessage(testLogs);
 		} catch (Exception ex) {
+			LogHandler.teardown();
+			System.out.println("error writing log to report engine; removing appender;");
 			ex.printStackTrace();
 		}
 	}
