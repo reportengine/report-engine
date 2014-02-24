@@ -17,7 +17,7 @@ public class SendMemoryInfo implements Job{
 	@Override
 	public void execute(JobExecutionContext context){
 		try{
-			new Thread(new SendResourceInfo(MSG_TYPE.USAGE_MEMORY)).start();
+			new Thread(new SendResourceInfo(MSG_TYPE.USAGE_MEMORY, context.getJobDetail().getJobDataMap())).start();
 		}catch(Exception ex){
 			_logger.error("Exception,", ex);
 		}		

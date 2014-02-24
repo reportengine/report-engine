@@ -10,8 +10,10 @@ import com.redhat.reportengine.agent.rest.mapper.UsageCpu;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpuMemory;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpus;
 import com.redhat.reportengine.agent.rest.mapper.UsageMemory;
+import com.redhat.reportengine.agent.rest.mapper.jvm.JvmMXBeanStore;
 import com.redhat.reportengine.server.insert.InsertCpuUsage;
 import com.redhat.reportengine.server.insert.InsertCpusUsage;
+import com.redhat.reportengine.server.insert.InsertJvmMemoryUsage;
 import com.redhat.reportengine.server.insert.InsertMemoryUsage;
 import com.redhat.reportengine.syslog.data.UdpPacket;
 import com.redhat.reportengine.syslog.data.UdpPacketQueue;
@@ -46,6 +48,9 @@ public class InsertUdpPackets extends InsertParent implements Runnable {
 				case USAGE_CPU_MEMORY: 	new Thread(new InsertCpusUsage(rePacket.getServerId(), Formatter.getJavaObject(rePacket.getObjectString(), UsageCpuMemory.class).getUsageCpus())).start();
 										new Thread(new InsertMemoryUsage(rePacket.getServerId(), Formatter.getJavaObject(rePacket.getObjectString(), UsageCpuMemory.class).getUsageMemory())).start();
 										break;
+				case USAGE_JVM_MEMORY:
+					new Thread(new InsertJvmMemoryUsage(rePacket.getServerId(), Formatter.getJavaObject(rePacket.getObjectString(), JvmMXBeanStore.class))).start();
+					break;
 			}
 
 		} catch (Exception ex) {

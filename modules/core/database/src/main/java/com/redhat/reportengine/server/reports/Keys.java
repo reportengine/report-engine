@@ -73,6 +73,7 @@ public class Keys {
 	//Job Scheduler
 	public static final String JOB_ID							= "jobId";
 	public static final String JOB_NAME							= "jobName";
+	public static final String JOB_DATA							= "jobData";
 	public static final String JOB_TYPE							= "jobType";
 	public static final String JOB_REFERENCE					= "jobReference";
 	public static final String JOB_ENABLED						= "jobEnabled";	
@@ -151,12 +152,19 @@ public class Keys {
 	public static final String RESOURCE_OS							= "OS";
 	public static final String CHART_DATA							= "chartData";
 	
+	public static final String CHART_JVM_MEMORY_HEAP				= "Heap";
+	public static final String CHART_JVM_MEMORY_NON_HEAP			= "Non-Heap";
+	
 	
 	//URL Encoding Decoding
 	public static final String URL_ENCODE_UTF_8						= "UTF-8";
 	
 	//PID data
 	public static final String PID									= "pid";
+	
+	//JVM data
+	public static final String JVM_PID								= "jvmPid";
+	public static final String JVM_NAME								= "jvmName";
 	
 	//Interfaces
 	public static final String INTERFACE_NAME						= "interfaceName";
@@ -176,7 +184,5 @@ public class Keys {
 	public static final String TEST_CASE							= "testCase";
 	public static final String TEST_CASE_ID							= "testCaseId";
 
-	
 
-	
 }

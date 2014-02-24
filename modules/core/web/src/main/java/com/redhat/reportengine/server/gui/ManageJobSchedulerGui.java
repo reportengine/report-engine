@@ -53,6 +53,7 @@ public class ManageJobSchedulerGui {
 		}
 		JobScheduler jobScheduler = new JobScheduler();
 		jobScheduler.setJobName(request.getParameter(Keys.JOB_NAME).trim());
+		jobScheduler.setJobData(request.getParameter(Keys.JOB_DATA));
 		jobScheduler.setJobEnabled(this.isCheckBoxEnabled(request.getParameter(Keys.JOB_ENABLED)));
 		jobScheduler.setSystemJob(false);
 		jobScheduler.setTargetClassId(Integer.parseInt(request.getParameter(Keys.JOB_TYPE)));

@@ -30,6 +30,8 @@ public class JobScheduler {
 	private String targetClass;
 	private String targetClassDescription;
 	private String classType;
+	private String jobData;
+	
 	
 	/**
 	 * @return the id
@@ -288,6 +290,12 @@ public class JobScheduler {
 	}
 	public void setClassType(String classType) {
 		this.classType = classType;
+	}
+	public String getJobData() {
+		return jobData;
+	}
+	public void setJobData(String jobData) {
+		this.jobData = jobData;
 	}
 	
 }

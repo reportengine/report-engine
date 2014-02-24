@@ -31,7 +31,7 @@ public class General {
 	public static final double teraSize = 1024*1024*1024.0;
 	public static final double gigaSize = 1024*1024.0;
 	public static final double megaSize = 1024.0;
-	
+		
 	public static String getColor(int value, boolean positive){
 		StringBuffer strValue = new StringBuffer("");
 		String color = "red";
@@ -230,6 +230,33 @@ public class General {
 				builder.append(fileSize);
 				builder.append(" KB");
 			}
+		}else if(fileSize < 0){
+			builder.append("-");
+		}else{
+			builder.append(fileSize);
+		}
+		return builder.toString();
+	}
+	
+	public static String getFileSizeFromBytes(long fileSize){
+		StringBuilder builder = new StringBuilder();
+		if(fileSize > 1024){
+			fileSize = fileSize/1024;
+			if(fileSize > teraSize){
+				builder.append(Math.round((fileSize/teraSize)*100)/100.0);
+				builder.append(" TB");
+			}else if(fileSize > gigaSize){
+				builder.append(Math.round((fileSize/gigaSize)*100)/100.0);
+				builder.append(" GB");
+			}else if(fileSize > megaSize){
+				builder.append(Math.round((fileSize/megaSize)*100)/100.0);
+				builder.append(" MB");
+			}else{
+				builder.append(fileSize);
+				builder.append(" KB");
+			}
+		}else if(fileSize < 0){
+			builder.append("-");
 		}else{
 			builder.append(fileSize);
 		}

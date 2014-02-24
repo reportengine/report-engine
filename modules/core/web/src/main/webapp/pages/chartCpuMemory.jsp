@@ -182,9 +182,9 @@ $(function() {
   				%>
   				<div id="<%=serverMap.getServerName().toLowerCase().replaceAll("\\s+", "-").replaceAll("\\.", "-")%>">
   				<%
-  				if(new ChartCpuMemory().isDataAvailable(data, RESOURCE_TYPE.CPU)){
-  					server = new ServerTable().getById(data.getServerId());
-  		  			%>  			  			
+  					if(new Charts().isDataAvailable(data, RESOURCE_TYPE.CPU)){
+  				  					server = new ServerTable().getById(data.getServerId());
+  				%>  			  			
   		  			
   					<script type="text/javascript">
   					$(function() {
@@ -196,7 +196,7 @@ $(function() {
   						colors = Highcharts.getOptions().colors;
   						var err ;
   					$.each(names, function(i, name) {
-  						$.getJSON($(location).attr('href').replace(new RegExp("chartCpuMemory.jsp.*"), '')+'ajaxChartCpuMemory.jsp?'+'<%=Keys.SERVER_ID%>=<%=data.getServerId()%>&<%=Keys.REPORT_FOR%>=<%=data.getReportFor()%>&<%=Keys.REPORT_DATE_FROM%>=<%=URLEncoder.encode(new SimpleDateFormat(General.guiInputDateTimeFormat).format(data.getReportDateFrom()), Keys.URL_ENCODE_UTF_8)%>&<%=Keys.REPORT_DATE_TO%>=<%=URLEncoder.encode(new SimpleDateFormat(General.guiInputDateTimeFormat).format(data.getReportDateTo()), Keys.URL_ENCODE_UTF_8)%>&<%=Keys.RESOURCE_TYPE%>='+ name).done(function(data) {
+  						$.getJSON($(location).attr('href').replace(new RegExp("chartCpuMemory.jsp.*"), '')+'ajaxChart.jsp?'+'<%=Keys.SERVER_ID%>=<%=data.getServerId()%>&<%=Keys.REPORT_FOR%>=<%=data.getReportFor()%>&<%=Keys.REPORT_DATE_FROM%>=<%=URLEncoder.encode(new SimpleDateFormat(General.guiInputDateTimeFormat).format(data.getReportDateFrom()), Keys.URL_ENCODE_UTF_8)%>&<%=Keys.REPORT_DATE_TO%>=<%=URLEncoder.encode(new SimpleDateFormat(General.guiInputDateTimeFormat).format(data.getReportDateTo()), Keys.URL_ENCODE_UTF_8)%>&<%=Keys.RESOURCE_TYPE%>='+ name).done(function(data) {
   				
   						seriesOptions[i] = {
   							name: name,
@@ -349,7 +349,7 @@ $(function() {
 		colors = Highcharts.getOptions().colors;
 	var err ;
 	$.each(names, function(i, name) {
-		$.getJSON($(location).attr('href').replace('chartCpuMemory.jsp','')+'ajaxChartCpuMemory.jsp?'+'<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.REPORT_FOR%>=<%=reportFor%>&<%=Keys.REPORT_DATE_FROM%>=<%=URLEncoder.encode(fromStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.REPORT_DATE_TO%>=<%=URLEncoder.encode(toStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.RESOURCE_TYPE%>='+ name).done(function(data) {
+		$.getJSON($(location).attr('href').replace('chartCpuMemory.jsp','')+'ajaxChart.jsp?'+'<%=Keys.SERVER_ID%>=<%=serverId%>&<%=Keys.REPORT_FOR%>=<%=reportFor%>&<%=Keys.REPORT_DATE_FROM%>=<%=URLEncoder.encode(fromStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.REPORT_DATE_TO%>=<%=URLEncoder.encode(toStrDate, Keys.URL_ENCODE_UTF_8)%>&<%=Keys.RESOURCE_TYPE%>='+ name).done(function(data) {
 		
 			seriesOptions[i] = {
 				name: name,

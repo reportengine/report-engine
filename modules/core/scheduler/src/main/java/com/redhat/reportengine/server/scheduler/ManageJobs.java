@@ -78,6 +78,7 @@ public class ManageJobs {
 		JobDetails job = new JobDetails();
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(Keys.DATA_REFERENCDE_ID, jobScheduler.getDataReferenceId());
+		jobDataMap.put(Keys.JOB_DATA, jobScheduler.getJobData());
 		job.setTriggerGroupName(jobScheduler.getTargetClassDescription());
 		job.setName(jobScheduler.getJobName());
 		job.setJobTargetClass(jobScheduler.getTargetClass());

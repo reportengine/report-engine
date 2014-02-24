@@ -37,9 +37,17 @@ public class AgentProperties {
 	
 	public static String getHomeLocation(){
 		if(AGENT_HOME == null){
-			AGENT_HOME = new File(System.getProperty("user.dir")).getParent()+"/";
+			AGENT_HOME = new File(System.getProperty("user.dir")).getParent()+File.separator;
 		}
 		return AGENT_HOME;		
+	}
+	
+	public static void setHomeLocation(String homeLocation){
+		if(!homeLocation.endsWith(File.separator)){
+			AGENT_HOME = homeLocation+File.separator;
+		}else{
+			AGENT_HOME = homeLocation;
+		}
 	}
 	
 	public static int getAgentPort() {

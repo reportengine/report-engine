@@ -14,8 +14,9 @@
 
 					<li><a href="#">Graphical Reports</a>
 						<ul>
-							<li><a href="#">Server Availability (yet to implement)</a></li>
+							<!-- <li><a href="#">Server Availability (yet to implement)</a></li> -->
 							<li><a href="chartCpuMemory.jsp">CPU/Memory</a></li>
+							<li><a href="chartJvmMemory.jsp">JVM Memory</a></li>
 						</ul></li>
 
 					<li><a href="#">Live Data</a>
@@ -24,6 +25,7 @@
 							<li><a href="serverLiveNetworkData.jsp">Network Info</a></li>
 							<li><a href="serverLivePidData.jsp">Running Process</a></li>
 							<li><a href="serverLiveDiskData.jsp">Disk Info</a></li>
+							<li><a href="serverLiveJvmData.jsp">JVM Info</a></li>
 						</ul></li>
 
 				</ul></li>

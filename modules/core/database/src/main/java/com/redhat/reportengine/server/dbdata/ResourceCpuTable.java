@@ -45,8 +45,8 @@ public class ResourceCpuTable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<ResourceCpu> get() throws SQLException{
-		return (ArrayList<ResourceCpu>)SqlMap.getSqlMapClient().queryForList(GET_CPU_USAGE);
+	public ArrayList<ResourceCpu> get(String tableName) throws SQLException{
+		return (ArrayList<ResourceCpu>)SqlMap.getSqlMapClient().queryForList(GET_CPU_USAGE, tableName);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -32,6 +32,12 @@ public class AgentRestUriMap {
 	public static final String USAGE_FS    = "/usage/fs";
 	public static final String USAGE_DIR   = "/usage/dir";
 	
+	//JVMs
+	
+	public static final String JVM_LIST 				= "/jvm/list";
+	public static final String JVM_MXBEAN_STORE_BY_NAME = "/jvm/mxbeanstore/byname";
+	public static final String JVM_MXBEAN_STORE_BY_PID 	= "/jvm/mxbeanstore/bypid";
+	
 	//Jobs
 	public static final String LOAD_JOB 		= "/jobs/loadjob";
 	public static final String LOAD_JOBS 		= "/jobs/loadmultiplejobs";

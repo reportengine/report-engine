@@ -31,8 +31,8 @@ public class ResourceCpusTable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<ResourceCpus> get() throws SQLException{
-		return (ArrayList<ResourceCpus>)SqlMap.getSqlMapClient().queryForList(GET_CPUS_USAGE);
+	public ArrayList<ResourceCpus> get(String tableName) throws SQLException{
+		return (ArrayList<ResourceCpus>)SqlMap.getSqlMapClient().queryForList(GET_CPUS_USAGE, tableName);
 	}
 	
 	@SuppressWarnings("unchecked")

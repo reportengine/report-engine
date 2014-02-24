@@ -45,7 +45,12 @@ public class AgentMain {
 	}
 	
 	public static void loadProperties() throws FileNotFoundException, IOException{
-		AgentProperties.loadProperties(AgentProperties.getHomeLocation()+AGENT_PROPERTIES_FILE);
+		loadProperties(AgentProperties.getHomeLocation());
+	}
+	
+	public static void loadProperties(String homeLocation) throws FileNotFoundException, IOException{
+		AgentProperties.setHomeLocation(homeLocation);
+		AgentProperties.loadProperties(homeLocation+AGENT_PROPERTIES_FILE);
 	}
 	
 	public static void startServices(){

@@ -10,7 +10,7 @@
 <%@page import="org.hyperic.sigar.SysInfo"%>
 <%@page import="com.redhat.reportengine.agent.rest.mapper.*"%>
 <%@page import="com.redhat.reportengine.server.restclient.agent.*"%>
-
+<%@page import="com.redhat.reportengine.agent.rest.mapper.jvm.*"%>
 
 <%@ page import="java.util.*"%>
 <%@ page import="java.util.HashMap"%>

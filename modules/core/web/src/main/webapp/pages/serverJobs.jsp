@@ -139,11 +139,17 @@ if(buttonName != null){
 			<%
  				ArrayList<JobClasses> jobClasses = new JobClassesTable().getAgentJobClass();
  			 				for(JobClasses jobClass: jobClasses){
- 			 					out.println("<option value=\""+jobClass.getId()+"\">"+jobClass.getTargetClassDescription()+"</option>"); break;
+ 			 					out.println("<option value=\""+jobClass.getId()+"\">"+jobClass.getTargetClassDescription()+"</option>");
  			 					
  			 				}
  			%>	
 			</select></td>	
+		</tr>
+		
+		<tr>
+			<td align="left">Job Data</td>
+			<td>:</td>
+			<td colspan="2"><textarea rows="4" name="<%=Keys.JOB_DATA%>" style="width:320px;"></textarea></td>	
 		</tr>
 		
 		<tr><td><input type="hidden" name="<%=Keys.JOB_REFERENCE%>" id="<%=Keys.JOB_REFERENCE%>" value="<%=serverId%>"></td></tr>

@@ -1,6 +1,7 @@
 package com.redhat.reportengine.agent.rest;
 
 import java.util.Date;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,6 +17,7 @@ import org.hyperic.sigar.SysInfo;
 import com.redhat.reportengine.agent.api.AgentInfo;
 import com.redhat.reportengine.agent.api.Cpu;
 import com.redhat.reportengine.agent.api.Disk;
+import com.redhat.reportengine.agent.api.JVM;
 import com.redhat.reportengine.agent.api.Memory;
 import com.redhat.reportengine.agent.api.Network;
 import com.redhat.reportengine.agent.api.Pid;
@@ -31,6 +33,8 @@ import com.redhat.reportengine.agent.rest.mapper.UsageCpu;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpuMemory;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpus;
 import com.redhat.reportengine.agent.rest.mapper.UsageMemory;
+import com.redhat.reportengine.agent.rest.mapper.jvm.JvmMXBeanStore;
+import com.redhat.reportengine.agent.rest.mapper.jvm.JvmsRunningList;
 import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
 
 @Path(AgentRestUriMap.AGENT_ROOT_URI)
@@ -151,6 +155,23 @@ public class AgentResource {
 	@Path(AgentRestUriMap.USAGE_DIR+"/{dir}")
 	public static DirUsage getUsageDir(@PathParam("dir") String dirName) throws SigarException{
 		return SigarUtils.getSigar().getDirUsage(dirName);
-	}	
+	}
+	
+	@GET
+	@Path(AgentRestUriMap.JVM_LIST)
+	public static JvmsRunningList getJvmsList() {
+		return JVM.getRunningJVMs();
+	}
 
+	@GET
+	@Path(AgentRestUriMap.JVM_MXBEAN_STORE_BY_NAME+"/{jvmName}")
+	public static JvmMXBeanStore getJvmMXBeanStoreByName(@PathParam("jvmName") String jvmName) {
+		return JVM.getJvmMXBeanStoreByName(jvmName);
+	}
+	
+	@GET
+	@Path(AgentRestUriMap.JVM_MXBEAN_STORE_BY_PID+"/{jvmPid}")
+	public static JvmMXBeanStore getJvmMXBeanStoreByPid(@PathParam("jvmPid") String jvmPid) {
+		return JVM.getJvmMXBeanStoreByPid(jvmPid);
+	}
 }

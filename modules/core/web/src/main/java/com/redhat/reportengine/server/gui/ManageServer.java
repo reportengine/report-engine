@@ -2,6 +2,7 @@ package com.redhat.reportengine.server.gui;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.quartz.SchedulerException;
 
 import com.redhat.reportengine.server.actions.ServerActions;
+import com.redhat.reportengine.server.dbdata.DynamicTableNameTable;
 import com.redhat.reportengine.server.dbdata.ResourceCpuTable;
 import com.redhat.reportengine.server.dbdata.ResourceMemoryTable;
 import com.redhat.reportengine.server.dbdata.ServerCpuDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerTable;
+import com.redhat.reportengine.server.dbmap.DynamicTableName;
 import com.redhat.reportengine.server.dbmap.Server;
 import com.redhat.reportengine.server.dbmap.ServerCpuDetail;
 import com.redhat.reportengine.server.jobs.server.ServerAgentReachableStatus;
@@ -50,6 +53,7 @@ public class ManageServer {
 	}
 	
 	public void removeResourceTables(Server server) throws SQLException{
+		/*
 		ServerCpuDetail serverCpuDetail = new ServerCpuDetailTable().getByServerId(server.getId());
 		//Drop Memory/Swap Table
 		new ResourceMemoryTable().dropTable(ResourceMemoryTable.getTableSubName(server.getId()));
@@ -61,7 +65,14 @@ public class ManageServer {
 			for(int i=0; i<serverCpuDetail.getTotalCores(); i++){
 				resourceCpuTable.dropTable(ResourceCpuTable.getMultiCpuSubName(server.getId(), i));
 			}
-		}		
+		}	
+		*/
+		
+		//Adding this line after moved all the dynamic tables to similar format.
+		ArrayList<DynamicTableName> tableNames = DynamicTableNameTable.get(server.getId());
+		for(DynamicTableName tableName : tableNames){
+			DynamicTableNameTable.dropDynamicTableAndSequence(String.valueOf(tableName.getId()));
+		}
 	}
 	
 	private void addUpdate(HttpServletRequest request, HttpServletResponse response, boolean add) throws SQLException, ParseException, SchedulerException{

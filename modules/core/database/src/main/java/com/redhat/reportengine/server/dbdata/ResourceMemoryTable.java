@@ -38,8 +38,8 @@ public class ResourceMemoryTable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<ResourceMemory> get() throws SQLException{
-		return (ArrayList<ResourceMemory>)SqlMap.getSqlMapClient().queryForList(GET_MEMORY_USAGE);
+	public ArrayList<ResourceMemory> get(String tableName) throws SQLException{
+		return (ArrayList<ResourceMemory>)SqlMap.getSqlMapClient().queryForList(GET_MEMORY_USAGE, tableName);
 	}
 	
 	@SuppressWarnings("unchecked")

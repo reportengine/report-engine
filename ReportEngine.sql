@@ -265,6 +265,7 @@ INSERT INTO re_job_classes (target_class, target_class_description, class_type) 
 INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.server.jobs.server.MeasureCpuMemoryCpusSwap', 'Resource: Measure CPU/CPUs/Memory/Swap usage', 'SERVER');
 --Agent Jobs
 INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.agent.jobs.SendCpuCpusMemorySwapInfo', 'Agent: Resource - Send CPU/CPUs/Memory/Swap usage', 'AGENT');
+INSERT INTO re_job_classes (target_class, target_class_description, class_type) VALUES ('com.redhat.reportengine.agent.jobs.SendJvmMemoryUsage', 'Agent: Resource - Send JVM Memory usage', 'AGENT');
 
 --------------------------------------------------
 -- Sequence for Job Scheduler
@@ -300,6 +301,7 @@ CREATE TABLE re_job_scheduler
   job_description character varying(200) NULL,
   creation_time timestamp NOT NULL,
   last_edit_time timestamp NULL,
+  job_data character varying(500) NULL,
   unique(id),
   unique(job_name, target_class_id),
   FOREIGN KEY (target_class_id) REFERENCES re_job_classes(id) ON DELETE CASCADE
@@ -329,7 +331,7 @@ CREATE VIEW viewgettestsuites AS SELECT ts.id, ts.test_suite_name, ts.test_statu
 -----------------------------------------------------------------
 -- View - Get Job Scheduler All details
 -----------------------------------------------------------------
-CREATE VIEW viewgetjobschedulerall AS SELECT js.id, js.job_enabled, js.system_job,  js.cron_expression,  js.job_name,  js.target_class_id,  js.data_reference_id,  js.simple_job,  js.repeat_interval,  js.repeat_count,  js.valid_from_time,  js.valid_to_time,  js.job_frequency,  js.job_weekday,  js.job_day_month,  js.job_execution_time,  js.job_description,  js.creation_time,  js.last_edit_time, jc.target_class, jc.target_class_description, jc.class_type FROM re_job_scheduler AS js JOIN re_job_classes AS jc ON js.target_class_id=jc.id;
+CREATE VIEW viewgetjobschedulerall AS SELECT js.id, js.job_enabled, js.system_job,  js.cron_expression,  js.job_name, js.job_data, js.target_class_id,  js.data_reference_id,  js.simple_job,  js.repeat_interval,  js.repeat_count,  js.valid_from_time,  js.valid_to_time,  js.job_frequency,  js.job_weekday,  js.job_day_month,  js.job_execution_time,  js.job_description,  js.creation_time,  js.last_edit_time, jc.target_class, jc.target_class_description, jc.class_type FROM re_job_scheduler AS js JOIN re_job_classes AS jc ON js.target_class_id=jc.id;
 
 -----------------------------------------------------------------
 -- View - Get Test Details
@@ -809,4 +811,29 @@ CREATE TABLE re_test_reference_server_map
   unique(test_reference_id, server_id),
   FOREIGN KEY (test_reference_id) references re_test_reference (id) ON DELETE CASCADE,
   FOREIGN KEY (server_id) references re_server (id) ON DELETE CASCADE
+);
+
+
+--------------------------------------------------
+-- Sequence for Dynamic Table Name Details
+--------------------------------------------------
+CREATE SEQUENCE re_server_dynamic_table_name_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+----------------------------------------------------
+-- This table is used to store Dynamic table Details
+----------------------------------------------------
+CREATE TABLE re_server_dynamic_table_name
+(
+  id integer NOT NULL default nextval('re_server_dynamic_table_name_id_seq'),
+  server_id integer NOT NULL,
+  name varchar(1000) NOT NULL,
+  table_type varchar(200) NOT NULL,
+  unique(id),
+  unique(server_id, name),
+  FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
 );
