@@ -1,5 +1,6 @@
 package com.redhat.reportengine.agent.api;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -7,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.redhat.reportengine.agent.monitor.jvm.MXBeanStore;
 import com.redhat.reportengine.agent.monitor.jvm.RunningJVMs;
 import com.redhat.reportengine.agent.monitor.jvm.ScanVM;
+import com.redhat.reportengine.agent.rest.mapper.jvm.JVMnotAvailableException;
 import com.redhat.reportengine.agent.rest.mapper.jvm.JvmMXBeanStore;
 import com.redhat.reportengine.agent.rest.mapper.jvm.JvmsRunningList;
 
@@ -22,20 +24,37 @@ public class JVM {
 		return list;
 	}
 	
-	public static JvmMXBeanStore getJvmMXBeanStoreByName(String jvmName){
-		JvmMXBeanStore beanStore = MXBeanStore.loadJvmMXBeanStore(ScanVM.getMXBeanStore(jvmName, null));
-		_logger.debug("JVM Descriptor: "+beanStore.getVirtualMachineDescriptor()+", Memoery Heap: "+beanStore.getMemoryMXBean().getHeapMemoryUsage());
+	public static JvmMXBeanStore getJvmMXBeanStoreByName(String jvmName) throws JVMnotAvailableException{
+		JvmMXBeanStore beanStore=null;
+		try{
+			beanStore = MXBeanStore.loadJvmMXBeanStore(ScanVM.getMXBeanStore(jvmName, null));
+			_logger.debug("Selected JVM Descriptor: "+beanStore.getVirtualMachineDescriptor());
+			
+		}catch(UndeclaredThrowableException undeclaredThrowableException){
+			_logger.info("Seems selected JVM[Name: "+jvmName+"] restarted... Reloading reference...");
+			ScanVM.removeMXBeanStore(jvmName, null);
+			beanStore = MXBeanStore.loadJvmMXBeanStore(ScanVM.getMXBeanStore(jvmName, null));
+		}
+		return beanStore;
+		
+	}
+	
+	public static JvmMXBeanStore getJvmMXBeanStoreByPid(String jvmPid) throws JVMnotAvailableException{
+		JvmMXBeanStore beanStore=null;
+		try{
+			beanStore = MXBeanStore.loadJvmMXBeanStore(ScanVM.getMXBeanStore(null, jvmPid));
+			_logger.debug("Selected JVM Descriptor: "+beanStore.getVirtualMachineDescriptor());
+			
+		}catch(UndeclaredThrowableException undeclaredThrowableException){
+			_logger.info("Seems selected JVM[PID: "+jvmPid+"] restarted... Reloading reference...");
+			ScanVM.removeMXBeanStore(null, jvmPid);
+			beanStore = MXBeanStore.loadJvmMXBeanStore(ScanVM.getMXBeanStore(null, jvmPid));
+		}
 		return beanStore;
 	}
 	
-	public static JvmMXBeanStore getJvmMXBeanStoreByPid(String jvmPid){
-		JvmMXBeanStore beanStore = MXBeanStore.loadJvmMXBeanStore(ScanVM.getMXBeanStore(null, jvmPid));
-		_logger.debug("JVM Descriptor: "+beanStore.getVirtualMachineDescriptor()+", Memoery Heap: "+beanStore.getMemoryMXBean().getHeapMemoryUsage());
-		return beanStore;
-	}
-	
-	public static JvmMXBeanStore getJvmMemoryMXBeanByName(String jvmName){
-		JvmMXBeanStore beanStore = MXBeanStore.loadJvmMXBeanStore(ScanVM.getMXBeanStore(jvmName, null));
+	public static JvmMXBeanStore getJvmMemoryMXBeanByName(String jvmName) throws JVMnotAvailableException{		
+		JvmMXBeanStore beanStore = getJvmMXBeanStoreByName(jvmName);
 		beanStore.setClassLoadingMXBean(null);
 		beanStore.setCompilationMXBean(null);
 		beanStore.setGarbageCollectorMXBean(null);

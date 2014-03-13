@@ -11,8 +11,7 @@ public class DynamicTableName {
 	
 	public enum TYPE{
 		JVM_MEMORY,CPU,CPUS,MEMORY
-	}
-	
+	}	
 	private int id;
 	private String name;
 	private int serverId;

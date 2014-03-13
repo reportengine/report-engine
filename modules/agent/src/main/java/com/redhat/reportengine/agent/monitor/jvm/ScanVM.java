@@ -24,6 +24,7 @@ import javax.management.remote.JMXServiceURL;
 import org.apache.log4j.Logger;
 
 import com.redhat.reportengine.agent.JvmProperties;
+import com.redhat.reportengine.agent.rest.mapper.jvm.JVMnotAvailableException;
 import com.sun.tools.attach.AgentInitializationException;
 import com.sun.tools.attach.AgentLoadException;
 import com.sun.tools.attach.AttachNotSupportedException;
@@ -41,8 +42,33 @@ public class ScanVM extends TimerTask {
 	private static String targetVMDescs[] = null;
 	//private String localVMDesc = "com.redhat.reportengine.agent.monitor.jvm.Test";
 	private static Logger _logger = Logger.getLogger(ScanVM.class);
-
-	public static MXBeanStore getMXBeanStore(String jvmName, String jvmPid){
+	
+	public static void removeMXBeanStore(String jvmName, String jvmPid){
+		Lock mxBeanStoreLock = MXBeanStore.getMXBeanStoreLock();
+		try{			
+			mxBeanStoreLock.lock();
+			if(jvmName != null){
+				if(MXBeanStore.getMXBeanStoreObjectMap().get(jvmName) != null){
+					MXBeanStore.getMXBeanStoreObjectMap().remove(jvmName);
+					_logger.debug("Removed JVM[Name: "+jvmName+"] from MXBeanStore....");
+				}
+			}else if(jvmPid != null){
+				for(String key : MXBeanStore.getMXBeanStoreObjectMap().keySet()){
+					if(MXBeanStore.getMXBeanStoreObjectMap().get(key).getVirtualMachineDescriptor().id().equals(jvmPid)){
+						MXBeanStore.getMXBeanStoreObjectMap().remove(key);
+						_logger.debug("Removed JVM[Name: "+key+"] from MXBeanStore....");
+					}
+				}
+			}else{
+				_logger.warn("Should pass either JVM Name (or) JVM PID...");
+			}		
+		}finally{
+			mxBeanStoreLock.unlock();
+		}
+		
+	}
+	
+	public static MXBeanStore getMXBeanStore(String jvmName, String jvmPid) throws JVMnotAvailableException{
 		if(jvmName != null){
 			if(MXBeanStore.getMXBeanStoreObjectMap().get(jvmName) == null){
 				addMXBeanStore(jvmName, jvmPid);
@@ -57,8 +83,12 @@ public class ScanVM extends TimerTask {
 		}else{
 			_logger.warn("Should pass either JVM Name (or) JVM PID...");
 			return null;
-		}		
-		return MXBeanStore.getMXBeanStoreObjectMap().get(jvmName);
+		}
+		if(MXBeanStore.getMXBeanStoreObjectMap().get(jvmName) != null){
+			return MXBeanStore.getMXBeanStoreObjectMap().get(jvmName);
+		}else{
+			throw new JVMnotAvailableException("Selected JVM[Name: "+jvmName+", id: "+jvmPid+"] not available (or) not in running state...");
+		}
 	}
 
 	private static void addMXBeanStoreCore(HashMap<String, MXBeanStore> mxBeanStoreObjectMap, VirtualMachineDescriptor vmDesc, String vmName) throws AttachNotSupportedException, IOException, AgentLoadException, AgentInitializationException, MalformedObjectNameException, NullPointerException{

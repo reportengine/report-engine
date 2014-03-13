@@ -53,6 +53,39 @@ public class TestSuite implements Serializable{
 	private String fromTime;
 	private String toTime;
 	
+	public String toString(){
+		StringBuilder builder = new StringBuilder("{");
+		builder.append("[").append("ID: ").append(this.id).append("],");
+		builder.append("[").append("Test Suite Id: ").append(this.id).append("],");
+		builder.append("[").append("Test Suite Name: ").append(this.id).append("],");
+		builder.append("[").append("Test Status: ").append(this.testStatus).append("],");
+		builder.append("[").append("Test Build: ").append(this.testBuild).append("],");
+		builder.append("[").append("Test Comments: ").append(this.testComments).append("],");
+		builder.append("[").append("Local Start Time: ").append(this.localStartTime).append("],");
+		builder.append("[").append("Local End Time: ").append(this.localEndTime).append("],");
+		builder.append("[").append("Remote Start Time: ").append(this.remoteStartTime).append("],");
+		builder.append("[").append("Remote End Time: ").append(this.remoteEndTime).append("],");
+		builder.append("[").append("Test Reference: ").append(this.testReference).append("],");
+		builder.append("[").append("Test Reference Id: ").append(this.testReferenceId).append("],");
+		builder.append("[").append("Test Host: ").append(this.testHost).append("],");
+		builder.append("[").append("Aggregation Status: ").append(this.aggregationStatus).append("],");
+		builder.append("[").append("Total Cases: ").append(this.totalCases).append("],");
+		builder.append("[").append("Passed Cases: ").append(this.passedCases).append("],");
+		builder.append("[").append("Failed Cases: ").append(this.failedCases).append("],");
+		builder.append("[").append("Skipped Cases: ").append(this.skippedCases).append("],");
+		builder.append("[").append("Total Changes: ").append(this.totalChanges).append("],");
+		builder.append("[").append("Passed Changes: ").append(this.passedChanges).append("],");
+		builder.append("[").append("Failed Changes: ").append(this.failedChanges).append("],");
+		builder.append("[").append("Skipped Changes: ").append(this.skippedChanges).append("],");		
+		builder.append("[").append("Test Duration: ").append(this.testDuration).append("],");
+		builder.append("[").append("Top N: ").append(this.topN).append("],");
+		builder.append("[").append("Order By: ").append(this.orderBy).append("],");
+		builder.append("[").append("From Time: ").append(this.fromTime).append("],");
+		builder.append("[").append("To Time: ").append(this.toTime).append("]");
+		builder.append("}");
+		return builder.toString();
+	}
+	
 	/*
 	public Object clone()
     {

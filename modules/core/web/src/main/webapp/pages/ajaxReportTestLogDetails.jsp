@@ -5,9 +5,9 @@
 <%
 String logId = request.getParameter("logId");
 
-String suiteId 	= request.getParameter("suiteId");
-String groupId 	= request.getParameter("groupId");
-String caseId 	= request.getParameter("caseId");
+String suiteId 	= request.getParameter(Keys.TEST_SUITE_ID);
+String groupId 	= request.getParameter(Keys.TEST_GROUP_ID);
+String caseId 	= request.getParameter(Keys.TEST_CASE_ID);
 boolean singleLog = false;
 ArrayList<TestLogs> testLogs = null;
 if(caseId != null){

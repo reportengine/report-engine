@@ -2,13 +2,20 @@ package com.redhat.reportengine.server.report.email;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
 import com.redhat.reportengine.server.cache.ServerSettings;
+import com.redhat.reportengine.server.dbdata.ReportGroupResourceMetricReferenceTable;
 import com.redhat.reportengine.server.dbdata.TestGroupTable;
+import com.redhat.reportengine.server.dbdata.TestSuiteResourceMetricTable;
+import com.redhat.reportengine.server.dbmap.DynamicTableName;
+import com.redhat.reportengine.server.dbmap.ReportGroup;
+import com.redhat.reportengine.server.dbmap.ReportGroupResourceMetricReference;
 import com.redhat.reportengine.server.dbmap.TestGroup;
 import com.redhat.reportengine.server.dbmap.TestSuite;
+import com.redhat.reportengine.server.dbmap.TestSuiteResourceMetric;
 import com.redhat.reportengine.server.reports.General;
 
 /**
@@ -17,6 +24,8 @@ import com.redhat.reportengine.server.reports.General;
  */
 public class EmailGroupReport {
 	private static Logger _logger = Logger.getLogger(EmailGroupReport.class);
+	private static int MAX_RESOURCE_LENGTH = 90;
+	private static String SINGLE_LINE = "style=\"white-space:nowrap;\"";
 
 	static String html_header = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
 			"<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
@@ -100,11 +109,26 @@ public class EmailGroupReport {
 			"  </tr>" +
 			"</thead>" +
 			"    <tbody>";
+	
+	static String table_header_resource_metric_details = "<table id=\"email-table-style-a\" summary=\"Resource Metric Details\">" +
+			"<thead>" +
+			"   <tr>" +
+			"        <th scope=\"col\">Server</th>" +
+			"        <th scope=\"col\">Resource</th>" +
+			"        <th scope=\"col\">Type</th>" +
+			"        <th scope=\"col\">Parameter</th>" +
+			"        <th scope=\"col\">Minimum</th>" +
+			"        <th scope=\"col\">Average</th>" +
+			"        <th scope=\"col\">Maximum</th>" +
+			"  </tr>" +
+			"</thead>" +
+			"    <tbody>";
 
-	public String getReport(ArrayList<TestSuite> testSuites, String reportName, boolean isTestSuiteGroupEnabled) throws Exception{
+
+	public String getReport(ArrayList<TestSuite> testSuites, ReportGroup reportGroup) throws Exception{
 		StringBuffer finalReport = new StringBuffer();
 		finalReport.append(html_header);
-		finalReport.append("Hello, This is auto generated email from Report Engine. It's based on <b>").append(reportName).append("</b>");
+		finalReport.append("Hello, This is auto generated email from Report Engine. It's based on <b>").append(reportGroup.getGroupName()).append("</b>");
 		finalReport.append(table_header);
 
 		TestSuite tmpTestSuite = new TestSuite();
@@ -138,8 +162,56 @@ public class EmailGroupReport {
 		finalReport.append("<td>").append("<b>").append(General.getGuiDuration(tmpTestSuite.getTestDuration())).append("</b>").append("</td>");
 		finalReport.append(" </tr></tfoot></tbody></table>");
 		finalReport.append("</BR>");
+		
+		if(reportGroup.isResourceMetricEnabled()){
+			finalReport.append("<b><u>Resource Metric Details:</u></b><BR><BR>");
+			//Fetch and add required references in Linked List for metrics
+			LinkedList<Integer> columnIds = new LinkedList<Integer>();
+			ArrayList<ReportGroupResourceMetricReference> metricReferences = new ReportGroupResourceMetricReferenceTable().getByReportGroupId(reportGroup.getId());
+			for(ReportGroupResourceMetricReference metricReference: metricReferences){
+				columnIds.add(metricReference.getMetricReferenceId());
+			}
+			
+			for(TestSuite testSuite : testSuites){
+				finalReport.append("Test Suite: <b>").append(testSuite.getTestSuiteName()).append("</b>");
+				finalReport.append(table_header_resource_metric_details);
+				
+				ArrayList<TestSuiteResourceMetric> testSuiteResourceMetrics = new TestSuiteResourceMetricTable().getByTestSuiteId(testSuite.getId());
+				for(TestSuiteResourceMetric testSuiteResourceMetric : testSuiteResourceMetrics){
+					if(columnIds.contains(testSuiteResourceMetric.getColumnNameId())){
+						finalReport.append("<tr>");
+						finalReport.append("<td>").append(testSuiteResourceMetric.getServerName()).append("[").append(testSuiteResourceMetric.getServerIp()).append("]").append("</td>");
+						if(testSuiteResourceMetric.getResourceName().length() > MAX_RESOURCE_LENGTH){
+							finalReport.append("<td>").append("...").append(testSuiteResourceMetric.getResourceName().substring(testSuiteResourceMetric.getResourceName().length() - MAX_RESOURCE_LENGTH).replace("_"+testSuiteResourceMetric.getServerId(), "")).append("</td>");
+						}else{
+							finalReport.append("<td>").append(testSuiteResourceMetric.getResourceName().replace("_"+testSuiteResourceMetric.getServerId(), "")).append("</td>");
+						}
+						finalReport.append("<td>").append(testSuiteResourceMetric.getTableType()).append("</td>");
+						if(testSuiteResourceMetric.getSubType() != null){
+							finalReport.append("<td>").append(testSuiteResourceMetric.getColumnName()).append("::").append(testSuiteResourceMetric.getSubType()).append("</td>");
+						}else{
+							finalReport.append("<td>").append(testSuiteResourceMetric.getColumnName()).append("</td>");
+						}
 
-		if(isTestSuiteGroupEnabled){
+						if(testSuiteResourceMetric.getTableType().contains(DynamicTableName.TYPE.CPU.toString())){
+								finalReport.append("<td ").append(SINGLE_LINE).append("><font color=\"green\"><b>").append(General.decimalDigit2.format(testSuiteResourceMetric.getMinimum()*100.0)).append(" %</font></b>").append(General.getColorCpu(testSuiteResourceMetric.getMinimumChanges()*100.0, false)).append("</td>");
+								finalReport.append("<td ").append(SINGLE_LINE).append("><font color=\"brown\"><b>").append(General.decimalDigit2.format(testSuiteResourceMetric.getAverage()*100.0)).append(" %</font></b>").append(General.getColorCpu(testSuiteResourceMetric.getAverageChanges()*100.0, false)).append("</td>");
+								finalReport.append("<td ").append(SINGLE_LINE).append("><font color=\"red\"><b>"  ).append(General.decimalDigit2.format(testSuiteResourceMetric.getMaximum()*100.0)).append(" %</font></b>").append(General.getColorCpu(testSuiteResourceMetric.getMaximumChanges()*100.0, false)).append("</td>");
+						}else if(testSuiteResourceMetric.getTableType().contains(DynamicTableName.TYPE.MEMORY.toString())){
+							finalReport.append("<td ").append(SINGLE_LINE).append("><font color=\"green\"><b>").append(General.getFileSizeFromBytes(testSuiteResourceMetric.getMinimum().longValue())).append("</font></b>").append(General.getColorFileSizeFromBytes(testSuiteResourceMetric.getMinimumChanges().longValue(), false)).append("</td>");
+							finalReport.append("<td ").append(SINGLE_LINE).append("><font color=\"brown\"><b>").append(General.getFileSizeFromBytes(testSuiteResourceMetric.getAverage().longValue())).append("</font></b>").append(General.getColorFileSizeFromBytes(testSuiteResourceMetric.getAverageChanges().longValue(), false)).append("</td>");
+							finalReport.append("<td ").append(SINGLE_LINE).append("><font color=\"red\"><b>"  ).append(General.getFileSizeFromBytes(testSuiteResourceMetric.getMaximum().longValue())).append("</font></b>").append(General.getColorFileSizeFromBytes(testSuiteResourceMetric.getMaximumChanges().longValue(), false)).append("</td>");
+						}
+						finalReport.append(" </tr>"); 
+					}else{
+						_logger.debug("Column["+testSuiteResourceMetric.getColumnName()+", Id: "+testSuiteResourceMetric.getColumnNameId()+"] not selected to send email...");
+					}					         
+				}  
+				finalReport.append("<tfoot></tfoot></tbody></table>");
+			}
+		}
+
+		if(reportGroup.isTestSuiteGroupEnabled()){
 			finalReport.append("<b><u>Test Suite Detaild View:</u></b><BR><BR>");
 			for(TestSuite testSuite : testSuites){
 				ArrayList<TestGroup> testGroups = new TestGroupTable().getCount(testSuite.getId());

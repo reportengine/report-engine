@@ -8,7 +8,7 @@
 <%@ include file="index-part2.jsp"%>
 
 <%
-int caseId = Integer.valueOf(request.getParameter("caseId"));
+int caseId = Integer.valueOf(request.getParameter(Keys.TEST_CASE_ID));
 TestCase testCase = new TestCaseReport().getTestCaseDetail(caseId);
 String screenShot = null;
 ArrayList<FileStorage> screenShotFiles = new TestCaseReport().getScreenShotImages(caseId);
@@ -68,7 +68,7 @@ if(screenShot != null){
 	<TR>
 		<td align="left">Debug Log</td>
 		<TD>:</TD>
-		<td><a href="reportsTestLogs.jsp?caseId=<%=testCase.getId()%>"><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></a></td>
+		<td><a href="reportsTestLogs.jsp?<%=Keys.TEST_CASE_ID%>=<%=testCase.getId()%>"><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></a></td>
 	</tr>
 	<TR>
 		<td align="left">Resource Utilization</td>
@@ -109,7 +109,8 @@ if(screenShot != null){
 		<td align="left" valign="top">Comments</td>
 		<TD valign="top">:</TD>
 		<td><%if(testCase.getTestComments() != null){%><div id="log_page"><pre><%=General.getThrowableString(testCase.getTestComments())%></pre></div><%}%>		
-	</tr>				
+	</tr>	
+				
 </table>
 <BR>
 <h1></h1>

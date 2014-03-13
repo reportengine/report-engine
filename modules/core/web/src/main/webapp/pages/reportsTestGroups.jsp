@@ -29,8 +29,8 @@
 <%@ include file="index-part2.jsp"%>
 
 <%
-int id = Integer.valueOf(request.getParameter("id"));
-TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(id);
+int testSuitId = Integer.valueOf(request.getParameter(Keys.TEST_SUITE_ID));
+TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(testSuitId);
 %>
 
 <div id="dt_page">
@@ -52,7 +52,7 @@ TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(id);
 	<tbody>
 
 	<%
-		ArrayList<TestGroup> testGroups= new TestGroupReport().getGroups(id);
+		ArrayList<TestGroup> testGroups= new TestGroupReport().getGroups(testSuitId);
 		StringBuffer passedStr 	= new StringBuffer();
 		StringBuffer failedStr 	= new StringBuffer();
 		StringBuffer skippedStr = new StringBuffer();
@@ -61,24 +61,24 @@ TestSuite testSuite = new TestSuiteReport().getTestSuiteDetails(id);
 			failedStr 		= new StringBuffer();
 			skippedStr 		= new StringBuffer();
 			if(testGroups.get(i).getPassedCases()!=0){
-				passedStr.append("<a href=\"reportsTestCases.jsp?groupid=").append(testGroups.get(i).getId()).append("&teststatus=").append(TestCase.PASSED).append("\"><font color=\"green\"><b>").append(testGroups.get(i).getPassedCases()).append("</b></font></a>");
+				passedStr.append("<a href=\"reportsTestCases.jsp?").append(Keys.TEST_GROUP_ID).append("=").append(testGroups.get(i).getId()).append("&").append(Keys.TEST_STATUS).append("=").append(TestCase.PASSED).append("\"><font color=\"green\"><b>").append(testGroups.get(i).getPassedCases()).append("</b></font></a>");
 			}else{
 				passedStr.append("<font color=\"green\"><b>").append(testGroups.get(i).getPassedCases()).append("</b></font>");
 			}
 			
 			if(testGroups.get(i).getFailedCases()!=0){
-				failedStr.append("<a href=\"reportsTestCases.jsp?groupid=").append(testGroups.get(i).getId()).append("&teststatus=").append(TestCase.FAILED).append("\"><font color=\"red\"><b>").append(testGroups.get(i).getFailedCases()).append("</b></font></a>");
+				failedStr.append("<a href=\"reportsTestCases.jsp?").append(Keys.TEST_GROUP_ID).append("=").append(testGroups.get(i).getId()).append("&").append(Keys.TEST_STATUS).append("=").append(TestCase.FAILED).append("\"><font color=\"red\"><b>").append(testGroups.get(i).getFailedCases()).append("</b></font></a>");
 			}else{
 				failedStr.append("<font color=\"red\"><b>").append(testGroups.get(i).getFailedCases()).append("</b></font>");
 			}
 
 			if(testGroups.get(i).getSkippedCases()!=0){
-				skippedStr.append("<a href=\"reportsTestCases.jsp?groupid=").append(testGroups.get(i).getId()).append("&teststatus=").append(TestCase.SKIPPED).append("\"><font color=\"brown\"><b>").append(testGroups.get(i).getSkippedCases()).append("</b></font></a>");
+				skippedStr.append("<a href=\"reportsTestCases.jsp?").append(Keys.TEST_GROUP_ID).append("=").append(testGroups.get(i).getId()).append("&").append(Keys.TEST_STATUS).append("=").append(TestCase.SKIPPED).append("\"><font color=\"brown\"><b>").append(testGroups.get(i).getSkippedCases()).append("</b></font></a>");
 			}else{
 				skippedStr.append("<font color=\"brown\"><b>").append(testGroups.get(i).getSkippedCases()).append("</b></font>");
 			}
 			
-			out.println("<tr><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsTestCases.jsp?suiteid="+testGroups.get(i).getTestSuiteId()+"&groupid="+testGroups.get(i).getId()+"\">"+testGroups.get(i).getTestGroup()+"</a></td><td align=\"center\"><b>"+testGroups.get(i).getTotalCases()+"</b></td><td align=\"center\">"+passedStr.toString()+"</td></td><td align=\"center\">"+failedStr.toString()+"</td><td align=\"center\">"+skippedStr.toString()+"</td><td align=\"center\"><a href=\"reportsTestLogs.jsp?groupId="+testGroups.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td></tr>");		
+			out.println("<tr><td>"+(i+1)+"</td><td><a class=\"alink\" href=\"reportsTestCases.jsp?"+Keys.TEST_SUITE_ID+"="+testGroups.get(i).getTestSuiteId()+"&"+Keys.TEST_GROUP_ID+"="+testGroups.get(i).getId()+"\">"+testGroups.get(i).getTestGroup()+"</a></td><td align=\"center\"><b>"+testGroups.get(i).getTotalCases()+"</b></td><td align=\"center\">"+passedStr.toString()+"</td></td><td align=\"center\">"+failedStr.toString()+"</td><td align=\"center\">"+skippedStr.toString()+"</td><td align=\"center\"><a href=\"reportsTestLogs.jsp?"+Keys.TEST_GROUP_ID+"="+testGroups.get(i).getId()+"\"><img width=\"16\" height=\"16\"  src='"+General.HTML_ICONS_LOCATION+"debug.png'  alt='Debug'></a></td></tr>");		
 		}
 
 	%>

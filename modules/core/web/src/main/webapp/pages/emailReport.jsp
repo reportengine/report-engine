@@ -49,17 +49,22 @@ if(buttonName != null){
 			<td>:</td>
 			<td colspan="2"><select data-placeholder="Choose a Reference..."  tabindex="1" class="chosen" multiple id="<%=Keys.REPORT_EMAIL_GROUP_REFERENCE%>" name="<%=Keys.REPORT_EMAIL_GROUP_REFERENCE%>">
 			<%
+				StringBuilder tReferenceBuilder = new StringBuilder();
 				ArrayList<TestReference> testReferences = new ManageTestReference().getAllTestReference();
 				for(TestReference testReference : testReferences){
-					String selectionStatus = "";
+					tReferenceBuilder.append("<option value=\"")
+					.append(testReference.getId()).append("\" ");
 					for(ReportGroupReference reportGroupReference: reportGroup.getReportGroupReference()){
 						if(reportGroupReference.getTestReferenceId() == testReference.getId()){
-							selectionStatus = "selected";
+							tReferenceBuilder.append("selected");
 							break;
 						}
-					}
-					out.println("<option value=\""+testReference.getId()+"\" "+selectionStatus+">"+testReference.getTestReference()+"</option>");
+					}					
+					tReferenceBuilder.append(">")
+					.append(testReference.getTestReference())
+					.append("</option>");
 				}
+				out.println(tReferenceBuilder.toString());
 			%>
   				</select>
   			</td>	
@@ -71,6 +76,42 @@ if(buttonName != null){
 			<td colspan="2"><input type="checkbox" name="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" id="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" value="groupEnabled" 
 			<%if(reportGroup.isTestSuiteGroupEnabled()){%> checked <%}%> ></td>	
 		</tr>
+		
+				
+		<tr>
+			<td align="left">Metric Reference(s)</td>
+			<td>:</td>
+			<td colspan="2"><select data-placeholder="Choose a Reference..."  tabindex="2" class="chosen" multiple id="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_REFERENCE%>" name="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_REFERENCE%>" >
+				 <option value=""></option>
+			<%
+				StringBuilder mreferenceBuilder = new StringBuilder();
+				ArrayList<TestSuiteResourceMetricColumn> metricReferences = new TestSuiteResourceMetricColumnTable().get();
+				for(TestSuiteResourceMetricColumn metricReference : metricReferences){
+					mreferenceBuilder.append("<option value=\"").append(metricReference.getId()).append("\" ");
+					for(ReportGroupResourceMetricReference reportGroupResourceMetricReference: reportGroup.getResourceMetricReference()){
+						if(reportGroupResourceMetricReference.getMetricReferenceId() == metricReference.getId()){
+							mreferenceBuilder.append("selected");
+							break;
+						}
+					}
+					mreferenceBuilder.append(">[").append(metricReference.getTableType()).append(" (").append(metricReference.getColumnName());
+					if(metricReference.getSubType() != null){
+						mreferenceBuilder.append("::").append(metricReference.getSubType());
+					}
+					mreferenceBuilder.append(")]</option>");
+				}
+				out.println(mreferenceBuilder.toString());
+			%>
+  				</select>
+  			</td>	
+		</tr>
+		
+		<tr>
+			<td align="left">Include Metric Reference(s)</td>
+			<td valign="top">:</td>
+			<td colspan="2"><input type="checkbox" name="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_ENABLED%>" id="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_ENABLED%>" value="metricEnabled" 
+			<%if(reportGroup.isResourceMetricEnabled()){%> checked <%}%> ></td>	
+		</tr>	
 
 		<tr>
 			<td align="left" valign="top">Email To</td>
@@ -136,21 +177,50 @@ if(buttonName != null){
 			<td colspan="2"><select data-placeholder="Choose a Reference..."  tabindex="1" class="chosen" multiple id="<%=Keys.REPORT_EMAIL_GROUP_REFERENCE%>" name="<%=Keys.REPORT_EMAIL_GROUP_REFERENCE%>" >
 				 <option value=""></option>
 			<%
+			StringBuilder tReferenceBuilder = new StringBuilder();
 				ArrayList<TestReference> testReferences = new ManageTestReference().getAllTestReference();
 				for(TestReference testReference : testReferences){
-					out.println("<option value=\""+testReference.getId()+"\">"+testReference.getTestReference()+"</option>");
+					tReferenceBuilder.append("<option value=\"").append(testReference.getId()).append("\">").append(testReference.getTestReference()).append("</option>");
 				}
+				out.println(tReferenceBuilder.toString());
 			%>
   				</select>
   			</td>	
 		</tr>
-
+				
 		<tr>
 			<td align="left">Test Suite Group (Include)</td>
 			<td valign="top">:</td>
 			<td colspan="2"><input type="checkbox" name="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" id="<%=Keys.REPORT_EMAIL_GROUP_GROUP_ENABLED%>" value="groupEnabled" ></td>	
 		</tr>
 		
+		<tr>
+			<td align="left">Metric Reference(s)</td>
+			<td>:</td>
+			<td colspan="2"><select data-placeholder="Choose a Reference..."  tabindex="2" class="chosen" multiple id="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_REFERENCE%>" name="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_REFERENCE%>" >
+				 <option value=""></option>
+			<%
+				StringBuilder mreferenceBuilder = new StringBuilder();
+				ArrayList<TestSuiteResourceMetricColumn> metricReferences = new TestSuiteResourceMetricColumnTable().get();
+				for(TestSuiteResourceMetricColumn metricReference : metricReferences){
+					mreferenceBuilder.append("<option value=\"").append(metricReference.getId()).append("\" ");
+					mreferenceBuilder.append(">[").append(metricReference.getTableType()).append(" (").append(metricReference.getColumnName());
+					if(metricReference.getSubType() != null){
+						mreferenceBuilder.append("::").append(metricReference.getSubType());
+					}
+					mreferenceBuilder.append(")]</option>");
+				}
+				out.println(mreferenceBuilder.toString());
+			%>
+  				</select>
+  			</td>	
+		</tr>
+		
+		<tr>
+			<td align="left">Include Metric Reference(s)</td>
+			<td valign="top">:</td>
+			<td colspan="2"><input type="checkbox" name="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_ENABLED%>" id="<%=Keys.REPORT_EMAIL_GROUP_RESOURCE_METRIC_ENABLED%>" value="metricEnabled" ></td>	
+		</tr>		
 		
 		<tr>
 			<td align="left" valign="top">Email To</td>

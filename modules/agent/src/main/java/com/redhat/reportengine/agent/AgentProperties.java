@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.redhat.reportengine.scheduler.ManageFailedJobs;
+
 /**
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Jul 18, 2013
@@ -15,6 +17,8 @@ public class AgentProperties {
 	private static final String SERVER_REST_URL = "SERVER_REST_URL";
 	public static final String LOG4J_PROPERTY_FILE = "LOG4J_PROPERTY_FILE";
 	public static final String LOG4J_LOG_FILE = "LOG4J_LOG_FILE";
+	public static final String JOB_FAIL_COUNT_MAX = "JOB_FAIL_COUNT_MAX";
+	public static final String JOB_RESUME_DELAY = "JOB_RESUME_DELAY";
 	private static String AGENT_HOME = null;
 	
 	
@@ -22,6 +26,8 @@ public class AgentProperties {
 	private static String log4jPropertyFile;
 	private static String log4jLogFile;
 	private static String serverRestUrl;
+	private static Integer jobFailCountMax;
+	private static Integer jobResumeDelay;
 
 	public static void loadProperties(String propertiesFile) throws FileNotFoundException, IOException{
 		Properties properties = new Properties();
@@ -31,7 +37,8 @@ public class AgentProperties {
 		setLog4jPropertyFile(properties.getProperty(LOG4J_PROPERTY_FILE).trim());
 		setLog4jLogFile(properties.getProperty(LOG4J_LOG_FILE).trim());
 		setServerRestUrl(properties.getProperty(SERVER_REST_URL).trim());
-
+		setJobFailCountMax(Integer.valueOf(properties.getProperty(JOB_FAIL_COUNT_MAX).trim()));
+		setJobResumeDelay(Integer.valueOf(properties.getProperty(JOB_RESUME_DELAY).trim()));
 	}
 	
 	
@@ -83,6 +90,25 @@ public class AgentProperties {
 
 	public static void setServerRestUrl(String serverRestUrl) {
 		AgentProperties.serverRestUrl = serverRestUrl;
+	}
+
+
+	public static Integer getJobFailCountMax() {
+		return jobFailCountMax;
+	}
+
+	public static void setJobFailCountMax(Integer jobFailCountMax) {
+		AgentProperties.jobFailCountMax = jobFailCountMax;
+		ManageFailedJobs.setJobMaxFailCount(jobFailCountMax);
+	}
+
+	public static Integer getJobResumeDelay() {
+		return jobResumeDelay;
+	}
+
+	public static void setJobResumeDelay(Integer jobResumeDelay) {
+		AgentProperties.jobResumeDelay = jobResumeDelay;
+		ManageFailedJobs.setJobResumeDelay(jobResumeDelay);
 	}
 
 }

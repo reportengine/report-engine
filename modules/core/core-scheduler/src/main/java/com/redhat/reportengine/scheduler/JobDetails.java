@@ -28,6 +28,7 @@ public class JobDetails implements Serializable{
 	private Date jobFromTime;
 	private Date jobToTime;
 	private JobDataMap jobDataMap;
+	private boolean enabled;
 	/**
 	 * @return the jobName
 	 */
@@ -147,6 +148,12 @@ public class JobDetails implements Serializable{
 	 */
 	public void setRepeatInterval(Long repeatInterval) {
 		this.repeatInterval = repeatInterval;
+	}
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 	
 

@@ -213,6 +213,7 @@ CREATE TABLE re_report_group
   email_to character varying (1000) NOT NULL,
   email_cc character varying (1000) NULL,
   test_suite_group_enabled boolean default false,
+  resource_metric_enabled boolean default false,
   creation_time timestamp NOT NULL,
   unique(id)
 );
@@ -836,4 +837,96 @@ CREATE TABLE re_server_dynamic_table_name
   unique(id),
   unique(server_id, name),
   FOREIGN KEY (server_id) REFERENCES re_server(id) ON DELETE CASCADE
+);
+
+--------------------------------------------------
+-- Sequence for Resource Metric Column Details
+--------------------------------------------------
+CREATE SEQUENCE re_test_suite_resource_metric_column_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+------------------------------------------------------
+-- This table is used to store Resource Metric Details 
+------------------------------------------------------
+CREATE TABLE re_test_suite_resource_metric_column
+(
+  id integer NOT NULL default nextval('re_test_suite_resource_metric_column_seq'),
+  table_type varchar(100) NOT NULL,
+  column_name varchar(100) NOT NULL,
+  sub_type varchar(300) NULL,
+  sub_query varchar(1000) NULL DEFAULT '',
+  unique(id),
+  unique(table_type, column_name, sub_type, sub_query)
+);
+
+--------------------------------------------------
+-- Insert Roles default data
+--------------------------------------------------
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name, sub_type, sub_query) values ('JVM_MEMORY','used', 'Heap', 'AND heap_memory=true');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name, sub_type, sub_query) values ('JVM_MEMORY','used', 'Non-Heap', 'AND heap_memory=false');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name) values ('MEMORY','actual_used');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name) values ('MEMORY','used');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name) values ('MEMORY','swap_used');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name) values ('CPU','idle');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name) values ('CPUS','idle');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name) values ('CPU','used');
+INSERT INTO re_test_suite_resource_metric_column (table_type, column_name) values ('CPUS','used');
+
+--------------------------------------------------
+-- Sequence for Resource Metric Details
+--------------------------------------------------
+CREATE SEQUENCE re_test_suite_resource_metric_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+  
+------------------------------------------------------
+-- This table is used to store Resource Metric Details 
+------------------------------------------------------
+CREATE TABLE re_test_suite_resource_metric
+(
+  id integer NOT NULL default nextval('re_test_suite_resource_metric_seq'),
+  dtn_id integer NOT NULL,
+  column_name_id integer NOT NULL,
+  test_suite_id integer NOT NULL,
+  test_reference_id integer NOT NULL,
+  test_group_id integer NULL,
+  test_case_id integer NULL,
+  minimum double precision NOT NULL,
+  maximum double precision NOT NULL,
+  average double precision NOT NULL,
+  minimum_changes double precision NOT NULL,
+  maximum_changes double precision NOT NULL,
+  average_changes double precision NOT NULL,
+  local_time timestamp NOT NULL DEFAULT statement_timestamp(),
+  unique(id),
+  FOREIGN KEY (dtn_id) REFERENCES re_server_dynamic_table_name(id) ON DELETE CASCADE,
+  FOREIGN KEY (column_name_id) REFERENCES re_test_suite_resource_metric_column(id) ON DELETE CASCADE,
+  FOREIGN KEY (test_suite_id) REFERENCES re_test_suite(id) ON DELETE CASCADE,
+  FOREIGN KEY (test_reference_id) REFERENCES re_test_reference (id) ON DELETE CASCADE,
+  FOREIGN KEY (test_group_id) REFERENCES re_test_group(id) ON DELETE CASCADE,
+  FOREIGN KEY (test_case_id) REFERENCES re_test_case(id) ON DELETE CASCADE
+);
+
+-----------------------------------------------------------------
+-- View - Get resource metric and dynamic table name view
+-----------------------------------------------------------------
+CREATE VIEW re_view_getresource_metric_detailed AS SELECT rm.id, dtn.id AS dtn_id, dtn.server_id, sr.name AS server_name, sr.host_ip AS server_ip, dtn.name AS resource_name, dtn.table_type, rm.test_suite_id, rm.test_reference_id, rm.test_group_id, rm.test_case_id, rmc.column_name, rmc.id AS column_name_id, rmc.sub_type, rmc.sub_query, rm.minimum, rm.maximum, rm.average, rm.minimum_changes, rm.maximum_changes, rm.average_changes, rm.local_time FROM re_server_dynamic_table_name AS dtn INNER JOIN re_test_suite_resource_metric AS rm ON (dtn.id=rm.dtn_id) INNER JOIN re_test_suite_resource_metric_column AS rmc ON (rmc.id=rm.column_name_id)INNER JOIN re_server AS sr ON (sr.id=dtn.server_id) ORDER BY dtn.server_id, dtn.id;
+
+----------------------------------------------------------
+-- This table is used to store 'resource metric references' and 'report group'
+----------------------------------------------------------
+CREATE TABLE re_report_group_resource_metric_reference
+(
+  report_group_id integer NOT NULL,
+  metric_reference_id integer NOT NULL,
+  unique(report_group_id, metric_reference_id),
+  FOREIGN KEY (report_group_id) references re_report_group (id) ON DELETE CASCADE,
+  FOREIGN KEY (metric_reference_id) references re_test_suite_resource_metric_column (id) ON DELETE CASCADE
 );

@@ -61,6 +61,7 @@ public class TestResult {
 			new TestSuiteTable().add(testSuite);
 		} catch (SQLException ex) {
 			_logger.error("Exception, ", ex);
+			_logger.info("Test Data: "+testSuite.toString());
 			throw new TestResultException(ex.getMessage());
 		}
 	}
@@ -71,6 +72,7 @@ public class TestResult {
 			new TestSuiteTable().modifyName(testSuite);
 		} catch (SQLException ex) {
 			_logger.error("Exception, ", ex);
+			_logger.info("Test Data: "+testSuite.toString());
 			throw new TestResultException(ex.getMessage());
 		}
 	}
@@ -87,6 +89,7 @@ public class TestResult {
 			}
 		} catch (SQLException ex) {
 			_logger.error("Exception, ", ex);
+			_logger.info("Test Data: "+testSuite.toString());
 			throw new TestResultException(ex.getMessage());
 		}
 	}
@@ -117,6 +120,7 @@ public class TestResult {
 			return new TestSuiteTable().getByNameAndRef(testSuite);
 		} catch (SQLException ex) {
 			_logger.error("Exception, ", ex);
+			_logger.info("Test Data: "+testSuite.toString());
 			throw new TestResultException(ex.getMessage());
 		}		
 	}

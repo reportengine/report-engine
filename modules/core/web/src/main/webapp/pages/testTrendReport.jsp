@@ -1,7 +1,7 @@
 
 <%@ include file="index-part1.jsp"%>
 <%
-	String buttonName = (String) request.getParameter("SUBMIT");
+	String buttonName = (String) request.getParameter(Keys.SUBMIT);
 
 		if (buttonName == null) {
 %>
@@ -256,7 +256,7 @@
 	    	                point: {
 	    	                    events: {
 	    	                        click: function () {
-	    	                        	window.location.href = 'reportsTestGroups.jsp?id='+this.myIndex;
+	    	                        	window.location.href = 'reportsTestGroups.jsp?<%=Keys.TEST_SUITE_ID%>='+this.myIndex;
 	    	                        }
 	    	                    }
 	    	                }

@@ -16,6 +16,8 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -99,18 +101,38 @@ public class ManageScheduler implements Runnable{
 			}
 
 			Trigger trigger;
+			Date startAt = jobDetails.getJobFromTime();
+			Date endAt = jobDetails.getJobToTime();
+			
 			if(jobDetails.getJobCronExpression() != null){
 				trigger = TriggerBuilder.newTrigger()			
-						.withSchedule(CronScheduleBuilder.cronSchedule(jobDetails.getJobCronExpression()))
+						.withSchedule(CronScheduleBuilder.cronSchedule(jobDetails.getJobCronExpression()).withMisfireHandlingInstructionDoNothing()) //Ignore Misfire schedules
+						.startAt(startAt)
+						.endAt(endAt)
 						.build();
-			}else{
+			}else if(jobDetails.getRepeatInterval() != null){
 				SimpleScheduleBuilder ssb = SimpleScheduleBuilder.simpleSchedule();
 				ssb.withIntervalInMilliseconds(jobDetails.getRepeatInterval());
+				ssb.withMisfireHandlingInstructionIgnoreMisfires(); //Ignore Misfire schedules
 				if(jobDetails.getRepeatCount() != null){
-					ssb.withRepeatCount(jobDetails.getRepeatCount());
+					if(jobDetails.getRepeatCount() == -1){
+						ssb.repeatForever();
+					}else{
+						ssb.withRepeatCount(jobDetails.getRepeatCount());
+					}					
 				}			
 				trigger = TriggerBuilder.newTrigger()			
 						.withSchedule(ssb)
+						.startAt(startAt)
+						.endAt(endAt)
+						.build();
+			}else{
+				SimpleScheduleBuilder ssb = SimpleScheduleBuilder.simpleSchedule();
+				ssb.withMisfireHandlingInstructionNextWithExistingCount(); //Ignore Misfire schedules
+				trigger = TriggerBuilder.newTrigger()
+						.withSchedule(ssb)
+						.startAt(startAt)
+						.endAt(endAt)
 						.build();
 			}
 
@@ -133,11 +155,13 @@ public class ManageScheduler implements Runnable{
 			
 			if(jobDetails.getJobCronExpression() != null){
 				sb.append("Cron Expression: ").append(jobDetails.getJobCronExpression()).append("\n");
-			}else{
+			}else if(jobDetails.getRepeatInterval() != null){
 				sb.append("Repeat Interval(milli sec): ").append(jobDetails.getRepeatInterval()).append("\n");
 				if(jobDetails.getRepeatCount() != null){
 					sb.append("Repeat Count: ").append(jobDetails.getRepeatCount()).append("\n");
 				}
+			}else{
+				sb.append("There is no schedule...might work with start time...\n");
 			}
 						
 			if(trigger.getStartTime() != null){

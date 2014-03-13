@@ -38,9 +38,9 @@
 <%@ include file="index-part2.jsp"%>
 
 <%
-String suiteid = (String)request.getParameter("suiteid");
-String groupid = (String)request.getParameter("groupid");
-String testStatus = (String)request.getParameter("teststatus");
+String suiteid = (String)request.getParameter(Keys.TEST_SUITE_ID);
+String groupid = (String)request.getParameter(Keys.TEST_GROUP_ID);
+String testStatus = (String)request.getParameter(Keys.TEST_STATUS);
 
 %>
 
@@ -91,11 +91,11 @@ if(groupid != null){
 		StringBuilder content = new StringBuilder();
 		for(int i = 0; i<testCases.size(); i++){	
 			content.append("<tr>");
-			content.append("<td>").append(i+1).append("</td><td><a class=\"alink\" href=\"reportsSingleTestCase.jsp?caseId=").append(testCases.get(i).getId()).append("\">").append(testCases.get(i).getTestName()).append("</a></td>");
+			content.append("<td>").append(i+1).append("</td><td><a class=\"alink\" href=\"reportsSingleTestCase.jsp?").append(Keys.TEST_CASE_ID).append("=").append(testCases.get(i).getId()).append("\">").append(testCases.get(i).getTestName()).append("</a></td>");
 			content.append("<td>").append(testCases.get(i).getTestArguments()).append("</td>");
 			content.append("<td align=\"center\">")
-				.append("<a href=\"ajaxReportTestCaseDetail.jsp?caseId=").append(testCases.get(i).getId()).append("\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION+testCases.get(i).getTestResult()).append(".png' alt='").append(testCases.get(i).getTestResult()).append("'></a>")
-				.append("&nbsp;<a href=\"reportsTestLogs.jsp?caseId=").append(testCases.get(i).getId()).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("debug.png'  alt='Debug'></a>")
+				.append("<a href=\"ajaxReportTestCaseDetail.jsp?").append(Keys.TEST_CASE_ID).append("=").append(testCases.get(i).getId()).append("\" class=\"ajax\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION+testCases.get(i).getTestResult()).append(".png' alt='").append(testCases.get(i).getTestResult()).append("'></a>")
+				.append("&nbsp;<a href=\"reportsTestLogs.jsp?").append(Keys.TEST_CASE_ID).append("=").append(testCases.get(i).getId()).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("debug.png'  alt='Debug'></a>")
 				.append("&nbsp;<a href=\"chartCpuMemory.jsp?").append(Keys.TEST_CASE_ID).append("=").append(testCases.get(i).getId()).append("&").append(Keys.SUBMIT).append("=").append(Keys.TEST_CASE).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("bar-chart-icon-16x16.png'  alt='Resource Usage'></a>")
 				.append("</td>");
 			content.append("<td align=\"center\">").append(General.getGuiDateTime(testCases.get(i).getLocalStartTime())).append("</td>");

@@ -13,6 +13,7 @@ import com.redhat.reportengine.server.sql.SqlMap;
  */
 public class TestSuiteTable {
 	private final static String GET_TEST_SUITE_BY_ID 					= "getTestSuiteById";
+	private final static String GET_TEST_SUITE_BY_TEST_REFERENCE_ID 			= "getTestSuiteByTestReferenceId";
 	private final static String GET_TEST_SUITE_BY_NAME_AND_REFF			= "getTestSuiteByNameRef";
 	private final static String GET_TEST_SUITES 						= "getTestSuites";
 	private final static String GET_TOP_N_TEST_SUITES 					= "getTopNTestSuites";
@@ -36,6 +37,11 @@ public class TestSuiteTable {
 	
 	public TestSuite get(int id) throws SQLException{
 		return (TestSuite)SqlMap.getSqlMapClient().queryForObject(GET_TEST_SUITE_BY_ID, id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<TestSuite> getByReferenceId(int testReferenceId) throws SQLException{
+		return (ArrayList<TestSuite>)SqlMap.getSqlMapClient().queryForList(GET_TEST_SUITE_BY_TEST_REFERENCE_ID, testReferenceId);
 	}
 	
 	public TestSuite getByNameAndRef(TestSuite testSuite) throws SQLException{

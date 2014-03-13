@@ -17,7 +17,7 @@ public class SendCpuInfo implements Job{
 	@Override
 	public void execute(JobExecutionContext context){
 		try{
-			new Thread(new SendResourceInfo(MSG_TYPE.USAGE_CPU, context.getJobDetail().getJobDataMap())).start();
+			new Thread(new SendResourceInfo(MSG_TYPE.USAGE_CPU, context)).start();
 		}catch(Exception ex){
 			_logger.error("Exception,", ex);
 		}		

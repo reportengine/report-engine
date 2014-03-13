@@ -58,6 +58,13 @@
                 <include>agent-*.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${java.home}/../lib/</directory>
+            <outputDirectory>re-agent/lib</outputDirectory>
+            <includes>
+                <include>tools.jar</include>
+            </includes>
+        </fileSet>
 	</fileSets>
 	
 	<dependencySets>

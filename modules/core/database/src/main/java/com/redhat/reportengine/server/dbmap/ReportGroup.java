@@ -16,7 +16,9 @@ public class ReportGroup {
 	private String owner;
 	private Date creationTime;
 	private boolean testSuiteGroupEnabled;
+	private boolean resourceMetricEnabled;
 	private List<ReportGroupReference> reportGroupReference = null;
+	private List<ReportGroupResourceMetricReference> resourceMetricReference = null;
 	/**
 	 * @return the id
 	 */
@@ -106,5 +108,18 @@ public class ReportGroup {
 	 */
 	public void setTestSuiteGroupEnabled(boolean testSuiteGroupEnabled) {
 		this.testSuiteGroupEnabled = testSuiteGroupEnabled;
+	}
+	public boolean isResourceMetricEnabled() {
+		return resourceMetricEnabled;
+	}
+	public void setResourceMetricEnabled(boolean resourceMetricEnabled) {
+		this.resourceMetricEnabled = resourceMetricEnabled;
+	}
+	public List<ReportGroupResourceMetricReference> getResourceMetricReference() {
+		return resourceMetricReference;
+	}
+	public void setResourceMetricReference(
+			List<ReportGroupResourceMetricReference> resourceMetricReference) {
+		this.resourceMetricReference = resourceMetricReference;
 	}
 }

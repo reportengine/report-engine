@@ -121,9 +121,11 @@ public class Keys {
 	public static final String REPORT_EMAIL_GROUP_ID			= "groupId";
 	public static final String REPORT_EMAIL_GROUP_NAME			= "groupName";
 	public static final String REPORT_EMAIL_GROUP_REFERENCE		= "groupReference";
+	public static final String REPORT_EMAIL_GROUP_RESOURCE_METRIC_REFERENCE		= "groupResourceMetricReference";
 	public static final String REPORT_EMAIL_GROUP_EMAIL_TO		= "emailTo";
 	public static final String REPORT_EMAIL_GROUP_EMAIL_CC		= "emailCc";
 	public static final String REPORT_EMAIL_GROUP_GROUP_ENABLED = "isGroupEnabled";
+	public static final String REPORT_EMAIL_GROUP_RESOURCE_METRIC_ENABLED = "isResourceMetricEnabled";
 	
 	//Login Page
 	public static final String LOGIN_DB							= "loginDatabase";
@@ -155,6 +157,12 @@ public class Keys {
 	public static final String CHART_JVM_MEMORY_HEAP				= "Heap";
 	public static final String CHART_JVM_MEMORY_NON_HEAP			= "Non-Heap";
 	
+	//Test Suite Details
+	public static final String SUB_MENU								= "subMenu";
+	public static final String TEST_SUITE_DETAILS					= "testSuiteDetails";
+	public static final String RESOURCE_UTILIZATION					= "resourceUtilization";
+	public static final String TREND_REPORT							= "trendReport";
+	
 	
 	//URL Encoding Decoding
 	public static final String URL_ENCODE_UTF_8						= "UTF-8";
@@ -180,9 +188,12 @@ public class Keys {
 	
 	//Test Suite
 	public static final String TEST_SUITE_ID						= "testSuiteId";
+	public static final String TEST_GROUP_ID						= "testGroupId";
 	public static final String TEST_SUITE							= "testSuite";
 	public static final String TEST_CASE							= "testCase";
 	public static final String TEST_CASE_ID							= "testCaseId";
+	public static final String TEST_STATUS							= "testStatus";
+	
 
 
 }

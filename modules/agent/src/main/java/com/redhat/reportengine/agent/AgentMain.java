@@ -84,7 +84,11 @@ public class AgentMain {
 	private static void loadAgentJobs() throws Exception{
 		try{
 			for(JobDetails jobDetail : connection.getAgentJobs()){
-				ManageScheduler.addJob(jobDetail);
+				if(jobDetail.isEnabled()){
+					ManageScheduler.addJob(jobDetail);
+				}else{
+					_logger.info(jobDetail.getName()+" is in disabled state...");
+				}
 			}
 			_logger.info("Jobs are loaded successfully from server!!");	
 		}catch(Exception ex){

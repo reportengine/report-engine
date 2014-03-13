@@ -38,7 +38,7 @@ public class EmailReportGroupJob implements Job{
 			}
 		}
 		ArrayList<TestSuite> testSuites = new TestSuiteTable().getTopNByRefIds(testSuiteReferences);
-		String emailBody = new EmailGroupReport().getReport(testSuites, reportGroup.getGroupName(), reportGroup.isTestSuiteGroupEnabled());
+		String emailBody = new EmailGroupReport().getReport(testSuites, reportGroup);
 		new SendEmail().sendEmail(reportGroup.getEmailTo(), reportGroup.getEmailCc(), ServerSettings.getEmailFrom(), "Summary report for '"+reportGroup.getGroupName()+"'", emailBody, ServerSettings.getEmailServer(), ServerSettings.getEmailServerPort());
 	}
 

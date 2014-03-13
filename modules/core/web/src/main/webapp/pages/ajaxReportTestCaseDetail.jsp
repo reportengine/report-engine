@@ -7,7 +7,7 @@
 <div id="container">
 <h1>Test Case Detail:</h1>
 <%
-int caseId = Integer.valueOf(request.getParameter("caseId"));
+int caseId = Integer.valueOf(request.getParameter(Keys.TEST_CASE_ID));
 TestCase testCase = new TestCaseReport().getTestCaseDetail(caseId);
 %>
 
@@ -35,9 +35,13 @@ TestCase testCase = new TestCaseReport().getTestCaseDetail(caseId);
 	<TR>
 		<td align="left" valign="top">Comments</td>
 		<TD valign="top">:</TD>
-		<td><%if(testCase.getTestComments() != null){%><div id="log_page"><pre><%=General.getThrowableString(testCase.getTestComments())%></pre></div><%}%></td>		
+		<td></td>		
 	</tr>
-
+	<%if(testCase.getTestComments() != null){%>
+	<tr>
+		<td colspan="3" align="left" valign="top"><div id="log_page"><pre><%=General.getThrowableString(testCase.getTestComments())%></pre></div></td>		
+	</tr>
+	<%}%>
 
 	
 </table>

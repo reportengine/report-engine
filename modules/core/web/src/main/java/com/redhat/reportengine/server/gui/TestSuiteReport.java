@@ -32,6 +32,10 @@ public class TestSuiteReport {
 		return new TestSuiteTable().getTopNRefAggr(topN, orderBy, testReferenceId);
 	}
 	
+	public ArrayList<TestSuite> getAllByTestReferenceId(int testReferenceId) throws SQLException{
+		return new TestSuiteTable().getByReferenceId(testReferenceId);
+	}
+	
 	public ArrayList<TestSuite> getTopNTestSuites(int topN, String orderBy) throws SQLException{
 		return getTopNTestSuites(topN, orderBy, true);
 	}

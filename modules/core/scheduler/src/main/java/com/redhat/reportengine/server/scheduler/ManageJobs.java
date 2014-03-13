@@ -6,11 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.log4j.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
-
 
 import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
 import com.redhat.reportengine.scheduler.JobDetails;
@@ -76,6 +76,7 @@ public class ManageJobs {
 
 	public static JobDetails getJobDetails(JobScheduler jobScheduler){
 		JobDetails job = new JobDetails();
+		job.setEnabled(jobScheduler.isJobEnabled());
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(Keys.DATA_REFERENCDE_ID, jobScheduler.getDataReferenceId());
 		jobDataMap.put(Keys.JOB_DATA, jobScheduler.getJobData());
@@ -156,7 +157,9 @@ public class ManageJobs {
 	public static void loadJobOnAgent(int serverId, JobDetails job){
 		try {
 			AgentsConnection.getRestJSONclient(serverId).post(AgentRestUriMap.LOAD_JOB, job, JobDetails.class);
-		} catch (Exception ex) {
+		}catch (HttpHostConnectException connectException){
+			_logger.error("Connectrion Error: "+connectException.getMessage());
+		}catch (Exception ex) {
 			_logger.error("Unable to load the job on agent...", ex);
 		}
 	}
@@ -169,7 +172,9 @@ public class ManageJobs {
 		JobDetails job = getJobDetails(jobScheduler);
 		try {
 			AgentsConnection.getRestJSONclient(jobScheduler.getDataReferenceId()).delete(AgentRestUriMap.UNLOAD_JOB, job, JobDetails.class);
-		} catch (Exception ex) {
+		}catch (HttpHostConnectException connectException){
+			_logger.error("Connectrion Error: "+connectException.getMessage());
+		}catch (Exception ex) {
 			_logger.error("Unable to unload the job from agent...", ex);
 		}
 	}
@@ -177,7 +182,9 @@ public class ManageJobs {
 	public static void unloadAllJobsOnAgent(int serverId){
 		try {
 			AgentsConnection.getRestJSONclient(serverId).delete(AgentRestUriMap.UNLOAD_ALL_JOBS, JobDetails.class);
-		} catch (Exception ex) {
+		}catch (HttpHostConnectException connectException){
+			_logger.error("Connectrion Error: "+connectException.getMessage());
+		}catch (Exception ex) {
 			_logger.error("Unable to unload the jobs on agent...", ex);
 		}
 	}

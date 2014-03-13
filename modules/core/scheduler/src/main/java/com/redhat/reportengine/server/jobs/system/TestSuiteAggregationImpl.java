@@ -72,6 +72,9 @@ public class TestSuiteAggregationImpl implements Job{
 				new TestSuiteTable().addAggregation(testSuite);
 				testSuite.setAggregationStatus(true);
 				new TestSuiteTable().enableAggregationStatus(testSuite.getId());
+				
+				//calculate Metric for this test suite
+				CalculateMetric.updateMetric(testSuite);
 			}
 		}catch(Exception ex){
 			_logger.error("Exception, ", ex);

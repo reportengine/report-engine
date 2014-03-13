@@ -57,8 +57,10 @@ public class AgentApi {
 		JobDetails[] jobDetails = new JobDetails[jobs.size()];
 		int index=0;
 		for(JobScheduler js : jobs){
-			jobDetails[index] = ManageJobs.getJobDetails(js);
-			index++;
+			if(js.isJobEnabled()){
+				jobDetails[index] = ManageJobs.getJobDetails(js);
+				index++;
+			}			
 		}
 		return jobDetails;
 	}

@@ -16,9 +16,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -53,20 +51,15 @@ import com.redhat.reportengine.agent.rest.mapper.jvm.JvmThreadMXBean;
 import com.redhat.reportengine.agent.rest.mapper.jvm.JvmVirtualMachineDescriptor;
 import com.redhat.reportengine.agent.rest.mapper.jvm.JvmsRunningList;
 import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
-import com.redhat.reportengine.server.collection.DynamicTable;
 import com.redhat.reportengine.server.dbdata.DynamicTableNameTable;
-import com.redhat.reportengine.server.dbdata.JobClassesTable;
 import com.redhat.reportengine.server.dbdata.ServerCpuDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerMemoryDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerNetworkDetailTable;
 import com.redhat.reportengine.server.dbdata.ServerOsDetailTable;
-import com.redhat.reportengine.server.dbdata.ServerTable;
 import com.redhat.reportengine.server.dbdata.TestReferenceServerMapTable;
 import com.redhat.reportengine.server.dbdata.TestSuiteTable;
 import com.redhat.reportengine.server.dbmap.DynamicTableName;
 import com.redhat.reportengine.server.dbmap.DynamicTableName.TYPE;
-import com.redhat.reportengine.server.dbmap.JobClasses;
-import com.redhat.reportengine.server.dbmap.Server;
 import com.redhat.reportengine.server.dbmap.ServerCpuDetail;
 import com.redhat.reportengine.server.dbmap.ServerMemoryDetail;
 import com.redhat.reportengine.server.dbmap.ServerNetworkDetail;
@@ -81,72 +74,9 @@ import com.redhat.reportengine.server.restclient.agent.AgentsConnection;
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Jul 19, 2013
  */
-public class AjaxServerInfo {
-	final static Logger _logger = Logger.getLogger(AjaxServerInfo.class);
-
-	private void setTableHead(StringBuilder stringBuilder){
-		//stringBuilder.append("\n<font size=\"2\" face=\"Courier\">");
-		stringBuilder.append("\n<table border=\"0\" cellpadding=\"3\" align=\"left\">");
-	}
-
-	private void setTableTail(StringBuilder stringBuilder){
-		stringBuilder.append("</table>\n");
-		//stringBuilder.append("</font>\n");
-	}
-
-	private void setKeyValue(StringBuilder stringBuilder, String key, Object value){
-		stringBuilder.append("\n<TR>");
-		stringBuilder.append("\n<td align=\"left\">");
-		stringBuilder.append("<I>").append(key).append("</I>").append("</td>");
-		stringBuilder.append("\n<TD>:</TD>");
-		stringBuilder.append("\n<td>").append(value).append("</td>");
-		stringBuilder.append("\n</TR>\n");
-	}
-
-	public void setKeyValueTabsHeading(StringBuilder tabHeader, String heading){
-		setKeyValueTabsHeading(tabHeader, heading, null);
-	}
-
-	public void setKeyValueTabsHeading(StringBuilder tabHeader, String heading, String url){
-		tabHeader.append("\n<li><a href=\"");
-		if(url == null){
-			tabHeader.append("#").append(heading.toLowerCase().replaceAll("\\s+", "-").replaceAll("\\.", "-"));
-		}else{
-			tabHeader.append(url);
-		}
-		tabHeader.append("\">").append(heading).append("</a></li>");
-	}
-
-
-	private void setKeyValueTabs(StringBuilder tabHeader, StringBuilder tabContent, String heading, Object value){
-		setKeyValueTabsHeading(tabHeader, heading);
-		tabContent.append("\n<div id=\"").append(heading.toLowerCase().replaceAll("\\s+", "-").replaceAll("\\.", "-")).append("\">");
-		tabContent.append(value);
-		tabContent.append("</div>");
-	}
-
-	private String getHtmlTableFromMap(Map map){
-		StringBuilder builder = new StringBuilder();
-		if(map != null){
-			setTableHead(builder);
-			Set<String> keys = map.keySet();
-			for(String key: keys){
-				setKeyValue(builder, key, map.get(key));
-			}
-			setTableTail(builder);
-			return builder.toString();
-		}else{
-			return "-";
-		}		
-	}
-
-	private void writeInResponse(HttpServletResponse response, StringBuilder stringBuilder) throws IOException{
-		response.setContentType(MediaType.TEXT_HTML);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(stringBuilder.toString());
-	}
-
-	public void getLiveOSInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException, Exception{
+public class AjaxServerInfo extends AjaxCommon{
+	
+		public void getLiveOSInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException, Exception{
 		int serverId = Integer.valueOf(request.getParameter(Keys.SERVER_ID));
 		OsDetail osDetail = (OsDetail)AgentsConnection.getRestJSONclient(serverId).get(AgentRestUriMap.CONF_OS, OsDetail.class);
 		StringBuilder osInfo = new StringBuilder();
@@ -584,14 +514,6 @@ public class AjaxServerInfo {
 			_logger.error("exception,", ex);
 		}
 		return null;		
-	}
-	
-	private String getString(List<String> list, String lineSp){
-		StringBuilder builder = new StringBuilder();
-		for(String line : list){
-			builder.append(line).append(lineSp);
-		}
-		return builder.toString();
 	}
 	
 	private String getRunTime(JvmRuntimeMXBean mxBean){

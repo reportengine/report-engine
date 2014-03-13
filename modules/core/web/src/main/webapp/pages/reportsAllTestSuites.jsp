@@ -4,6 +4,7 @@
 <%
 String buttonName 	= (String)request.getParameter(Keys.SUBMIT);
 String action		= (String)request.getParameter(Keys.REPORT_ACTION);
+String testReferenceId = (String)request.getParameter(Keys.TEST_REFERENCE_ID);
 int numberOfRows     	= 15; //Default count for show all reports
 String subTitle		= "ALL REPORTS";
 
@@ -21,10 +22,12 @@ if(buttonName != null){
 <%@ include file="include/re_jsp.jsp"%>
 <%
 	if(buttonName.equalsIgnoreCase("Delete")){
-		action = (String)request.getParameter(Keys.REPORT_ACTION);		
+		action = (String)request.getParameter(Keys.REPORT_ACTION);	
 		new PurgeLogs().deleteSuiteLogs(request, response);
 		if(action != null){
-			response.sendRedirect("reportsAllTestSuites.jsp?"+Keys.REPORT_ACTION+"="+action);	
+			response.sendRedirect("reportsAllTestSuites.jsp?"+Keys.REPORT_ACTION+"="+action);
+		}else if(testReferenceId != null){
+			response.sendRedirect("reportsAllTestSuites.jsp?"+Keys.TEST_REFERENCE_ID+"="+testReferenceId);
 		}else{
 			response.sendRedirect("reportsAllTestSuites.jsp");
 		}
@@ -139,6 +142,11 @@ if(buttonName != null){
 		<input type="hidden" name="<%=Keys.REPORT_ACTION%>" value="<%=action%>">	
 		<%
 	}
+	if(testReferenceId != null){
+		%>
+		<input type="hidden" name="<%=Keys.TEST_REFERENCE_ID%>" value="<%=testReferenceId%>">	
+		<%
+	}
 %>
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="dt_table">
@@ -162,8 +170,11 @@ if(buttonName != null){
 
 	<%
 		ArrayList<TestSuite> testSuites= null;
-		if(action != null){
-			testSuites = new TestSuiteReport().getTopNTestSuites(numberOfRows, action);
+	
+		if(testReferenceId != null){
+			testSuites = new TestSuiteReport().getAllByTestReferenceId(Integer.valueOf(testReferenceId));
+		}else if(action != null){
+				testSuites = new TestSuiteReport().getTopNTestSuites(numberOfRows, action);
 		}else{
 			testSuites = new TestSuiteTable().getTopNByRefIds();
 		}
@@ -176,32 +187,40 @@ if(buttonName != null){
 			failedStr.setLength(0);
 			skippedStr.setLength(0);
 			if(testSuites.get(i).getPassedCases()!=0){
-				passedStr.append("<a href=\"reportsTestCases.jsp?suiteid=").append(testSuites.get(i).getId()).append("&teststatus=").append(TestCase.PASSED).append("\"><font color=\"green\"><b>").append(testSuites.get(i).getPassedCases()).append("</b></font></a>");
+				passedStr.append("<a href=\"reportsTestCases.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("&").append(Keys.TEST_STATUS).append("=").append(TestCase.PASSED).append("\"><font color=\"green\"><b>").append(testSuites.get(i).getPassedCases()).append("</b></font></a>");
 			}else{
 				passedStr.append("<font color=\"green\"><b>").append(testSuites.get(i).getPassedCases()).append("</b></font>");
 			}
 			
 			if(testSuites.get(i).getFailedCases()!=0){
-				failedStr.append("<a href=\"reportsTestCases.jsp?suiteid=").append(testSuites.get(i).getId()).append("&teststatus=").append(TestCase.FAILED).append("\"><font color=\"red\"><b>").append(testSuites.get(i).getFailedCases()).append("</b></font></a>");
+				failedStr.append("<a href=\"reportsTestCases.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("&").append(Keys.TEST_STATUS).append("=").append(TestCase.FAILED).append("\"><font color=\"red\"><b>").append(testSuites.get(i).getFailedCases()).append("</b></font></a>");
 			}else{
 				failedStr.append("<font color=\"red\"><b>").append(testSuites.get(i).getFailedCases()).append("</b></font>");
 			}
 
 			if(testSuites.get(i).getSkippedCases()!=0){
-				skippedStr.append("<a href=\"reportsTestCases.jsp?suiteid=").append(testSuites.get(i).getId()).append("&teststatus=").append(TestCase.SKIPPED).append("\"><font color=\"brown\"><b>").append(testSuites.get(i).getSkippedCases()).append("</b></font></a>");
+				skippedStr.append("<a href=\"reportsTestCases.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("&").append(Keys.TEST_STATUS).append("=").append(TestCase.SKIPPED).append("\"><font color=\"brown\"><b>").append(testSuites.get(i).getSkippedCases()).append("</b></font></a>");
 			}else{
 				skippedStr.append("<font color=\"brown\"><b>").append(testSuites.get(i).getSkippedCases()).append("</b></font>");
 			}
 			
 			content.append("<tr>");
 			content.append("<td align=\"center\"><input type=\"checkbox\" name=\"").append(Keys.DELETE_REPORTS).append("\" value=\"").append(testSuites.get(i).getId()).append("\"></td>");
-			content.append("<td>").append(i+1).append("</td><td><a class=\"alink\" href=\"reportsTestGroups.jsp?id=").append(testSuites.get(i).getId()).append("\">").append(testSuites.get(i).getTestSuiteName()).append("</a></td>");
 			
-			content.append("<td align=\"center\">")
-				.append("<a href=\"ajaxReportTestSuite.jsp?id=").append(testSuites.get(i).getId()).append("\" class='ajax'><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append(testSuites.get(i).getTestStatus()).append(".png' alt='").append(testSuites.get(i).getTestStatus()).append("'></a>")
-				.append("&nbsp;<a href=\"reportsTestLogs.jsp?suiteId=").append(testSuites.get(i).getId()).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("debug.png'  alt='Debug'></a>")
-				.append("&nbsp;<a href=\"chartCpuMemory.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("&").append(Keys.SUBMIT).append("=").append(Keys.TEST_SUITE).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("bar-chart-icon-16x16.png'  alt='Resource Usage'></a>")
-				.append("</td>");
+			//Test Suite Name
+			content.append("<td nowrap>").append(i+1).append("</td><td>");
+			/* if(testReferenceId == null){
+				content.append("<a href=\"reportsAllTestSuites.jsp?").append(Keys.TEST_REFERENCE_ID).append("=").append(testSuites.get(i).getTestReferenceId()).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("list-icon.png'  alt='Entire List'></a>&nbsp;");	
+			} */	
+			content.append("<a class=\"alink\" href=\"reportsTestGroups.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("\">").append(testSuites.get(i).getTestSuiteName()).append("</a>");
+			content.append("</td>");
+			
+			content.append("<td nowrap align=\"center\">")
+				.append("<a href=\"popUpTestSuiteData.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("\" class='ajax'><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append(testSuites.get(i).getTestStatus()).append(".png' alt='").append(testSuites.get(i).getTestStatus()).append("'></a>")
+				.append("&nbsp;<a href=\"reportsTestLogs.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("debug.png'  alt='Debug'></a>")
+				.append("&nbsp;<a href=\"chartCpuMemory.jsp?").append(Keys.TEST_SUITE_ID).append("=").append(testSuites.get(i).getId()).append("&").append(Keys.SUBMIT).append("=").append(Keys.TEST_SUITE).append("\"><img width=\"16\" height=\"16\"  src='").append(General.HTML_ICONS_LOCATION).append("bar-chart-icon-16x16.png'  alt='Resource Usage'></a>");		
+			content.append("</td>");
+			
 
 			content.append("<td><b>").append(testSuites.get(i).getTotalCases()).append("</b>").append(General.getColor(testSuites.get(i).getTotalChanges(), true)).append("</td>");
 			content.append("<td>").append(passedStr.toString()+General.getColor(testSuites.get(i).getPassedChanges(), true)).append("</td>");
@@ -238,6 +257,7 @@ if(buttonName != null){
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>NoStatus.png'  alt='Status N/A'></td><td valign="top">- Status Not Available&nbsp;</td>
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>debug.png'  alt='Debug'></td><td valign="top">- Debug Logs&nbsp;</td>
 <td><img width="16" height="16"  src='<%=General.HTML_ICONS_LOCATION%>bar-chart-icon-16x16.png'  alt='Resource Utilization'></td><td valign="top">- Resource Utilization&nbsp;</td>
+
 <tr>
 </table>
 

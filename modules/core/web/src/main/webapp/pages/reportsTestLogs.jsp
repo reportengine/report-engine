@@ -2,22 +2,22 @@
 <%
 String idData = null;
 
-String suiteId 	= request.getParameter("suiteId");
-String groupId 	= request.getParameter("groupId");
-String caseId 	= request.getParameter("caseId");
+String suiteId 	= request.getParameter(Keys.TEST_SUITE_ID);
+String groupId 	= request.getParameter(Keys.TEST_GROUP_ID);
+String caseId 	= request.getParameter(Keys.TEST_CASE_ID);
 boolean suiteRunning = false;
 
 ArrayList<TestLogs> testLogsArray = null;
 
 if(caseId != null){
 	testLogsArray = new TestLogsReport().getLogsByCaseId(Integer.valueOf(caseId));
-	idData = "caseId="+caseId;
+	idData = Keys.TEST_CASE_ID+"="+caseId;
 }else if(groupId != null){
 	testLogsArray = new TestLogsReport().getLogsByGroupId(Integer.valueOf(groupId));
-	idData = "groupId="+groupId;
+	idData = Keys.TEST_GROUP_ID+"="+groupId;
 }else{
 	testLogsArray = new TestLogsReport().getLogsBySuiteId(Integer.valueOf(suiteId));
-	idData = "suiteId="+suiteId;
+	idData = Keys.TEST_SUITE_ID+"="+suiteId;
 }
 
 if(testLogsArray.size() > 0){
@@ -85,7 +85,12 @@ if(testLogsArray.size() > 0){
 			//out.print("\n<div id=\"LEVEL_"+testLogs.get(i).getLogLevel()+"\">["+General.getLogLevelStr(testLogs.get(i).getLogLevel())+"] "+General.getGuiLogDateTime(testLogs.get(i).getLogTime())+" ["+General.getNotNullString(testLogs.get(i).getSequenceNumber())+"] "+testLogs.get(i).getClassName()+"."+testLogs.get(i).getMethodName()+"\n"+General.getThrowableString(testLogs.get(i).getMessage())+"\n"+General.getThrowableString(testLogs.get(i).getThrowable())+"</div>");
 		}
 		out.print(content.toString());
-		session.setAttribute(Keys.TEST_LOG_AJAX_REF, testLogsArray.get(testLogsArray.size()-1).getId());
+		if(testLogsArray.size() > 0){
+			session.setAttribute(Keys.TEST_LOG_AJAX_REF, testLogsArray.get(testLogsArray.size()-1).getId());
+		}else{
+			session.setAttribute(Keys.TEST_LOG_AJAX_REF, 0);
+		}
+		
 		
 %>
 <%if(suiteRunning){%>

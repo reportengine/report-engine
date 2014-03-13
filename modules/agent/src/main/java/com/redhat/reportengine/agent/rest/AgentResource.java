@@ -33,6 +33,7 @@ import com.redhat.reportengine.agent.rest.mapper.UsageCpu;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpuMemory;
 import com.redhat.reportengine.agent.rest.mapper.UsageCpus;
 import com.redhat.reportengine.agent.rest.mapper.UsageMemory;
+import com.redhat.reportengine.agent.rest.mapper.jvm.JVMnotAvailableException;
 import com.redhat.reportengine.agent.rest.mapper.jvm.JvmMXBeanStore;
 import com.redhat.reportengine.agent.rest.mapper.jvm.JvmsRunningList;
 import com.redhat.reportengine.restapi.urimap.AgentRestUriMap;
@@ -165,13 +166,13 @@ public class AgentResource {
 
 	@GET
 	@Path(AgentRestUriMap.JVM_MXBEAN_STORE_BY_NAME+"/{jvmName}")
-	public static JvmMXBeanStore getJvmMXBeanStoreByName(@PathParam("jvmName") String jvmName) {
+	public static JvmMXBeanStore getJvmMXBeanStoreByName(@PathParam("jvmName") String jvmName) throws JVMnotAvailableException {
 		return JVM.getJvmMXBeanStoreByName(jvmName);
 	}
 	
 	@GET
 	@Path(AgentRestUriMap.JVM_MXBEAN_STORE_BY_PID+"/{jvmPid}")
-	public static JvmMXBeanStore getJvmMXBeanStoreByPid(@PathParam("jvmPid") String jvmPid) {
+	public static JvmMXBeanStore getJvmMXBeanStoreByPid(@PathParam("jvmPid") String jvmPid) throws JVMnotAvailableException {
 		return JVM.getJvmMXBeanStoreByPid(jvmPid);
 	}
 }
