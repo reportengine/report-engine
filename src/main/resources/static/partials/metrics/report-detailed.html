@@ -1,0 +1,65 @@
+<div class="container-fluid">
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="queryResponse.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-list.html'"></div>
+
+    <div class=" container-fluid row"><!-- row1 -->
+      <div class="row-cards-pf ">
+
+        <div class="col-lg-12">
+          <div class="card-pf card-pf-utilization card-pf-accented">
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title">Description  <a class="btn btn-link pull-right mc-lg" ui-sref="suiteDetailRaw({ suiteId: query.suiteId })"><i class="fa  fa-file-code-o"></i> Raw data</a></h2>
+            </div>
+            <div class="card-pf-body">
+              
+              <div class="row">
+                <div class="col-lg-6">
+                  <dl class="dl-horizontal mc-dl">
+                    <dt ng-repeat-start="key in descriptionLeft">{{key}}</dt>
+                    <dd ng-repeat-end>{{queryResponse.description[key]}}</dd>
+                  </dl>
+              </div>
+            
+              <div class="col-lg-6 mc-dl">
+                 <dl class="dl-horizontal">
+                  <dt ng-repeat-start="key in descriptionRight">{{key}}</dt>
+                  <dd ng-repeat-end>{{queryResponse.description[key]}}</dd>
+                </dl>
+              </div>
+            </div>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-cards-pf">
+      <div class="row row-cards-pf">
+        <div class="col-lg-12">
+          <div class="card-pf card-pf-accented ">
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title"> <i class="fa fa-area-chart fa-lg"></i> Charts</h2>
+            </div>
+            <div class="card-pf-body">
+              <div ng-repeat="chart in chartList">
+                <legend>{{ chart.name }}</legend>
+                <!-- Refer this one https://github.com/krispo/angular-nvd3/issues/40 -->
+                <nvd3 options='chart.options' data="chart.data" id="fetching"></nvd3>
+            </div>
+          </div>
+        </div>
+
+      
+    </div><!-- /row1 -->
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

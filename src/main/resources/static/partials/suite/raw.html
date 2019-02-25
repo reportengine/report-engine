@@ -1,0 +1,22 @@
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="queryResponse.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-list.html'"></div>
+
+    <div>
+      <pre class="pre-scrollable">{{jsonData}}</pre>
+    </div>
+
+</div>
+
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->

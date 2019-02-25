@@ -1,0 +1,51 @@
+<div class="container-fluid"> <!-- Container-fluid -->
+
+  <!-- Loading icon disaplay -->
+  <div ng-hide="queryResponse.$resolved">
+    <div ng-include src="'partials/common-html/loading.html'"></div>
+  </div>
+
+  <div ng-show="queryResponse.$resolved"> <!-- Main Message -->
+
+    <!-- Page Header -->
+    <div ng-include src="'partials/common-html/header-list.html'"></div>
+
+    <!-- Display No Items on system -->
+    <div ng-include src="'partials/common-html/no-items-system.html'"></div>
+
+    <div ng-show="queryResponse.table.order">
+      <!-- Table -->
+      <table class="table table-hover table-bordered table-striped mc-table">
+        <thead>
+          <th ng-repeat="header in queryResponse.table.order">{{ header }}</th>
+        </thead>
+        <tbody>
+          <tr ng-click="selectItem(item)" ng-repeat="item in queryResponse.table.rows">
+            <td ng-repeat="header in queryResponse.table.order">
+              {{ item[header] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+
+    <div class="container-cards-pf">
+      <div class="row row-cards-pf">
+        <div class="col-lg-12">
+          <div class="card-pf card-pf-accented ">
+            <div class="card-pf-heading">
+              <h2 class="card-pf-title"> <i class="fa fa-area-chart fa-lg"></i> Charts</h2>
+            </div>
+            <div class="card-pf-body">
+              <div ng-repeat="chart in chartList">
+                <legend><small>{{ chart.name }}</small></legend>
+                <!-- Refer this one https://github.com/krispo/angular-nvd3/issues/40 -->
+                <nvd3 options='chart.options' data="chart.data" id="fetching"></nvd3>
+            </div>
+          </div>
+        </div>
+
+  </div> <!-- Main Message -->
+
+</div> <!-- Container-fluid -->
