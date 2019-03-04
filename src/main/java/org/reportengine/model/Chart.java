@@ -24,6 +24,8 @@ public class Chart {
     private List<String> yaxis2 = new ArrayList<>();
     private List<String> queries;
     private Object data;
+    private String xaxisFormat;
+    private String yaxisFormat;
 
     public String getXaxis() {
         if (xaxis == null) {

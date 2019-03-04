@@ -266,16 +266,49 @@ myControllerModule.factory('CommonServices', function($timeout, $window) {
     options.chart.xAxis.axisLabel = item.xaxis;
     options.chart.yAxis.axisLabel = "Data";
     var data = {};
-    angular.forEach(item.data, function(row) {
-      angular.forEach(item.yaxis, function(key) {
-        if(!data[key]){
-          data[key] = {};
-          data[key].key = key;
-          data[key].values = [];
-        }
-        data[key].values.push([row[item.xaxis], row[key]]);
+    // check is this metric or normal chart
+    if(item.metric) {
+      angular.forEach(item.data, function(_citem) {
+        angular.forEach(_citem, function(_csub) {
+          angular.forEach(_csub, function(values, key) {
+            if(key !== item.xaxis) {
+              if(!data[key]) {
+                data[key] = {};
+                data[key].key = key;
+                data[key].values = [];
+              }
+              data[key].values.push([_csub[item.xaxis], _csub[key]]);
+            }
+          });
+        });
       });
-    });
+    } else {
+      angular.forEach(item.data, function(row) {
+        angular.forEach(item.yaxis, function(key) {
+          if(!data[key]){
+            data[key] = {};
+            data[key].key = key;
+            data[key].values = [];
+          }
+          data[key].values.push([row[item.xaxis], row[key]]);
+        });
+      });
+    }
+    
+    // update format
+    if(item.xaxisFormat) {
+      options.chart.xAxis.tickFormat = function(d) {
+        return eval(item.xaxisFormat);
+      }
+    }
+
+    if(item.yaxisFormat) {
+      options.chart.yAxis.tickFormat = function(d) {
+        return eval(item.yaxisFormat);
+      }
+    }
+
+    console.log(angular.toJson(data));
     var finalData = [];
     angular.forEach(data, function(values, key) {
       finalData.push(values);

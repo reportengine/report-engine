@@ -20,5 +20,7 @@ public class MetricSeries {
     @Default
     private boolean metric = true;
     private String xAxis;
-    private List<List<Map<String, ?>>> metrics;
+    private String xAxisFormat;
+    private String yAxisFormat;
+    private List<List<Map<String, ?>>> data;
 }

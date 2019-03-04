@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -183,7 +184,9 @@ public class MetricsService {
                     MetricSeries metricSeries = MetricSeries.builder()
                             .name(chart.getName()).id(suite.getId()).type(chart.getType())
                             .xAxis(chart.getXaxis())
-                            .metrics(metricList).build();
+                            .xAxisFormat(chart.getXaxisFormat())
+                            .yAxisFormat(chart.getYaxisFormat())
+                            .data(metricList).build();
 
                     for (String query : chart.getQueries()) {
                         List<Map<String, ?>> data = new ArrayList<>();
@@ -191,7 +194,7 @@ public class MetricsService {
                                 suite.getType()).replaceAll("\\$suiteId", suite.getId());
                         _logger.debug("Command:{}", command);
 
-                        QueryResult result = client.query(new Query(command, databaseName));
+                        QueryResult result = client.query(new Query(command, databaseName), TimeUnit.MILLISECONDS);
                         if (!result.getResults().isEmpty()
                                 && result.getResults().get(0).getSeries() != null
                                 && !result.getResults().get(0).getSeries().isEmpty()) {
