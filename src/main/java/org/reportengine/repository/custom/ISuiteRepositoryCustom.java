@@ -10,6 +10,6 @@ public interface ISuiteRepositoryCustom {
     public List<Suite> findAll(Map<String, String> labels);
 
     public List<Suite> findAll(String type, Map<String, String> labels);
-    
-    public List<Suite> findAll(Boolean ready, String type, Map<String, String> labels);
+
+    public List<Suite> findAll(String name, String type, Boolean ready, Map<String, String> labels);
 }

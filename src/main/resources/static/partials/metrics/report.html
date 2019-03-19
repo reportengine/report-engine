@@ -13,20 +13,23 @@
     <!-- Display No Items on system -->
     <div ng-include src="'partials/common-html/no-items-system.html'"></div>
 
-    <div ng-show="queryResponse.table.order">
-      <!-- Table -->
-      <table class="table table-hover table-bordered table-striped mc-table">
-        <thead>
-          <th ng-repeat="header in queryResponse.table.order">{{ header }}</th>
-        </thead>
-        <tbody>
-          <tr ng-click="selectItem(item)" ng-repeat="item in queryResponse.table.rows">
-            <td ng-repeat="header in queryResponse.table.order">
-              {{ item[header] }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div ng-repeat="table in queryResponse.tables">
+      <div ng-if="table.enabled">
+        <legend>{{ table.name }}</legend>
+        <!-- Table -->
+        <table class="table table-hover table-bordered table-striped mc-table">
+          <thead>
+            <th ng-repeat="header in table.order">{{ header }}</th>
+          </thead>
+          <tbody>
+            <tr ng-click="selectItem(item)" ng-repeat="item in table.rows">
+              <td ng-repeat="header in table.order">
+                {{ item[header] }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     
 

@@ -2,6 +2,7 @@ package org.reportengine.handler;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,32 +31,32 @@ public class SuiteFileHandler {
     @Autowired
     private SuiteFileService suiteFileService;
 
-    @PostMapping("/uploadSingle/{id}")
+    @PostMapping("/uploadSingle/{suiteId}")
     public void uploadFile(@RequestParam("file") MultipartFile file,
-            @PathVariable(name = "id", required = true) String id) {
-        suiteFileService.storeFile(file, id);
+            @PathVariable(name = "suiteId", required = true) String suiteId) {
+        suiteFileService.storeFile(file, suiteId);
     }
 
-    @PostMapping("/uploadMultiple/{id}")
+    @PostMapping("/uploadMultiple/{suiteId}")
     public void uploadMultipleFiles(@RequestParam("files") MultipartFile[] files,
-            @PathVariable(name = "id", required = true) String id) {
+            @PathVariable(name = "suiteId", required = true) String suiteId) {
         for (MultipartFile file : files) {
-            uploadFile(file, id);
+            uploadFile(file, suiteId);
         }
     }
 
-    @GetMapping("/list/{id}")
-    public List<String> list(@PathVariable(required = true) String id) {
-        return suiteFileService.list(id);
+    @GetMapping("/list/{suiteId}")
+    public List<String> list(@PathVariable(required = true) String suiteId) {
+        return suiteFileService.list(suiteId);
     }
 
-    @GetMapping("/download/{id}/{fileName:.+}")
+    @GetMapping("/download/{suiteId}/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(
-            @PathVariable(required = true) String id,
+            @PathVariable(required = true) String suiteId,
             @PathVariable(required = true) String fileName,
             HttpServletRequest request) {
         // Load file as Resource
-        Resource resource = suiteFileService.loadFileAsResource(fileName, id);
+        Resource resource = suiteFileService.loadFileAsResource(fileName, suiteId);
 
         // Try to determine file's content type
         String contentType = null;
@@ -73,6 +75,11 @@ public class SuiteFileHandler {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @DeleteMapping("/{suiteId}")
+    public Map<String, Object> delete(@PathVariable(required = true) String suiteId) {
+        return suiteFileService.delete(suiteId);
     }
 
 }

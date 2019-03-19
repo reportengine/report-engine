@@ -308,7 +308,7 @@ myControllerModule.factory('CommonServices', function($timeout, $window) {
       }
     }
 
-    console.log(angular.toJson(data));
+    // console.log(angular.toJson(data));
     var finalData = [];
     angular.forEach(data, function(values, key) {
       finalData.push(values);

@@ -21,14 +21,14 @@ public class SuiteRepositoryImpl implements ISuiteRepositoryCustom {
     private MongoTemplate mongoTemplate;
 
     public List<Suite> findAll(Map<String, String> labels) {
-        return findAll(null, labels);
+        return findAll(null, null, null, labels);
     }
 
     public List<Suite> findAll(String type, Map<String, String> labels) {
-        return findAll(null, type, labels);
+        return findAll(null, type, null, labels);
     }
 
-    public List<Suite> findAll(Boolean ready, String type, Map<String, String> labels) {
+    public List<Suite> findAll(String name, String type, Boolean ready, Map<String, String> labels) {
         _logger.debug("Input data[type:{}, labels:{}]", type, labels);
         List<Criteria> criteriaList = new ArrayList<>();
 
@@ -37,6 +37,11 @@ public class SuiteRepositoryImpl implements ISuiteRepositoryCustom {
             for (String label : labels.keySet()) {
                 criteriaList.add(Criteria.where("labels." + label).is(labels.get(label)));
             }
+        }
+
+        // add name condition
+        if (name != null) {
+            criteriaList.add(Criteria.where("name").is(name));
         }
 
         // add type condition

@@ -41,7 +41,7 @@ public class ReportConfig {
     private Map<String, String> labels;
 
     @NotNull
-    private ReportTable table;
+    private List<ReportTable> tables;
 
     @NotNull
     private List<Chart> charts;

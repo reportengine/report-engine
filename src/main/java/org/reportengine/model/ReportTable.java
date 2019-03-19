@@ -19,6 +19,7 @@ import lombok.ToString;
 public class ReportTable {
     @Default
     private Boolean enabled = true;
+    private String name;
     private List<String> order;
     private Map<String, String> columns;
     private List<Map<String, Object>> rows;

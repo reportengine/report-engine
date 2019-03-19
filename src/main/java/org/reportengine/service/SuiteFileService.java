@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,10 +47,11 @@ public class SuiteFileService {
         }
     }
 
-    public String storeFile(MultipartFile file, String id) {
-        validateSuite(id);
+    public String storeFile(MultipartFile file, String suiteId) {
+        validateSuite(suiteId, true);
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        fileName = fileName.replaceAll("[^a-zA-Z0-9_\\.\\-]", "_");
 
         try {
             // Check if the file's name contains invalid characters
@@ -57,7 +60,7 @@ public class SuiteFileService {
             }
 
             // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(id).resolve(fileName);
+            Path targetLocation = this.fileStorageLocation.resolve(suiteId).resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;
@@ -66,10 +69,10 @@ public class SuiteFileService {
         }
     }
 
-    public Resource loadFileAsResource(String fileName, String id) {
-        validateSuite(id);
+    public Resource loadFileAsResource(String fileName, String suiteId) {
+        validateSuite(suiteId, false);
         try {
-            Path filePath = this.fileStorageLocation.resolve(id).resolve(fileName).normalize();
+            Path filePath = this.fileStorageLocation.resolve(suiteId).resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;
@@ -81,9 +84,9 @@ public class SuiteFileService {
         }
     }
 
-    public List<String> list(String id) {
-        validateSuite(id);
-        Path filePath = fileStorageLocation.resolve(id).normalize();
+    public List<String> list(String suiteId) {
+        validateSuite(suiteId, false);
+        Path filePath = fileStorageLocation.resolve(suiteId).normalize();
         try {
 
             List<Path> files = Files.walk(filePath)
@@ -96,22 +99,64 @@ public class SuiteFileService {
             }
             return fileNames;
         } catch (IOException ex) {
-            throw new MyFileNotFoundException("File not found " + filePath, ex);
+            _logger.trace("File not found, file:{}", filePath.getFileName().toString(), ex);
+            return new ArrayList<>();
         }
     }
 
-    private void validateSuite(String id) {
-        Optional<Suite> suite = suiteService.get(id);
+    public Map<String, Object> delete(String suiteId) {
+        validateSuite(suiteId, false);
+        List<String> success = new ArrayList<>();
+        Map<String, Object> failure = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", success);
+        result.put("failure", failure);
+
+        Path filePath = fileStorageLocation.resolve(suiteId).normalize();
+        try {
+
+            List<Path> files = Files.walk(filePath)
+                    .filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+
+            for (Path file : files) {
+                try {
+                    if (file.toFile().delete()) {
+                        success.add(file.getFileName().toString());
+                    } else {
+                        failure.put("name", file.getFileName().toString());
+                    }
+                } catch (Exception ex) {
+                    failure.put("name", file.getFileName().toString());
+                    failure.put("error", ex.getMessage());
+                    _logger.error("Exception,", ex);
+                }
+            }
+            // delete directory
+            if (!filePath.toFile().delete()) {
+                _logger.warn("Failed to delete a dir:{}", filePath.getFileName().toString());
+            }
+        } catch (IOException ex) {
+            throw new MyFileNotFoundException("File not found " + filePath, ex);
+        }
+        return result;
+    }
+
+    private void validateSuite(String suiteId, boolean create) {
+        Optional<Suite> suite = suiteService.get(suiteId);
         if (suite.isPresent()) {
-            try {
-                Files.createDirectories(this.fileStorageLocation.resolve(id));
-            } catch (IOException ex) {
-                _logger.error("Unable to create suite directoy! {}/{}", fileStorageLocation.toString(), id, ex);
-                throw new RuntimeException(String.format("Unable to create suite directoy! %s/%s",
-                        fileStorageLocation.toString(), id));
+            if (create) {
+                try {
+                    Files.createDirectories(this.fileStorageLocation.resolve(suiteId));
+                } catch (IOException ex) {
+                    _logger.error("Unable to create suite directoy! {}/{}", fileStorageLocation.toString(), suiteId,
+                            ex);
+                    throw new RuntimeException(String.format("Unable to create suite directoy! %s/%s",
+                            fileStorageLocation.toString(), suiteId));
+                }
             }
         } else {
-            throw new RuntimeException("Specified ID[" + id + "] not found in suites list");
+            throw new RuntimeException("Specified ID[" + suiteId + "] not found in suites list");
         }
     }
 }

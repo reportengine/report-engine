@@ -7,9 +7,11 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.reportengine.model.DeleteSuites;
 import org.reportengine.model.entity.Suite;
 import org.reportengine.service.SuiteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,16 +48,28 @@ public class SuiteHandler {
     @GetMapping
     public List<Suite> get(@RequestParam(required = false) String name,
             @RequestParam(required = false) String type,
+            @RequestParam(required = false) Boolean ready,
             @RequestParam(name = "labels", required = false, defaultValue = "{}") String stringLabels)
             throws JsonParseException, JsonMappingException, IOException {
         @SuppressWarnings("unchecked")
         Map<String, String> labels = objectMapper.readValue(stringLabels, Map.class);
-        return suiteService.getAll(name, type, labels);
+        return suiteService.getAll(name, type, labels, ready);
     }
 
-    @GetMapping("/{uid}")
-    public Optional<Suite> get(@PathVariable("uid") String uid) {
-        return suiteService.get(uid);
+    @GetMapping("/{suiteId}")
+    public Optional<Suite> get(@PathVariable("suiteId") String suiteId) {
+        return suiteService.get(suiteId);
+    }
+
+    @DeleteMapping("/{suiteId}")
+    public Map<String, Object> delete(@PathVariable("suiteId") String suiteId) {
+        return suiteService.delete(suiteId);
+    }
+
+    @PostMapping("/delete")
+    public List<Map<String, Object>> delete(@RequestBody DeleteSuites suites)
+            throws JsonParseException, JsonMappingException, IOException {
+        return suiteService.deleteAll(suites);
     }
 
 }

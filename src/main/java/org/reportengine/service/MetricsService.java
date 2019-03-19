@@ -23,6 +23,7 @@ import org.reportengine.model.DetailedRespone;
 import org.reportengine.model.KeyExpression;
 import org.reportengine.model.Metric;
 import org.reportengine.model.MetricSeries;
+import org.reportengine.model.ReportTable;
 import org.reportengine.model.entity.ReportConfig;
 import org.reportengine.model.entity.Suite;
 import org.reportengine.properties.InfluxDbProps;
@@ -36,6 +37,8 @@ public class MetricsService {
 
     private InfluxDB client;
     private String databaseName;
+
+    private static final String DELETE_METRIC = "DELETE FROM \"$measurement\" WHERE \"suiteId\" = '$suiteId'";
 
     @Autowired
     private SuiteService suiteService;
@@ -57,6 +60,14 @@ public class MetricsService {
         for (Metric metric : metrics) {
             writeSingle(metric);
         }
+    }
+
+    public void delete(Suite suite) {
+        Query command = new Query(
+                DELETE_METRIC.replaceAll("\\$measurement", suite.getType())
+                        .replaceAll("\\$suiteId", suite.getId()), databaseName);
+        QueryResult result = client.query(command, TimeUnit.MILLISECONDS);
+        _logger.debug("{}", result);
     }
 
     private KeyExpression getExpression(String raw) {
@@ -96,32 +107,52 @@ public class MetricsService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void updateMap(Map<String, String> columns, Map<String, Object> map, Suite suite) {
         // add id into map
         map.put("suiteId", getSuiteValue(suite, "id"));
         for (String header : columns.keySet()) {
             String rawKey = columns.get(header);
             KeyExpression expression = getExpression(rawKey);
-            Object value = null;
-            if (expression.getKey().contains(".")) {
-                String[] keys = expression.getKey().split("\\.", 2);
-                Object mapObject = getSuiteValue(suite, keys[0]);
-                if (mapObject instanceof Map) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> _map = (Map<String, Object>) mapObject;
-                    value = CommonUtils.getValue(_map, keys[1], "");
-                } else {
-                    value = mapObject;
+            if (expression.getKey().contains("[*]")) {
+                String[] keysLevel1 = expression.getKey().split("\\.", 2);
+                Map<String, Object> _data = (Map<String, Object>) getSuiteValue(suite, keysLevel1[0]);
+                String[] keysLevel2 = keysLevel1[1].split("\\[\\*]\\.", 2);
+                List<Object> listData = (List<Object>) CommonUtils.getValue(_data, keysLevel2[0],
+                        new ArrayList<Object>());
+                int index = 1;
+                for (Object dataObj : listData) {
+                    Map<String, Object> finalData = (Map<String, Object>) dataObj;
+                    Object value = CommonUtils.getValue(finalData, keysLevel2[1], "");
+                    // evaluate expression
+                    if (expression.isValid()) {
+                        expression.add("self", value);
+                        value = expression.evaluate();
+                    }
+                    map.put(header + " " + index, value);
+                    index++;
                 }
             } else {
-                value = getSuiteValue(suite, expression.getKey());
+                Object value = null;
+                if (expression.getKey().contains(".")) {
+                    String[] keys = expression.getKey().split("\\.", 2);
+                    Object mapObject = getSuiteValue(suite, keys[0]);
+                    if (mapObject instanceof Map) {
+                        Map<String, Object> _map = (Map<String, Object>) mapObject;
+                        value = CommonUtils.getValue(_map, keys[1], "");
+                    } else {
+                        value = mapObject;
+                    }
+                } else {
+                    value = getSuiteValue(suite, expression.getKey());
+                }
+                // evaluate expression
+                if (expression.isValid()) {
+                    expression.add("self", value);
+                    value = expression.evaluate();
+                }
+                map.put(header, value);
             }
-            // evaluate expression
-            if (expression.isValid()) {
-                expression.add("self", value);
-                value = expression.evaluate();
-            }
-            map.put(header, value);
         }
 
     }
@@ -138,23 +169,54 @@ public class MetricsService {
         List<Suite> suites = suiteService.getAll(
                 reportConfig.getType(), reportConfig.getLabels(), true);
 
+        // update tables data
+        List<ReportTable> tablesFinal = new ArrayList<>();
+        for (ReportTable table : reportConfig.getTables()) {
+            // update table data
+            List<Map<String, Object>> tableRows = new ArrayList<>();
+            ReportTable tableFinal = ReportTable.builder()
+                    .enabled(table.getEnabled())
+                    .name(table.getName())
+                    .order(table.getOrder())
+                    .build();
+            // add table rows
+            tableFinal.setRows(tableRows);
+            updateRows(table.getColumns(), suites, tableRows);
+            tablesFinal.add(tableFinal);
+        }
+
         // update table data
-        List<Map<String, Object>> tableRows = new ArrayList<>();
-        // add table rows
-        reportConfig.getTable().setRows(tableRows);
-        updateRows(reportConfig.getTable().getColumns(), suites, tableRows);
+        reportConfig.setTables(tablesFinal);
 
         // update chart data
+        List<Chart> chartsFinal = new ArrayList<>();
         for (Chart chart : reportConfig.getCharts()) {
             List<Map<String, Object>> data = new ArrayList<>();
-            chart.setData(data);
+            Chart chartFinal = Chart.builder()
+                    .enabled(chart.getEnabled())
+                    .name(chart.getName())
+                    .type(chart.getType())
+                    .metric(chart.isMetric())
+                    .xaxis(chart.getXaxis())
+                    .yaxis(chart.getYaxis())
+                    .yaxis2(chart.getYaxis2())
+                    .xaxisFormat(chart.getXaxisFormat())
+                    .yaxisFormat(chart.getYaxisFormat())
+                    .data(data)
+                    .build();
             Map<String, String> columns = new HashMap<>();
             for (String query : chart.getQueries()) {
                 String[] keyValue = query.split(",", 2);
                 columns.put(keyValue[0], keyValue[1].trim());
             }
             updateRows(columns, suites, data);
+            chartsFinal.add(chartFinal);
         }
+        // update chart data
+        reportConfig.setCharts(chartsFinal);
+
+        // remove detailed chart data
+        reportConfig.setDetailed(null);
 
         return reportConfig;
     }

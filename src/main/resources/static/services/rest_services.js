@@ -22,9 +22,16 @@ myControllerModule.factory('MetricFactory', function ($resource) {
 });
 
 
-// metrics services
+// suite services
 myControllerModule.factory('SuiteFactory', function ($resource) {
   return $resource('/suites/:suiteId', {suiteId: '@suiteId'}, {
     get:   { method: 'GET', isArray: false, params: {suiteId: '@suiteId'}},
+  })
+});
+
+// suite files services
+myControllerModule.factory('SuiteFileFactory', function ($resource) {
+  return $resource('/suites/files/list/:suiteId', {suiteId: '@suiteId'}, {
+    list:   { method: 'GET', isArray: true, params: {suiteId: '@suiteId'}},
   })
 });

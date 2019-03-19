@@ -71,6 +71,11 @@
 			<version>1.5</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.scijava/parsington -->
 		<dependency>
 			<groupId>org.scijava</groupId>

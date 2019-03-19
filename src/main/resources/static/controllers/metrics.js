@@ -122,7 +122,7 @@ $scope, MetricFactory, $stateParams, $state, $uibModal, displayRestError, Common
 });
 
 myControllerModule.controller('MetricReportDetailedController', function(alertService, $timeout, $window, $filter,
-$scope, MetricFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $interval) {
+$scope, MetricFactory, SuiteFileFactory, $stateParams, $state, $uibModal, displayRestError, CommonServices, mchelper, $interval) {
 
   //GUI page settings
   $scope.headerStringList = "Detailed report, suite id: "+$stateParams.suiteId;
@@ -151,6 +151,14 @@ $scope, MetricFactory, $stateParams, $state, $uibModal, displayRestError, Common
       return;
     }
     $scope.isRunning = true;
+    
+    // load files
+    SuiteFileFactory.list($scope.query, function(response) {
+      $scope.filesList = response;
+    },function(error){
+      displayRestError.display(error);
+    });
+    
     MetricFactory.getDetailed($scope.query, function(response) {
       $scope.queryResponse = response;
       // update chart data
