@@ -28,7 +28,7 @@ public class Metric {
     private String suiteId;
 
     @NotEmpty
-    private String name;
+    private String measurementSuffix;
 
     private Long timestamp;
 
@@ -36,6 +36,10 @@ public class Metric {
 
     @NotEmpty
     private Map<String, Object> data;
+
+    public String getMeasurementSuffix() {
+        return measurementSuffix.replaceAll("[^A-Za-z0-9_]", "").toLowerCase();
+    }
 
     public Point getPoint() {
         SuiteService suiteService = BeanUtil.getBean(SuiteService.class);
@@ -45,18 +49,17 @@ public class Metric {
         }
 
         Map<String, String> _tags = new HashMap<>();
-        _tags.put("name", getName());
         _tags.put("suiteId", getSuiteId());
 
         if (labels != null) {
             for (String key : labels.keySet()) {
-                if (!(key.equalsIgnoreCase("suiteId") || key.equalsIgnoreCase("name"))) {
+                if (!(key.equalsIgnoreCase("suiteId"))) {
                     _tags.put(key.toLowerCase(), labels.get(key));
                 }
             }
         }
 
-        String measurement = String.format("%s_%s", suite.get().getType(), getName());
+        String measurement = String.format("%s_%s", suite.get().getType(), getMeasurementSuffix());
 
         return Point
                 .measurement(measurement)
