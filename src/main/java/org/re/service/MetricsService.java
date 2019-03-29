@@ -261,18 +261,25 @@ public class MetricsService {
                                 && result.getResults().get(0).getSeries() != null
                                 && !result.getResults().get(0).getSeries().isEmpty()) {
 
-                            Series series = result.getResults().get(0).getSeries().get(0);
-                            for (List<Object> value : series.getValues()) {
-                                Map<String, Object> values = new HashMap<String, Object>();
-                                data.add(values);
-                                for (int index = 0; index < series.getColumns().size(); index++) {
-                                    String column = series.getColumns().get(index);
-                                    if (!column.equals("suiteId")) {
-                                        values.put(column, value.get(index));
+                            //Series series = result.getResults().get(0).getSeries().get(0);
+
+                            for (Series series : result.getResults().get(0).getSeries()) {
+                                for (List<Object> value : series.getValues()) {
+                                    Map<String, Object> values = new HashMap<String, Object>();
+                                    data.add(values);
+                                    for (int index = 0; index < series.getColumns().size(); index++) {
+                                        String column = series.getColumns().get(index);
+                                        // check the column name in tags, if available update it
+                                        if (series.getTags() != null && series.getTags().containsKey(column)) {
+                                            column = series.getTags().get(column);
+                                        }
+                                        if (!column.equals("suiteId")) {
+                                            values.put(column, value.get(index));
+                                        }
                                     }
                                 }
+                                metricList.add(data);
                             }
-                            metricList.add(data);
                         }
                     }
                     finalCharts.add(metricSeries);

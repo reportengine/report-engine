@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/system")
 public class SystemHandler {
 
-    @GetMapping("/mqtt")
+    @GetMapping("/mqttconfig")
     public MqttConf getMqttSettings() {
         return BeanUtil.getBean(MqttConf.class);
     }
