@@ -11,5 +11,7 @@ public class FileStorageProperties {
     private String uploadRoot;
 
     private String suiteLogs;
+    
+    private String tmp;
 
 }

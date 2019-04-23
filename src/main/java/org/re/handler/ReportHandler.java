@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.re.model.entity.ReportConfig;
 import org.re.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,11 @@ public class ReportHandler {
     @GetMapping("/{id}")
     public ReportConfig get(@PathVariable("id") String id) {
         return reportService.get(id);
+    }
+
+    @DeleteMapping("/{suiteId}")
+    public void delete(@PathVariable("id") String id) {
+        reportService.delete(id);
     }
 
 }

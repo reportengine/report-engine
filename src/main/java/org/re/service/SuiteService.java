@@ -62,9 +62,10 @@ public class SuiteService {
     }
 
     private Map<String, Object> deleteSuite(Suite suite) {
-        Map<String, Object> result = suiteFileService.delete(suite.getId());
+        suiteFileService.delete(suite.getId());
         suiteRepository.delete(suite);
         metricsService.delete(suite);
+        HashMap<String, Object> result = new HashMap<>();
         result.put("suiteId", suite.getId());
         result.put("name", suite.getName());
         result.put("labels", suite.getLabels());

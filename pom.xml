@@ -5,7 +5,7 @@
 
 	<groupId>org.reportengine</groupId>
 	<artifactId>reportengine-core</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>2.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>reportengine-core</name>

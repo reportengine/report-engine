@@ -1,18 +1,15 @@
 package org.re.service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.re.Tasks;
 import org.re.exception.FileStorageException;
 import org.re.exception.MyFileNotFoundException;
 import org.re.model.entity.Suite;
@@ -31,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SuiteFileService {
 
     private final Path fileStorageLocation;
+    private final Path fileTmpLocation;
 
     @Autowired
     private SuiteService suiteService;
@@ -39,30 +37,40 @@ public class SuiteFileService {
     public SuiteFileService(FileStorageProperties fileProperties) {
         this.fileStorageLocation = Paths.get(fileProperties.getUploadRoot(), fileProperties.getSuiteLogs())
                 .toAbsolutePath().normalize();
+        this.fileTmpLocation = Paths.get(fileProperties.getUploadRoot(), fileProperties.getTmp())
+                .toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileStorageLocation);
+            Files.createDirectories(this.fileTmpLocation);
         } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.",
-                    ex);
+            throw new FileStorageException(
+                    "Could not create the directory where the uploaded [or] tmp files will be stored.", ex);
         }
     }
 
-    public String storeFile(MultipartFile file, String suiteId) {
-        validateSuite(suiteId, true);
+    private Path getArchiveFilePath(String suiteId) {
+        return this.fileStorageLocation.resolve(String.format("%s.zip", suiteId));
+    }
+
+    private String normalizeFileName(String fileName) {
         // Normalize file name
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        fileName = fileName.replaceAll("[^a-zA-Z0-9_\\.\\-]", "_");
+        String fileNameFinal = StringUtils.cleanPath(fileName);
+        fileNameFinal = fileNameFinal.replaceAll("[^a-zA-Z0-9_\\.\\-]", "_");
+        // Check if the file's name contains invalid characters
+        if (fileName.contains("..")) {
+            throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+        }
+        return fileNameFinal;
+    }
 
+    public String storeFile(MultipartFile file, String suiteId) {
+        validateSuite(suiteId);
+        // Normalize file name
+        String fileName = normalizeFileName(file.getOriginalFilename());
         try {
-            // Check if the file's name contains invalid characters
-            if (fileName.contains("..")) {
-                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
-            }
-
-            // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(suiteId).resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
+            // create zip file and include this file
+            Archive archive = new Archive(getArchiveFilePath(suiteId).toString(), fileTmpLocation);
+            archive.addEntry(fileName, file.getBytes());
             return fileName;
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
@@ -70,95 +78,82 @@ public class SuiteFileService {
     }
 
     public Resource loadFileAsResource(String fileName, String suiteId) {
-        validateSuite(suiteId, false);
+        validateSuite(suiteId);
+        Path targetPath = null;
         try {
-            Path filePath = this.fileStorageLocation.resolve(suiteId).resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+            String fileNameFinal = normalizeFileName(fileName);
+            Archive archive = new Archive(getArchiveFilePath(suiteId).toString(), fileTmpLocation);
+            targetPath = this.fileTmpLocation.resolve(suiteId).resolve(fileNameFinal).normalize();
+            archive.extractEntry(fileNameFinal, targetPath);
+            Resource resource = new UrlResource(targetPath.toUri());
             if (resource.exists()) {
                 return resource;
             } else {
                 throw new MyFileNotFoundException("File not found " + fileName);
             }
-        } catch (MalformedURLException ex) {
+        } catch (IOException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
+        } finally {
+            if (targetPath != null && targetPath.toFile().exists()) {
+                Tasks.MARKED_FOR_DELETION.add(targetPath);
+            }
+        }
+    }
+
+    public Resource loadArchiveFileAsResource(String suiteId) {
+        validateSuite(suiteId);
+        Path targetPath = getArchiveFilePath(suiteId);
+        try {
+            Resource resource = new UrlResource(targetPath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new MyFileNotFoundException("File not found " + targetPath);
+            }
+        } catch (IOException ex) {
+            throw new MyFileNotFoundException("File not found " + targetPath, ex);
         }
     }
 
     public List<String> list(String suiteId) {
-        validateSuite(suiteId, false);
-        Path filePath = fileStorageLocation.resolve(suiteId).normalize();
+        validateSuite(suiteId);
+        Path filePath = getArchiveFilePath(suiteId);
         try {
-
-            List<Path> files = Files.walk(filePath)
-                    .filter(Files::isRegularFile)
-                    .collect(Collectors.toList());
-
-            List<String> fileNames = new ArrayList<>();
-            for (Path file : files) {
-                fileNames.add(file.getFileName().toString());
-            }
-            return fileNames;
+            Archive archive = new Archive(filePath.toString(), fileTmpLocation);
+            return archive.listEntries();
         } catch (IOException ex) {
-            _logger.trace("File not found, file:{}", filePath.getFileName().toString(), ex);
+            _logger.error("Exception, SuiteId:{}", suiteId, ex);
             return new ArrayList<>();
         }
     }
 
-    public Map<String, Object> delete(String suiteId) {
-        validateSuite(suiteId, false);
-        List<String> success = new ArrayList<>();
-        Map<String, Object> failure = new HashMap<>();
-        Map<String, Object> result = new HashMap<>();
-        result.put("success", success);
-        result.put("failure", failure);
-
-        Path filePath = fileStorageLocation.resolve(suiteId).normalize();
-        if (filePath.toFile().exists()) {
-            try {
-
-                List<Path> files = Files.walk(filePath)
-                        .filter(Files::isRegularFile)
-                        .collect(Collectors.toList());
-
-                for (Path file : files) {
-                    try {
-                        if (file.toFile().delete()) {
-                            success.add(file.getFileName().toString());
-                        } else {
-                            failure.put("name", file.getFileName().toString());
-                        }
-                    } catch (Exception ex) {
-                        failure.put("name", file.getFileName().toString());
-                        failure.put("error", ex.getMessage());
-                        _logger.error("Exception,", ex);
-                    }
-                }
-                // delete directory
-                if (!filePath.toFile().delete()) {
-                    _logger.warn("Failed to delete a dir:{}", filePath.getFileName().toString());
-                }
-            } catch (IOException ex) {
-                throw new MyFileNotFoundException("File not found " + filePath, ex);
-            }
-        }
-        return result;
+    public void delete(String suiteId) {
+        validateSuite(suiteId);
+        Path archiveFilePath = getArchiveFilePath(suiteId);
+        Path tmpFilePath = fileTmpLocation.resolve(suiteId).normalize();
+        deleteResource(archiveFilePath);
+        deleteResource(tmpFilePath);
     }
 
-    private void validateSuite(String suiteId, boolean create) {
-        Optional<Suite> suite = suiteService.get(suiteId);
-        if (suite.isPresent()) {
-            if (create) {
+    private void deleteResource(Path targetPath) {
+        if (targetPath.toFile().exists()) {
+            if (targetPath.toFile().isDirectory()) {
                 try {
-                    Files.createDirectories(this.fileStorageLocation.resolve(suiteId));
+                    FileUtils.deleteDirectory(targetPath.toFile());
                 } catch (IOException ex) {
-                    _logger.error("Unable to create suite directoy! {}/{}", fileStorageLocation.toString(), suiteId,
-                            ex);
-                    throw new RuntimeException(String.format("Unable to create suite directoy! %s/%s",
-                            fileStorageLocation.toString(), suiteId));
+                    _logger.error("Unable to delete a directory: {}", targetPath.toString(), ex);
                 }
+            } else {
+                targetPath.toFile().delete();
             }
-        } else {
+        }
+    }
+
+    private void validateSuite(String suiteId) {
+        Optional<Suite> suite = suiteService.get(suiteId);
+        if (!suite.isPresent()) {
             throw new RuntimeException("Specified ID[" + suiteId + "] not found in suites list");
         }
     }
+
 }

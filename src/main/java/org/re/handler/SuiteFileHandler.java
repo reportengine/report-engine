@@ -2,7 +2,6 @@ package org.re.handler;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,6 +49,32 @@ public class SuiteFileHandler {
         return suiteFileService.list(suiteId);
     }
 
+    @GetMapping("/archive/{suiteId}")
+    public ResponseEntity<Resource> downloadArchive(
+            @PathVariable(required = true) String suiteId,
+            HttpServletRequest request) {
+        // Load file as Resource
+        Resource resource = suiteFileService.loadArchiveFileAsResource(suiteId);
+
+        // Try to determine file's content type
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            _logger.info("Could not determine file type.");
+        }
+
+        // Fallback to the default content type if type could not be determined
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
     @GetMapping("/download/{suiteId}/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(
             @PathVariable(required = true) String suiteId,
@@ -75,11 +100,12 @@ public class SuiteFileHandler {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+
     }
 
     @DeleteMapping("/{suiteId}")
-    public Map<String, Object> delete(@PathVariable(required = true) String suiteId) {
-        return suiteFileService.delete(suiteId);
+    public void delete(@PathVariable(required = true) String suiteId) {
+        suiteFileService.delete(suiteId);
     }
 
 }

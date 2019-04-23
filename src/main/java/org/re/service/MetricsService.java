@@ -38,7 +38,7 @@ public class MetricsService {
     private InfluxDB client;
     private String databaseName;
 
-    private static final String DELETE_METRIC = "DELETE FROM \"$measurement\" WHERE \"suiteId\" = '$suiteId'";
+    private static final String DELETE_METRIC = "DELETE FROM /$measurement.*/ WHERE \"suiteId\" = '$suiteId'";
 
     @Autowired
     private SuiteService suiteService;

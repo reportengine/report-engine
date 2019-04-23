@@ -19,6 +19,10 @@ public class ReportService {
         reportRepository.save(reportConfig);
     }
 
+    public void delete(String id) {
+        reportRepository.deleteById(id);
+    }
+
     public List<ReportConfig> getAll(boolean detailed) {
         if (detailed) {
             return reportRepository.findAll();
